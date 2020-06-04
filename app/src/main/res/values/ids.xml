@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="category_id" type="id"/>
+    <item name="left_image" type="id"/>
+    <item name="right_image" type="id"/>
+    <item name="name" type="id"/>
+    <item name="percent" type="id"/>
+    <item name="votes" type="id"/>
+    <item name="vote_container" type="id"/>
+</resources>

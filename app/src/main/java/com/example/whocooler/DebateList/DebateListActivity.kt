@@ -1,9 +1,6 @@
 package com.example.whocooler.DebateList
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.whocooler.Common.Models.Debate
@@ -48,7 +45,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             router?.navigateToDebate(debate)
         }
 
-        debateAdapter = com.example.whocooler.DebateList.DebateListAdapter(this, response, voteClickHandler, debateClickHandler)
+        debateAdapter = DebateListAdapter(response, voteClickHandler, debateClickHandler)
 
         listRecyclerView.adapter = debateAdapter
         val layoutManager = LinearLayoutManager(this)
