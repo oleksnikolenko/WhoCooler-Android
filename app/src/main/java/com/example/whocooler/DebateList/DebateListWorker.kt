@@ -31,6 +31,13 @@ class DebateListWorker {
                 return "application/json; charset=utf-8"
             }
 
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                // TODO: - REMOVE HARDCODED TOKEN
+                headers.put("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0NzFhMmYxZS05ZDljLTQ5OGYtYTk4Yi05YTg3OWM5NmFjMDkiLCJpYXQiOjE1OTA5OTYzODUsIm5iZiI6MTU5MDk5NjM4NSwiaWRlbnRpdHkiOiJ2dUdzZUZvMUhEaDd4Vml6V1p0cVhpUlVhVVAyIiwiZXhwIjoxNTk4NzcyMzg1LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.FWYUuafCOWWB2aOGyvLgUSh2X7XPAaOEOHoI__sim08")
+                return headers
+            }
+
         }
 
         App.prefs.requestQueue.add(debatesRequest)

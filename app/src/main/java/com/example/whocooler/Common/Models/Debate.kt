@@ -12,6 +12,6 @@ data class Debate(
     @SerializedName("leftside") var leftSide: DebateSide,
     @SerializedName("rightside") var rightSide: DebateSide,
     @SerializedName("category") val category: Category,
-    @SerializedName("votes_count") val votesCount: Int,
+    @SerializedName("votes_count") var votesCount: Int,
     @SerializedName("is_favorite") var isFavorite: Boolean,
     @SerializedName("message_count") var messageCount: Int) : Parcelable

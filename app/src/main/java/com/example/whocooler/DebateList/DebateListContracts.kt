@@ -8,12 +8,13 @@ class DebateListContracts {
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
         fun getDebates(request: DebateListModels.DebateListRequest)
-        fun vote(debateId: String, sideId: String)
+        fun vote(debateId: String, sideId: String, position: Int)
     }
 
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun presentDebates(response: DebatesResponse)
+        fun reloadDebate(debate: Debate, position: Int)
     }
 
     // Presenter -> View
@@ -21,6 +22,7 @@ class DebateListContracts {
     interface PresenterViewContract {
         // Functions for Presenter output / View input
         fun setupAdapter(response: DebatesResponse)
+        fun reloadDebate(debate: Debate, position: Int)
     }
 
     // Router

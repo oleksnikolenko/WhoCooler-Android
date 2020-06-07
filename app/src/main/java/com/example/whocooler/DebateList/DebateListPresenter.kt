@@ -13,4 +13,8 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         output?.setupAdapter(response)
     }
 
+    override fun reloadDebate(debate: Debate, position: Int) {
+        output?.reloadDebate(debate, position)
+    }
+
 }

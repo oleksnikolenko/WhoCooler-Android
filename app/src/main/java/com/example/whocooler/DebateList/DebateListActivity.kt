@@ -1,6 +1,7 @@
 package com.example.whocooler.DebateList
 
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.whocooler.Common.Models.Debate
@@ -34,11 +35,14 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         setContentView(R.layout.activity_main)
 
         interactor.getDebates(DebateListModels.DebateListRequest())
+
     }
 
     override fun setupAdapter(response: DebatesResponse) {
-        var voteClickHandler: (Debate, DebateSide) -> Unit = { debate, debateSide ->
-            debate.id?.let { interactor.vote(it, debateSide.id) }
+        var voteClickHandler: (Debate, DebateSide, Int) -> Unit = { debate, debateSide, position ->
+            debate.id?.let {
+                interactor.vote(it, debateSide.id, position)
+            }
         }
 
         var debateClickHandler: (Debate) -> Unit = {debate ->
@@ -51,5 +55,11 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         val layoutManager = LinearLayoutManager(this)
         listRecyclerView.layoutManager = layoutManager
     }
+
+    override fun reloadDebate(debate: Debate, position: Int) {
+//        debateAdapter.response.debates.set(position, debate)
+//        debateAdapter.notifyItemChanged(position)
+    }
+
 
 }

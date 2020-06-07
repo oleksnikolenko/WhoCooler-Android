@@ -1,10 +1,14 @@
 package com.example.whocooler.DebateList
 
+import android.animation.LayoutTransition
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -22,8 +26,8 @@ import com.squareup.picasso.Picasso
 
 
 class DebateListAdapter(
-    val response: DebatesResponse,
-    val voteClick: (Debate, DebateSide) -> Unit,
+    var response: DebatesResponse,
+    val voteClick: (Debate, DebateSide, Int) -> Unit,
     val debateClick: (Debate) -> Unit
 ) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
 
@@ -33,51 +37,67 @@ class DebateListAdapter(
         private val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.right_image)
         private val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.vote_container)
 
-//        val leftSideButton = itemView.findViewById<ToggleButton>(R.id.listLeftSideButton)
-//        val rightSideImage = itemView?.findViewById<ImageView>(R.id.listRightSideImage)
-//        val rightSideButton = itemView?.findViewById<ToggleButton>(R.id.listRightSideButton)
-//        val votesCounter = itemView?.findViewById<TextView>(R.id.listVotesCounter)
-//        val messageCounter = itemView?.findViewById<TextView>(R.id.listMessageCounter)
-//        val debateInfoView = itemView?.findViewById<LinearLayout>(R.id.listInfoView)
+        val votesCounter = itemView?.findViewById<MaterialTextView>(R.id.listVotesCounter)
+        val messageCounter = itemView?.findViewById<MaterialTextView>(R.id.listMessageCounter)
 
         fun bindDebate(debate: Debate) {
-            category.text = debate.category.name
             Picasso.get().load(debate.leftSide.image).into(leftSideImage)
             Picasso.get().load(debate.rightSide.image).into(rightSideImage)
-            voteContainer.acceptModel(
-                VoteContainerModel(
-                    leftName = debate.leftSide.name,
-                    rightName = debate.rightSide.name,
-                    leftVote = debate.leftSide.ratingCount,
-                    rightVote = debate.rightSide.ratingCount
-                )
-            )
 
-//            leftSideButton?.text = debate.leftSide.name
-//            rightSideButton?.text = debate.rightSide.name
-//            votesCounter?.text = debate.votesCount.toString()
-//            messageCounter?.text = debate.messageCount.toString()
+            category.text = debate.category.name
+            voteContainer.acceptModel(VoteContainerModel(debate = debate))
+            votesCounter.text = debate.votesCount.toString()
+            messageCounter.text = debate.messageCount.toString()
 
-//            leftSideButton?.setOnClickListener {
-//                voteClick(debate, debate.leftSide)
-//            }
-//
-//            rightSideButton?.setOnClickListener {
-//                voteClick(debate, debate.rightSide)
-//            }
-//
-//            rightSideImage?.setOnClickListener {
-//                debateClick(debate)
-//            }
-//
-//            leftSideImage?.setOnClickListener {
-//                debateClick(debate)
-//            }
-//
-//            debateInfoView?.setOnClickListener {
-//                debateClick(debate)
-//            }
+            voteContainer.leftClicked = {
+                voteClick(debate, debate.leftSide, adapterPosition)
+                voteContainer.acceptModel(VoteContainerModel(debate = reloadVoteButton(adapterPosition, debate.leftSide)), true)
+            }
+
+            voteContainer.rightClicked = {
+                voteClick(debate, debate.rightSide, adapterPosition)
+                voteContainer.acceptModel(VoteContainerModel(debate = reloadVoteButton(adapterPosition, debate.rightSide)), true)
+            }
         }
+    }
+
+    private fun reloadVoteButton(position: Int, side: DebateSide): Debate {
+        val currentLeftSide = response.debates[position].leftSide
+        val currentRightSide = response.debates[position].rightSide
+
+        if (currentLeftSide.id == side.id) {
+            if (currentLeftSide.isVotedByUser) {
+                response.debates[position].leftSide.isVotedByUser = false
+                response.debates[position].leftSide.ratingCount -= 1
+                response.debates[position].votesCount -= 1
+            } else if (currentRightSide.isVotedByUser) {
+                response.debates[position].leftSide.isVotedByUser = true
+                response.debates[position].leftSide.ratingCount += 1
+
+                response.debates[position].rightSide.isVotedByUser = false
+                response.debates[position].rightSide.ratingCount -= 1
+            } else {
+                response.debates[position].leftSide.isVotedByUser = true
+                response.debates[position].leftSide.ratingCount += 1
+            }
+        } else {
+            if (currentRightSide.isVotedByUser) {
+                response.debates[position].rightSide.isVotedByUser = false
+                response.debates[position].rightSide.ratingCount -= 1
+                response.debates[position].votesCount -= 1
+            } else if (currentLeftSide.isVotedByUser) {
+                response.debates[position].rightSide.isVotedByUser = true
+                response.debates[position].rightSide.ratingCount += 1
+
+                response.debates[position].leftSide.isVotedByUser = false
+                response.debates[position].leftSide.ratingCount -= 1
+            } else {
+                response.debates[position].rightSide.isVotedByUser = true
+                response.debates[position].rightSide.ratingCount += 1
+            }
+        }
+
+        return response.debates[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -95,16 +115,23 @@ class DebateListAdapter(
                         RecyclerView.LayoutParams.MATCH_PARENT,
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     )
-                    updatePadding(top = parent.dip(12), bottom = parent.dip(12))
+                    updatePadding(
+                        left = parent.dip(12),
+                        top = parent.dip(12),
+                        bottom = parent.dip(12)
+                    )
                 }
             )
 
             addView(LinearLayout(parent.context).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
+                val customLayoutParams = LinearLayout.LayoutParams(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     RecyclerView.LayoutParams.WRAP_CONTENT
                 )
+                customLayoutParams.setMargins(dip(12), 0, dip(12), dip(20))
+
+                layoutParams = customLayoutParams
+                orientation = LinearLayout.HORIZONTAL
                 showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
                 dividerDrawable = GradientDrawable().apply {
                     setSize(parent.dip(1), 0)
@@ -140,12 +167,81 @@ class DebateListAdapter(
             })
             addView(VoteContainerWidget(parent.context).apply {
                 id = R.id.vote_container
-                updatePadding(
-                    top = parent.dip(16),
-                    left = parent.dip(16),
-                    right = parent.dip(16)
-                )
             })
+            addView(LinearLayout(parent.context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    dip(18)
+                ).apply {
+                    setMargins(0, dip(16), 0, 0)
+                }
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+
+                addView(AppCompatImageView(parent.context).apply {
+                    id = R.id.vote_counter_image
+                    layoutParams = LinearLayout.LayoutParams(
+                        parent.dip(18),
+                        parent.dip(18)
+                    ).apply {
+                        setImageResource(R.drawable.user)
+                    }
+                })
+                addView(MaterialTextView(parent.context).apply {
+                    id = R.id.listVotesCounter
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.WRAP_CONTENT,
+                        RecyclerView.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        setMargins(dip(10), 0, 0, 0)
+                        setTextColor(Color.BLACK)
+                    }
+                })
+                addView(AppCompatImageView(parent.context).apply {
+                    id = R.id.message_counter_image
+                    layoutParams = LinearLayout.LayoutParams(
+                        dip(18),
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        setMargins(dip(12), 0, 0, 0)
+                        setImageResource(R.drawable.message)
+                    }
+                })
+                addView(MaterialTextView(parent.context).apply {
+                    id = R.id.listMessageCounter
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.WRAP_CONTENT,
+                        RecyclerView.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        setMargins(dip(12), 0, 0, 0)
+                        setTextColor(Color.BLACK)
+                    }
+                })
+                addView(AppCompatImageView(parent.context).apply {
+                    id = R.id.favorites_image
+                    layoutParams = LinearLayout.LayoutParams(
+                        dip(18),
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        setMargins(dip(12), 0, 0, 0)
+                        setImageResource(R.drawable.non_filled_favorites)
+                    }
+                })
+            })
+
+            addView(LinearLayout(parent.context).apply {
+                val dividerLayoutParams = LinearLayout.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    parent.dip(1)
+                )
+                dividerLayoutParams.topMargin = 40
+
+                layoutParams = dividerLayoutParams
+
+                setBackgroundColor(Color.LTGRAY)
+            })
+
+            refreshDrawableState()
         }
 
         return ViewHolder(container)
@@ -158,4 +254,5 @@ class DebateListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindDebate(response.debates[position])
     }
+
 }
