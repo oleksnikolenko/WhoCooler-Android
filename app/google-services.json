@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "264606055840",
+    "firebase_url": "https://debates-rest-api-29faa.firebaseio.com",
+    "project_id": "debates-rest-api-29faa",
+    "storage_bucket": "debates-rest-api-29faa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264606055840:android:a35e896fd7e10cf25678c5",
+        "android_client_info": {
+          "package_name": "com.example.whocooler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264606055840-rb2r6ip1gn2c59c226e54utidb4rkd4j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.whocooler",
+            "certificate_hash": "ea60a8da270c0a0a83aa295371a68325cfd45a20"
+          }
+        },
+        {
+          "client_id": "264606055840-7h8n7a9avp4bo8idiidlbq033ec9dfpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFJERC6vGW_Rf8yD6acqlncYpcxgE1aL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264606055840-7h8n7a9avp4bo8idiidlbq033ec9dfpb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264606055840-7lfltdua20v1klju90bbhf6f91mv6p5e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.oleksnikolenko.whoCooler"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264606055840:android:cf368bb3382562e95678c5",
+        "android_client_info": {
+          "package_name": "com.whocooler.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264606055840-7h8n7a9avp4bo8idiidlbq033ec9dfpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFJERC6vGW_Rf8yD6acqlncYpcxgE1aL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264606055840-7h8n7a9avp4bo8idiidlbq033ec9dfpb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264606055840-7lfltdua20v1klju90bbhf6f91mv6p5e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.oleksnikolenko.whoCooler"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -58,8 +58,8 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@color/cardview_light_background" />
-            <corners android:radius="10dp" />
+            <solid android:color="@color/cardview_light_background"/>
+            <corners android:radius="10dp"/>
         </shape>
     </item>
 </layer-list>

@@ -2,5 +2,5 @@
     <string name="app_name">WhoCooler</string>
     <string name="percent">%s%%,</string>
     <string name="vote">%s votes</string>
-    <string name="auth_info">Please log in to vote and comment on Whocooler</string>
+    <string name="auth_info">Please log in to vote and comment on WhoCooler</string>
 </resources>

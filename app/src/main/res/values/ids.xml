@@ -10,4 +10,5 @@
     <item name="vote_counter_image" type="id"/>
     <item name="message_counter_image" type="id"/>
     <item name="favorites_image" type="id"/>
+    <item name="category_list_text" type="id"/>
 </resources>

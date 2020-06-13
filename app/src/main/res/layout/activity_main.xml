@@ -13,15 +13,19 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/listToolBar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:layout_scrollFlags="noScroll"/>
+            android:layout_height="45dp"
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listCategoriesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:layout_height="35dp"
+            android:background="#FFFFFF"
+            android:orientation="horizontal"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:reverseLayout="true" />
 
-        </androidx.appcompat.widget.AppCompatTextView>
+<!--        </androidx.appcompat.widget.AppCompatTextView>-->
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
