@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
@@ -13,28 +14,75 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/listToolBar"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/toolbar_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/profile"
+                    android:gravity="right|center_vertical"
+                    android:minWidth="28dp"
+                    android:minHeight="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="start"
+                    android:gravity="left|center_vertical"
+                    android:padding="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="ABC" />
+
+                <TextView
+                    android:id="@+id/toolbar_sorting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:text="TextView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/toolbar_profile"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listCategoriesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="#FFFFFF"
+            android:clipToPadding="false"
             android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="4dp"
             app:layout_scrollFlags="scroll|enterAlways"
             app:reverseLayout="true" />
 
-<!--        </androidx.appcompat.widget.AppCompatTextView>-->
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="658dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

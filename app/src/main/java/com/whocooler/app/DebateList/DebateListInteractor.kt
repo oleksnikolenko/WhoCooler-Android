@@ -1,9 +1,12 @@
 package com.whocooler.app.DebateList
 
+import android.database.Observable
 import android.util.Log
 import com.whocooler.app.Common.Models.Category
+import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebateListInteractor : DebateListContracts.ViewInteractorContract {
 
@@ -18,7 +21,6 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
     override fun getDebates(request: DebateListModels.DebateListRequest) {
         categoryId = request.categoryId
         selectedSorting = request.selectedSorting
-        Log.d("CATEGORY_ID", categoryId)
         worker.getDebates(1, categoryId, selectedSorting).subscribeBy(
             onNext = {response ->
                 this.response = response
@@ -29,9 +31,12 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         )
     }
 
-    override fun vote(debateId: String, sideId: String, position: Int) {
+    override fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate> {
+        val responseSubject = PublishSubject.create<Debate>()
         worker.vote(debateId, sideId).subscribe {response ->
+            responseSubject.onNext(response.debate)
         }
+        return responseSubject
     }
 
 

@@ -3,13 +3,14 @@ package com.whocooler.app.DebateList
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebateListContracts {
 
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
         fun getDebates(request: DebateListModels.DebateListRequest)
-        fun vote(debateId: String, sideId: String, position: Int)
+        fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate>
     }
 
     interface InteractorPresenterContract {
@@ -28,7 +29,7 @@ class DebateListContracts {
     // Router
 
     interface RouterInterface {
-        fun navigateToDebate(debate: Debate)
+        fun navigateToDebate(debate: Debate, position: Int)
         fun navigateToAuthorization()
         fun navigateToUserProfile()
     }

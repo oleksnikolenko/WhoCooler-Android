@@ -62,7 +62,7 @@ class DebateListCategoryAdapter(
                 setMargins(parent.dip(2), 0, parent.dip(2), 0)
             }
 
-            updatePadding(dip(12), dip(5), dip(12), dip(5))
+            updatePadding(dip(12), dip(4), dip(12), dip(4))
             addView(
                 MaterialTextView(parent.context).apply {
                     id = R.id.category_list_text

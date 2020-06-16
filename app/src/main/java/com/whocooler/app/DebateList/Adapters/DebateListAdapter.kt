@@ -21,12 +21,13 @@ import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
 import com.whocooler.app.R
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 
 class DebateListAdapter(
     var response: DebatesResponse,
-    val voteClick: (Debate, DebateSide, Int) -> Unit,
-    val debateClick: (Debate) -> Unit,
+    val voteClick: (Debate, DebateSide, Int) -> PublishSubject<Debate>,
+    val debateClick: (Debate, Int) -> Unit,
     val authRequired: () -> Unit
 ) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
 
@@ -35,9 +36,8 @@ class DebateListAdapter(
         private val leftSideImage: AppCompatImageView = itemView.findViewById(R.id.left_image)
         private val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.right_image)
         private val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.vote_container)
-
-        val votesCounter = itemView?.findViewById<MaterialTextView>(R.id.listVotesCounter)
-        val messageCounter = itemView?.findViewById<MaterialTextView>(R.id.listMessageCounter)
+        private val votesCounter: MaterialTextView = itemView?.findViewById(R.id.listVotesCounter)
+        private val messageCounter: MaterialTextView = itemView?.findViewById(R.id.listMessageCounter)
 
         fun bindDebate(debate: Debate) {
             Picasso.get().load(debate.leftSide.image).into(leftSideImage)
@@ -48,12 +48,21 @@ class DebateListAdapter(
             votesCounter.text = debate.votesCount.toString()
             messageCounter.text = debate.messageCount.toString()
 
+            leftSideImage.setOnClickListener {
+                debateClick(debate, adapterPosition)
+            }
+
+            rightSideImage.setOnClickListener {
+                debateClick(debate, adapterPosition)
+            }
+
             voteContainer.leftClicked = {
                 if (App.prefs.isTokenEmpty()) {
                     authRequired()
                 } else {
-                    voteClick(debate, debate.leftSide, adapterPosition)
-                    voteContainer.acceptModel(VoteContainerModel(debate = reloadVoteButton(adapterPosition, debate.leftSide)), true)
+                    voteClick(debate, debate.leftSide, adapterPosition).subscribe {
+                        voteContainer.acceptModel(VoteContainerModel(debate = it), true)
+                    }
                 }
             }
 
@@ -61,51 +70,12 @@ class DebateListAdapter(
                 if (App.prefs.isTokenEmpty()) {
                     authRequired()
                 } else {
-                    voteClick(debate, debate.rightSide, adapterPosition)
-                    voteContainer.acceptModel(VoteContainerModel(debate = reloadVoteButton(adapterPosition, debate.rightSide)), true)
+                    voteClick(debate, debate.rightSide, adapterPosition).subscribe {
+                        voteContainer.acceptModel(VoteContainerModel(debate = it), true)
+                    }
                 }
-
             }
         }
-    }
-
-    private fun reloadVoteButton(position: Int, side: DebateSide): Debate {
-        val currentLeftSide = response.debates[position].leftSide
-        val currentRightSide = response.debates[position].rightSide
-
-        if (currentLeftSide.id == side.id) {
-            if (currentLeftSide.isVotedByUser) {
-                response.debates[position].leftSide.isVotedByUser = false
-                response.debates[position].leftSide.ratingCount -= 1
-                response.debates[position].votesCount -= 1
-            } else if (currentRightSide.isVotedByUser) {
-                response.debates[position].leftSide.isVotedByUser = true
-                response.debates[position].leftSide.ratingCount += 1
-
-                response.debates[position].rightSide.isVotedByUser = false
-                response.debates[position].rightSide.ratingCount -= 1
-            } else {
-                response.debates[position].leftSide.isVotedByUser = true
-                response.debates[position].leftSide.ratingCount += 1
-            }
-        } else {
-            if (currentRightSide.isVotedByUser) {
-                response.debates[position].rightSide.isVotedByUser = false
-                response.debates[position].rightSide.ratingCount -= 1
-                response.debates[position].votesCount -= 1
-            } else if (currentLeftSide.isVotedByUser) {
-                response.debates[position].rightSide.isVotedByUser = true
-                response.debates[position].rightSide.ratingCount += 1
-
-                response.debates[position].leftSide.isVotedByUser = false
-                response.debates[position].leftSide.ratingCount -= 1
-            } else {
-                response.debates[position].rightSide.isVotedByUser = true
-                response.debates[position].rightSide.ratingCount += 1
-            }
-        }
-
-        return response.debates[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -7,14 +7,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.whocooler.app.Common.App.App"
+        android:name=".Common.App.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.whocooler.app.DebateList.DebateListActivity" android:screenOrientation="portrait"
+        <activity
+            android:name=".DebateDetail.DebateDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"></activity>
+        <activity
+            android:name=".DebateList.DebateListActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,9 +28,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.whocooler.app.DebateDetail.DebateDetailActivity" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity"/>
-        <activity android:name="com.whocooler.app.Authorization.AuhtorizationActivity" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity"/>
-        <activity android:name="com.whocooler.app.UserProfile.UserProfileActivity" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Authorization.AuhtorizationActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".UserProfile.UserProfileActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>

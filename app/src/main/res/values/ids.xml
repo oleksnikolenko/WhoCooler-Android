@@ -11,4 +11,25 @@
     <item name="message_counter_image" type="id"/>
     <item name="favorites_image" type="id"/>
     <item name="category_list_text" type="id"/>
+    <item name="detail_left_image" type="id" />
+    <item name="detail_right_image" type="id" />
+    <item name="detail_vote_container" type="id" />
+    <item name="detail_vote_counter_image" type="id" />
+    <item name="detail_listVotesCounter" type="id" />
+    <item name="detail_message_counter_image" type="id" />
+    <item name="detail_listMessageCounter" type="id" />
+    <item name="detail_category_id" type="id" />
+    <item name="detail_message_avatar" type="id" />
+    <item name="detail_user_name" type="id" />
+    <item name="detail_message_header" type="id" />
+    <item name="detail_message_header_counter" type="id" />
+    <item name="message_constraint_layout" type="id" />
+    <item name="detail_message_show_replies" type="id" />
+    <item name="detail_message_reply" type="id" />
+    <item name="reply_constraint_layout" type="id" />
+    <item name="detail_reply_avatar" type="id" />
+    <item name="detail_reply_user_name" type="id" />
+    <item name="detail_reply_date" type="id" />
+    <item name="detail_reply_text" type="id" />
+    <item name="detail_reply_reply" type="id" />
 </resources>

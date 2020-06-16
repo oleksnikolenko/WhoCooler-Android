@@ -12,9 +12,10 @@ class DebateListRouter : DebateListContracts.RouterInterface {
 
     var activity: DebateListActivity? = null
 
-    override fun navigateToDebate(debate: Debate) {
+    override fun navigateToDebate(debate: Debate, position: Int) {
         val debateDetailIntent = Intent(activity, DebateDetailActivity::class.java)
         debateDetailIntent.putExtra(EXTRA_DEBATE, debate)
+        debateDetailIntent.putExtra("DEBATE_POSITION", position)
         activity?.startActivity(debateDetailIntent)
     }
 
