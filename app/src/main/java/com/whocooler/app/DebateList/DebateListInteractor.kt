@@ -5,6 +5,7 @@ import android.util.Log
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.Common.Services.DebateService
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -35,10 +36,9 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         val responseSubject = PublishSubject.create<Debate>()
         worker.vote(debateId, sideId).subscribe {response ->
             responseSubject.onNext(response.debate)
+            DebateService.debates.set(position, response.debate)
         }
         return responseSubject
     }
-
-
 
 }

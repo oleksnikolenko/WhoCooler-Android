@@ -18,6 +18,10 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
         this.debate = debate
 
         presenter?.presentDebate(debate)
+
+        worker.getDebate(debate.id).subscribe {
+            presenter?.presentDebate(debate)
+        }
     }
 
     override fun handleSend(text: String, threadId: String?, editedMessage: Message?, index: Int?) {

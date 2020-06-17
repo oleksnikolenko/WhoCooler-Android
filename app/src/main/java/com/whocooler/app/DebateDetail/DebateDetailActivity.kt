@@ -14,6 +14,7 @@ import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.Message
 import com.whocooler.app.Common.Services.DebateService
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
+import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_debate_detail.*
@@ -52,7 +53,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         setContentView(R.layout.activity_debate_detail)
 
         debate = intent.getParcelableExtra<Debate>(EXTRA_DEBATE)
-        debatePosition = intent.getIntExtra("DEBATE_POSITION", debatePosition)
+        debatePosition = intent.getIntExtra(EXTRA_DEBATE_POSITION, debatePosition)
         interactor.initDebate(debate)
         setupSendMessageOnClickListener()
     }
@@ -85,8 +86,6 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(detail_edit_text, InputMethodManager.SHOW_IMPLICIT)
-
-            println("?!?!DIDCLICK REPLY $inputParentIndex")
         }
 
         debateDetailAdapter = DebateDetailAdapter(this,

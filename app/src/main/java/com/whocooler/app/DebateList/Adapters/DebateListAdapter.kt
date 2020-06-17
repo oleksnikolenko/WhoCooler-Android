@@ -25,7 +25,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 
 
 class DebateListAdapter(
-    var response: DebatesResponse,
+    var debates: ArrayList<Debate>,
     val voteClick: (Debate, DebateSide, Int) -> PublishSubject<Debate>,
     val debateClick: (Debate, Int) -> Unit,
     val authRequired: () -> Unit
@@ -216,11 +216,11 @@ class DebateListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return response.debates.count()
+        return debates.count()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindDebate(response.debates[position])
+        holder.bindDebate(debates[position])
     }
 
 }

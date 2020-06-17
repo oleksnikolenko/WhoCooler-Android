@@ -5,7 +5,9 @@ import com.whocooler.app.Authorization.AuhtorizationActivity
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
+import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
 import com.whocooler.app.DebateDetail.DebateDetailActivity
+import com.whocooler.app.Search.SearchActivity
 import com.whocooler.app.UserProfile.UserProfileActivity
 
 class DebateListRouter : DebateListContracts.RouterInterface {
@@ -15,7 +17,7 @@ class DebateListRouter : DebateListContracts.RouterInterface {
     override fun navigateToDebate(debate: Debate, position: Int) {
         val debateDetailIntent = Intent(activity, DebateDetailActivity::class.java)
         debateDetailIntent.putExtra(EXTRA_DEBATE, debate)
-        debateDetailIntent.putExtra("DEBATE_POSITION", position)
+        debateDetailIntent.putExtra(EXTRA_DEBATE_POSITION, position)
         activity?.startActivity(debateDetailIntent)
     }
 
@@ -31,5 +33,10 @@ class DebateListRouter : DebateListContracts.RouterInterface {
             val authItent = Intent(activity, UserProfileActivity:: class.java)
             activity?.startActivity(authItent)
         }
+    }
+
+    override fun navigateToSearch() {
+        val searchIntent = Intent(activity, SearchActivity:: class.java)
+        activity?.startActivity(searchIntent)
     }
 }

@@ -18,11 +18,16 @@ class DebateDetailWorker {
     fun getDebate(id: String) : PublishSubject<Debate> {
         var responseSubject = PublishSubject.create<Debate>()
 
-        val debateRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "debate?debate_id=$id", null, Response.Listener {
-
+        val debateRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "debate?debate_id=$id", null, Response.Listener {response->
+            val response = Gson().fromJson(response.toString(), Debate :: class.java)
+            responseSubject.onNext(response)
         }, Response.ErrorListener {
-            Log.d("RESPONSE ERROR ", "Error" + it.localizedMessage)
+            Log.d("?!?!! RESPONSE ERROR ", "Error" + it.localizedMessage)
         }) {
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
+            }
+
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 var token = App.prefs.userSession?.accessToken
@@ -30,10 +35,6 @@ class DebateDetailWorker {
                     headers.put("Authorization", "Bearer " + token)
                 }
                 return headers
-            }
-
-            override fun getBodyContentType(): String {
-                return "application/json; charset=utf-8"
             }
         }
 

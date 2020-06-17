@@ -36,7 +36,6 @@ class DebateListWorker {
                 }
                 return headers
             }
-
         }
 
         App.prefs.requestQueue.add(debatesRequest)

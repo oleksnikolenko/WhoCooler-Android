@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
@@ -77,6 +78,12 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         toolbarSorting.setOnClickListener {
             showSortingAlert()
         }
+
+        var searchButton = toolbar.findViewById<ImageButton>(R.id.toolbar_search)
+        searchButton.setOnClickListener {
+            reloadPosition = null
+            router?.navigateToSearch()
+        }
     }
 
     private fun showSortingAlert() {
@@ -104,7 +111,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun setupCategoryAdapter(categories: ArrayList<Category>) {
         val categoryClickHandler: (Category) -> Unit = { category ->
-            debateAdapter.response.debates.clear()
+            debateAdapter.debates.clear()
             debateAdapter.notifyDataSetChanged()
             selectedCategoryId = category.id
             interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
@@ -124,7 +131,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
-            router?.navigateToDebate(debate, adapterPosition)
+            router?.navigateToDebate(DebateService.debates[adapterPosition], adapterPosition)
         }
 
         val authRequiredHandler: () -> Unit = {
@@ -133,7 +140,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         debateAdapter =
             DebateListAdapter(
-                response,
+                response.debates,
                 voteClickHandler,
                 debateClickHandler,
                 authRequiredHandler
@@ -150,7 +157,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         super.onRestart()
 
         if (reloadPosition != null)  {
-            debateAdapter.response.debates = DebateService.debates
+            debateAdapter.debates = DebateService.debates
             debateAdapter.notifyItemChanged(reloadPosition!!)
         } else {
             interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
