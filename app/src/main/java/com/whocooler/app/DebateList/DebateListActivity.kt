@@ -1,17 +1,10 @@
 package com.whocooler.app.DebateList
 
-import android.content.DialogInterface
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +13,6 @@ import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Services.DebateService
-import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.DebateList.Adapters.DebateListCategoryAdapter
 import com.whocooler.app.R
@@ -46,8 +38,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         activity.interactor = interactor
         activity.router = router
-        interactor.output = presenter
-        presenter.output = activity
+        interactor.presenter = presenter
+        presenter.activity = activity
         router.activity = activity
     }
 
@@ -138,12 +130,18 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             router?.navigateToAuthorization()
         }
 
+        val toggleFavoritesHandler: (Debate) -> Unit = {debate->
+            interactor?.toggleFavorites(debate)
+        }
+
         debateAdapter =
             DebateListAdapter(
                 response.debates,
                 voteClickHandler,
                 debateClickHandler,
-                authRequiredHandler
+                authRequiredHandler,
+                toggleFavoritesHandler,
+                true
             )
 
         debateAdapter.notifyDataSetChanged()
@@ -162,5 +160,9 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         } else {
             interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
         }
+    }
+
+    override fun updateDebateDataSource() {
+        debateAdapter.update(DebateService.debates)
     }
 }

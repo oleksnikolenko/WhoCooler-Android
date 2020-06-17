@@ -9,6 +9,8 @@ import com.whocooler.app.Common.Models.DebateVoteResponse
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Utilities.BASE_URL
 import com.google.gson.Gson
+import com.whocooler.app.Common.Models.Debate
+import com.whocooler.app.Common.Models.Empty
 import io.reactivex.rxjava3.subjects.PublishSubject
 import org.json.JSONObject
 
@@ -76,6 +78,70 @@ class DebateListWorker {
         }
 
         App.prefs.requestQueue.add(voteRequest)
+
+        return responseSubject
+    }
+
+    fun addToFavorites(debate: Debate) : PublishSubject<Empty> {
+        val responseSubject = PublishSubject.create<Empty>()
+
+        val jsonBody = JSONObject()
+        jsonBody.put("debate_id", debate.id)
+
+        val addFavoritesRequest = object : JsonObjectRequest(Method.POST, BASE_URL + "favorites", null, Response.Listener {
+            val emptyCallback = Gson().fromJson(it.toString(), Empty :: class.java)
+
+            responseSubject.onNext(emptyCallback)
+        }, Response.ErrorListener {
+            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+        }) {
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
+            }
+            override fun getBody(): ByteArray {
+                return jsonBody.toString().toByteArray()
+            }
+
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                var token = App.prefs.userSession?.accessToken
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token)
+                }
+                return headers
+            }
+        }
+
+        App.prefs.requestQueue.add(addFavoritesRequest)
+
+        return responseSubject
+    }
+
+    fun deleteFromFavorites(debate: Debate) : PublishSubject<Empty> {
+        val responseSubject = PublishSubject.create<Empty>()
+
+        val deleteFavoritesRequest = object : JsonObjectRequest(Method.DELETE, BASE_URL + "favorites?debate_id=${debate.id}", null, Response.Listener {
+            val emptyCallback = Gson().fromJson(it.toString(), Empty :: class.java)
+
+            responseSubject.onNext(emptyCallback)
+        }, Response.ErrorListener {
+            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+        }) {
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
+            }
+
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                var token = App.prefs.userSession?.accessToken
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token)
+                }
+                return headers
+            }
+        }
+
+        App.prefs.requestQueue.add(deleteFavoritesRequest)
 
         return responseSubject
     }

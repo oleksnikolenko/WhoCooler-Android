@@ -1,6 +1,5 @@
 package com.whocooler.app.DebateList
 
-import android.database.Observable
 import android.util.Log
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
@@ -11,7 +10,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebateListInteractor : DebateListContracts.ViewInteractorContract {
 
-    var output: DebateListContracts.InteractorPresenterContract? = null
+    var presenter: DebateListContracts.InteractorPresenterContract? = null
     val worker = DebateListWorker()
 
     private var page = 1
@@ -25,7 +24,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         worker.getDebates(1, categoryId, selectedSorting).subscribeBy(
             onNext = {response ->
                 this.response = response
-                output?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
+                presenter?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
             }, onError = {
                 Log.d("ERROR", it.localizedMessage)
             }
@@ -39,6 +38,28 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
             DebateService.debates.set(position, response.debate)
         }
         return responseSubject
+    }
+
+    override fun toggleFavorites(debate: Debate) {
+        if (!debate.isFavorite) {
+            addToFavorites(debate)
+        } else {
+            deleteFromFavorites(debate)
+        }
+    }
+
+    private fun addToFavorites(debate: Debate) {
+        worker.addToFavorites(debate).subscribe {
+            DebateService.toggleFavorite(debate)
+            presenter?.updateDebateDataSource()
+        }
+    }
+
+    private fun deleteFromFavorites(debate: Debate) {
+        worker.deleteFromFavorites(debate).subscribe {
+            DebateService.toggleFavorite(debate)
+            presenter?.updateDebateDataSource()
+        }
     }
 
 }

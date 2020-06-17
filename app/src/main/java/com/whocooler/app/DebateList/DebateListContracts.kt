@@ -11,11 +11,13 @@ class DebateListContracts {
         // Functions for View output / Interactor input
         fun getDebates(request: DebateListModels.DebateListRequest)
         fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate>
+        fun toggleFavorites(debate: Debate)
     }
 
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun presentDebates(response: DebatesResponse, shouldReloadCategories: Boolean)
+        fun updateDebateDataSource()
     }
 
     // Presenter -> View
@@ -24,6 +26,7 @@ class DebateListContracts {
         // Functions for Presenter output / View input
         fun setupDebateAdapter(response: DebatesResponse)
         fun setupCategoryAdapter(categories: ArrayList<Category>)
+        fun updateDebateDataSource()
     }
 
     // Router

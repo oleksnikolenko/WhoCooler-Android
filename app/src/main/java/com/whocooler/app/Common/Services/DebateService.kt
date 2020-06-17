@@ -9,4 +9,9 @@ object DebateService {
         var currentDebate = debates.filter { it.id == debate.id }.first()
         debates[debates.indexOf(currentDebate)] = debate
     }
+
+    fun toggleFavorite(debate: Debate) {
+        var debate = debates.filter { it.id == debate.id }.first()
+        debates[debates.indexOf(debate)].isFavorite = !debates[debates.indexOf(debate)].isFavorite
+    }
 }

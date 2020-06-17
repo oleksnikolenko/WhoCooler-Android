@@ -32,4 +32,5 @@
     <item name="detail_reply_date" type="id" />
     <item name="detail_reply_text" type="id" />
     <item name="detail_reply_reply" type="id" />
+    <item name="detail_favorites" type="id" />
 </resources>

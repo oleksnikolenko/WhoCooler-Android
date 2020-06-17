@@ -28,7 +28,9 @@ class DebateListAdapter(
     var debates: ArrayList<Debate>,
     val voteClick: (Debate, DebateSide, Int) -> PublishSubject<Debate>,
     val debateClick: (Debate, Int) -> Unit,
-    val authRequired: () -> Unit
+    val authRequired: () -> Unit,
+    val toggleFavorites: ((Debate) -> Unit)? = null,
+    val shouldShowDebateInfo: Boolean = false
 ) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,17 +38,33 @@ class DebateListAdapter(
         private val leftSideImage: AppCompatImageView = itemView.findViewById(R.id.left_image)
         private val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.right_image)
         private val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.vote_container)
-        private val votesCounter: MaterialTextView = itemView?.findViewById(R.id.listVotesCounter)
-        private val messageCounter: MaterialTextView = itemView?.findViewById(R.id.listMessageCounter)
+        private val votesCounter: MaterialTextView?= itemView?.findViewById(R.id.listVotesCounter)
+        private val messageCounter: MaterialTextView? = itemView?.findViewById(R.id.listMessageCounter)
+        private val favorites: AppCompatImageView? = itemView?.findViewById(R.id.detail_favorites)
 
         fun bindDebate(debate: Debate) {
             Picasso.get().load(debate.leftSide.image).into(leftSideImage)
             Picasso.get().load(debate.rightSide.image).into(rightSideImage)
 
             category.text = debate.category.name
+
+            if (shouldShowDebateInfo == true) {
+                votesCounter?.text = debate.votesCount.toString()
+                messageCounter?.text = debate.messageCount.toString()
+
+                if (debate.isFavorite) {
+                    favorites?.setImageResource(R.drawable.filled_favorites)
+                } else {
+                    favorites?.setImageResource(R.drawable.non_filled_favorites)
+                }
+
+                favorites?.setOnClickListener {
+                    toggleFavorites?.let {
+                        it(debate)
+                    }
+                }
+            }
             voteContainer.acceptModel(VoteContainerModel(debate = debate))
-            votesCounter.text = debate.votesCount.toString()
-            messageCounter.text = debate.messageCount.toString()
 
             leftSideImage.setOnClickListener {
                 debateClick(debate, adapterPosition)
@@ -146,57 +164,67 @@ class DebateListAdapter(
             addView(VoteContainerWidget(parent.context).apply {
                 id = R.id.vote_container
             })
-            addView(LinearLayout(parent.context).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    dip(18)
-                ).apply {
-                    setMargins(0, dip(16), 0, 0)
-                }
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
+            if (shouldShowDebateInfo == true) {
+                addView(LinearLayout(parent.context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        dip(18)
+                    ).apply {
+                        setMargins(0, dip(16), 0, 0)
+                    }
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
 
-                addView(AppCompatImageView(parent.context).apply {
-                    id = R.id.vote_counter_image
-                    layoutParams = LinearLayout.LayoutParams(
-                        parent.dip(18),
-                        parent.dip(18)
-                    ).apply {
-                        setImageResource(R.drawable.user)
-                    }
+                    addView(AppCompatImageView(parent.context).apply {
+                        id = R.id.vote_counter_image
+                        layoutParams = LinearLayout.LayoutParams(
+                            parent.dip(18),
+                            parent.dip(18)
+                        ).apply {
+                            setImageResource(R.drawable.user)
+                        }
+                    })
+                    addView(MaterialTextView(parent.context).apply {
+                        id = R.id.listVotesCounter
+                        layoutParams = LinearLayout.LayoutParams(
+                            RecyclerView.LayoutParams.WRAP_CONTENT,
+                            RecyclerView.LayoutParams.MATCH_PARENT
+                        ).apply {
+                            setMargins(dip(10), 0, 0, 0)
+                            setTextColor(Color.BLACK)
+                        }
+                    })
+                    addView(AppCompatImageView(parent.context).apply {
+                        id = R.id.message_counter_image
+                        layoutParams = LinearLayout.LayoutParams(
+                            dip(18),
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                        ).apply {
+                            setMargins(dip(12), 0, 0, 0)
+                            setImageResource(R.drawable.message)
+                        }
+                    })
+                    addView(MaterialTextView(parent.context).apply {
+                        id = R.id.listMessageCounter
+                        layoutParams = LinearLayout.LayoutParams(
+                            RecyclerView.LayoutParams.WRAP_CONTENT,
+                            RecyclerView.LayoutParams.MATCH_PARENT
+                        ).apply {
+                            setMargins(dip(12), 0, 0, 0)
+                            setTextColor(Color.BLACK)
+                        }
+                    })
+                    addView(AppCompatImageView(parent.context).apply {
+                        id = R.id.detail_favorites
+                        layoutParams = LinearLayout.LayoutParams(
+                            dip(18),
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                        ).apply {
+                            setMargins(dip(12), 0, 0, 0)
+                        }
+                    })
                 })
-                addView(MaterialTextView(parent.context).apply {
-                    id = R.id.listVotesCounter
-                    layoutParams = LinearLayout.LayoutParams(
-                        RecyclerView.LayoutParams.WRAP_CONTENT,
-                        RecyclerView.LayoutParams.MATCH_PARENT
-                    ).apply {
-                        setMargins(dip(10), 0, 0, 0)
-                        setTextColor(Color.BLACK)
-                    }
-                })
-                addView(AppCompatImageView(parent.context).apply {
-                    id = R.id.message_counter_image
-                    layoutParams = LinearLayout.LayoutParams(
-                        dip(18),
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                    ).apply {
-                        setMargins(dip(12), 0, 0, 0)
-                        setImageResource(R.drawable.message)
-                    }
-                })
-                addView(MaterialTextView(parent.context).apply {
-                    id = R.id.listMessageCounter
-                    layoutParams = LinearLayout.LayoutParams(
-                        RecyclerView.LayoutParams.WRAP_CONTENT,
-                        RecyclerView.LayoutParams.MATCH_PARENT
-                    ).apply {
-                        setMargins(dip(12), 0, 0, 0)
-                        setTextColor(Color.BLACK)
-                    }
-                })
-            })
-
+            }
             addView(LinearLayout(parent.context).apply {
                 val dividerLayoutParams = LinearLayout.LayoutParams(
                     RecyclerView.LayoutParams.MATCH_PARENT,
@@ -221,6 +249,11 @@ class DebateListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindDebate(debates[position])
+    }
+
+    fun update(debates: ArrayList<Debate>) {
+        this.debates = debates
+        notifyDataSetChanged()
     }
 
 }

@@ -53,13 +53,13 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
+                if (newText.count() > 2) {
+                    interactor?.search(newText, 1)
+                }
                 return false
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                if (query.count() > 2) {
-                    interactor?.search(query, 1)
-                }
                 return false
             }
         })
