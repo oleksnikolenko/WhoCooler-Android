@@ -1,6 +1,7 @@
 package com.whocooler.app.UserProfile
 
 import com.whocooler.app.Common.Models.User
+import java.io.ByteArrayOutputStream
 
 class UserProfileContracts {
 
@@ -8,6 +9,8 @@ class UserProfileContracts {
         // Functions for View output / Interactor input
         fun getProfile()
         fun logout()
+        fun updateUserName(newName: String)
+        fun updateUserAvatar(image: ByteArray)
     }
 
     interface InteractorPresenterContract {

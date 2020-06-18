@@ -11,10 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_change_avatar" />
 
     <TextView
         android:id="@+id/profile_name_txt"
@@ -36,31 +35,53 @@
         app:cardCornerRadius="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rounded_user_image"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/rounded_user_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY" />
     </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/user_profile_logout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="Button"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
         app:layout_constraintTop_toBottomOf="@+id/profile_privacy_policy" />
 
     <TextView
         android:id="@+id/profile_privacy_policy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:text="TextView"
+        android:textColor="#2196F3"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_name" />
+
+    <TextView
+        android:id="@+id/profile_change_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Edit avatar"
+        android:textColor="#2196F3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+    <TextView
+        android:id="@+id/profile_edit_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Edit name"
         android:textColor="#2196F3"
         app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
         app:layout_constraintTop_toBottomOf="@+id/profile_name_txt" />

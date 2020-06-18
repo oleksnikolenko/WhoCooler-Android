@@ -6,21 +6,35 @@ import com.google.firebase.ktx.Firebase
 
 class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
 
-    var output: UserProfileContracts.InteractorPresenterContract? = null
+    var presenter: UserProfileContracts.InteractorPresenterContract? = null
     var worker = UserProfileWorker()
 
     override fun getProfile() {
         val user = App.prefs.userSession?.user
         if (user != null) {
-            output?.presentProfile(user)
+            presenter?.presentProfile(user)
         }
-
     }
 
     override fun logout() {
         Firebase.auth.signOut()
         App.prefs.userSession = null
-        output?.navigateToAuth()
+        presenter?.navigateToAuth()
     }
+
+    override fun updateUserName(newName: String) {
+        worker.updateUserName(newName).subscribe {response->
+            App.prefs.userSession?.user = response.user
+            presenter?.presentProfile(response.user)
+        }
+    }
+
+    override fun updateUserAvatar(image: ByteArray) {
+        worker.updateUserAvatar(image).subscribe { response ->
+            App.prefs.userSession?.user = response.user
+            presenter?.presentProfile(response.user)
+        }
+    }
+
 
 }
