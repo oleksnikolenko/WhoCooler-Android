@@ -1,5 +1,6 @@
 package com.whocooler.app.Authorization
 
+import android.util.Log
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.whocooler.app.Common.App.App
@@ -26,7 +27,7 @@ class AuthorizationWorker {
                 val authResponse = Gson().fromJson(response.toString(), UserSession :: class.java)
                 responseSubject.onNext(authResponse)
             }, Response.ErrorListener {
-
+                Log.d("?!?!Authorize ERROR ", "ERROR" + it.networkResponse + it.localizedMessage)
             }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"

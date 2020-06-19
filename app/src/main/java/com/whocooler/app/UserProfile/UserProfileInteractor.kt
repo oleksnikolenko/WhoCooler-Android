@@ -1,5 +1,6 @@
 package com.whocooler.app.UserProfile
 
+import com.facebook.login.LoginManager
 import com.whocooler.app.Common.App.App
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -18,6 +19,7 @@ class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
 
     override fun logout() {
         Firebase.auth.signOut()
+        LoginManager.getInstance().logOut()
         App.prefs.userSession = null
         presenter?.navigateToAuth()
     }

@@ -2,14 +2,27 @@ package com.whocooler.app.Authorization
 
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.view.isVisible
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.whocooler.app.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -25,6 +38,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var facebookCallbackManager: CallbackManager
     lateinit var interactor: AuthorizationContracts.ViewInteractorContract
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +55,8 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
         setupModule()
         setupViews()
+
+        toggleProgressBar(false)
     }
 
     private fun setupModule() {
@@ -57,49 +73,69 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "Google SIGN IN SUCCEEDED:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google SIGN IN FAILED ", e)
             }
+        } else {
+            facebookCallbackManager?.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     // [START auth_with_google]
     private fun firebaseAuthWithGoogle(idToken: String) {
+        toggleProgressBar(true)
+
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
                     task.result?.user?.getIdToken(true)
                         ?.addOnCompleteListener {tokenResult ->
                             val tokenResult = tokenResult.result?.token
                             if (tokenResult != null) {
                                 interactor.authorize(tokenResult)
                             }
-
-                            Log.d(TAG, "Google SIGN IN FIREBASE:success, idTOKEN: ${tokenResult}")
                         }
-                    // Sign in success, update UI with the signed-in user's information
-                    val token = user?.getIdToken(true)
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "Google SIGN IN FIREBASE:failure", task.exception)
-//                    Snackbar.make(, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
                 }
 
-                // [START_EXCLUDE]
-//                hideProgressBar()
-                // [END_EXCLUDE]
+                toggleProgressBar(false)
             }
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken) {
+        toggleProgressBar(true)
+
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    task.result?.user?.getIdToken(true)
+                        ?.addOnCompleteListener {tokenResult ->
+                            println("?!?! HANDLE FB ACCESs token RESULT")
+                            val tokenResult = tokenResult.result?.token
+                            if (tokenResult != null) {
+                                interactor.authorize(tokenResult)
+                            }
+                        }
+                } else {
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+                toggleProgressBar(false)
+            }
+    }
+
+    private fun toggleProgressBar(isVisible: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.auth_progress_bar)
+        progressBar.isVisible = isVisible
     }
 
     private fun setupViews() {
@@ -108,8 +144,29 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         auth_google_button.setOnClickListener {
             signInGoogle()
         }
-        auth_google_button.setBackgroundResource(R.drawable.custom_background_border)
-        auth_google_button.setTextColor(Color.GRAY)
+        setupFacebook()
+    }
+
+    private fun setupFacebook() {
+        facebookCallbackManager = CallbackManager.Factory.create()
+        val fbLoginBtn = findViewById<LoginButton>(R.id.auth_facebook_btn)
+        fbLoginBtn.setPermissions("email", "public_profile")
+        fbLoginBtn.registerCallback(facebookCallbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult?) {
+                Log.d("letsSee", "?!?!Facebook token: " + result?.accessToken?.token)
+                val token = result?.accessToken
+                if (token != null) {
+                    handleFacebookAccessToken(token)
+                }
+            }
+            override fun onCancel() {
+                Log.d("letsSee", "Facebook onCancel.")
+
+            }
+            override fun onError(error: FacebookException) {
+                Log.d("letsSee", "Facebook onError.")
+            }
+        })
     }
 
     private fun signInGoogle() {
