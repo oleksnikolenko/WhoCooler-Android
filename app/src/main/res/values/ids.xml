@@ -33,4 +33,5 @@
     <item name="detail_reply_text" type="id" />
     <item name="detail_reply_reply" type="id" />
     <item name="detail_favorites" type="id" />
+    <item name="detail_message_more" type="id" />
 </resources>

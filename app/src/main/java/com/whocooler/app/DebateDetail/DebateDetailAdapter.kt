@@ -31,7 +31,8 @@ class DebateDetailAdapter(
     val voteClick: (DebateSide) -> PublishSubject<Debate>,
     val authRequired: () -> Unit,
     val getNextRepliesPage: (message: Message, index: Int) -> Unit,
-    val didClickReply: (parentMessageId: String, index: Int) -> Unit
+    val didClickReply: (parentMessageId: String, index: Int) -> Unit,
+    val didClickMore: () -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -61,6 +62,7 @@ class DebateDetailAdapter(
         var messageDate: TextView = itemView.findViewById(R.id.detail_message_date)
         var showRepliesTextView: MaterialTextView = itemView.findViewById(R.id.detail_message_show_replies)
         var messageReply: MaterialTextView = itemView.findViewById(R.id.detail_message_reply)
+        var moreImage: AppCompatImageView = itemView.findViewById(R.id.detail_message_more)
     }
 
     class MessageHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -141,6 +143,10 @@ class DebateDetailAdapter(
 
         messageRow.messageReply.setOnClickListener {
             didClickReply(row.message.id, messageRow.adapterPosition - 2)
+        }
+
+        messageRow.moreImage.setOnClickListener {
+            didClickMore()
         }
 
         if (row.message.notShownReplyCount > 0) {
@@ -274,6 +280,16 @@ class DebateDetailAdapter(
                 }
             )
             addView(
+                AppCompatImageView(context).apply {
+                    id = R.id.detail_message_more
+                    setImageResource(R.drawable.more)
+                    layoutParams = LinearLayout.LayoutParams(
+                        dip(16),
+                        dip(16)
+                    )
+                }
+            )
+            addView(
                 MaterialTextView(context).apply {
                     id = R.id.detail_message_text
                     layoutParams = LinearLayout.LayoutParams(
@@ -314,6 +330,8 @@ class DebateDetailAdapter(
             set.connect(R.id.detail_message_avatar, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP, dip(16))
             set.connect(R.id.detail_message_user_name, ConstraintSet.START, R.id.detail_message_avatar, ConstraintSet.END, dip(12))
             set.connect(R.id.detail_message_user_name, ConstraintSet.TOP, R.id.detail_message_avatar, ConstraintSet.TOP)
+            set.connect(R.id.detail_message_more, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP, dip(12))
+            set.connect(R.id.detail_message_more, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
             set.connect(R.id.detail_message_date, ConstraintSet.TOP, R.id.detail_message_user_name, ConstraintSet.TOP)
             set.connect(R.id.detail_message_date, ConstraintSet.BOTTOM, R.id.detail_message_user_name, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_message_date, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.END, dip(8))

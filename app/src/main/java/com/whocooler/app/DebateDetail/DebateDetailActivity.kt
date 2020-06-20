@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -99,12 +100,17 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
             imm?.showSoftInput(detail_edit_text, InputMethodManager.SHOW_IMPLICIT)
         }
 
+        val showMoreHandler: () -> Unit = {
+            showMoreAlert()
+        }
+
         debateDetailAdapter = DebateDetailAdapter(this,
             rows,
             voteClickHandler,
             authRequiredHandler,
             getNextRepliesHandler,
-            didClickReply
+            didClickReply,
+            showMoreHandler
         )
 
         detail_recycler_view.adapter = debateDetailAdapter
@@ -192,5 +198,15 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         progressBar.isVisible = isVisible
     }
 
+    private fun showMoreAlert() {
+        val builder = AlertDialog.Builder(this)
+        val options = arrayOf("Report")
+
+        // TODO: - Fix when more will function properly
+        builder.setItems(options) { _, _ -> }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
 
 }
