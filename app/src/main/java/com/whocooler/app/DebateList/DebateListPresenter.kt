@@ -2,6 +2,7 @@ package com.whocooler.app.DebateList
 
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
 
 class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
 
@@ -30,6 +31,10 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
 
     override fun updateDebateDataSource() {
         activity?.updateDebateDataSource()
+    }
+
+    override fun presentError() {
+        activity?.showErrorToast(UNEXPECTED_ERROR)
     }
 
 }

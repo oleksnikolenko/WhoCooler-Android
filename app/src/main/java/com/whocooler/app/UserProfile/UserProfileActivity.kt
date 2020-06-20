@@ -6,28 +6,17 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.InputType
-import android.util.Base64
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.whocooler.app.Common.Models.User
 import com.whocooler.app.R
 import com.squareup.picasso.Picasso
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
-import java.net.URI
 
 class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterViewContract {
 
@@ -49,7 +38,7 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         activity.interactor = interactor
         activity.router = router
         interactor.presenter = presenter
-        presenter.output = activity
+        presenter.activity = activity
         router.activity = activity
     }
 
@@ -181,6 +170,10 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    override fun showErrorToast(message: String) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 
 }

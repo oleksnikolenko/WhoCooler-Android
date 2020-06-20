@@ -1,10 +1,16 @@
 package com.whocooler.app.Authorization
 
+import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
+
 class AuthorizationPresenter: AuthorizationContracts.InteractorPresenterContract {
 
-    var output: AuthorizationContracts.PresenterViewContract? = null
+    var activity: AuthorizationContracts.PresenterViewContract? = null
 
     override fun didAuthenticate() {
-        output?.dismissActivity()
+        activity?.dismissActivity()
+    }
+
+    override fun presentError() {
+        activity?.showErrorToast(UNEXPECTED_ERROR)
     }
 }

@@ -25,7 +25,7 @@ class UserProfileWorker {
             val editResponse = Gson().fromJson(response.toString(), UserEditResponse :: class.java)
             responseSubject.onNext(editResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return MULTIPART_FORMDATA
@@ -67,7 +67,7 @@ class UserProfileWorker {
                 responseSubject.onNext(editResponse)
             },
             Response.ErrorListener {
-                Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+                responseSubject.onError(it)
             }
         ) {
             override fun getByteData(): Map<String, Any>? {
@@ -80,7 +80,6 @@ class UserProfileWorker {
                 val headers = HashMap<String, String>()
                 var token = App.prefs.userSession?.accessToken
                 if (token != null) {
-                    println("?!?! TOKEN $token")
                     headers.put("Authorization", "Bearer " + token)
                 }
                 return headers

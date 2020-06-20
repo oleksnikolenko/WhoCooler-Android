@@ -21,6 +21,7 @@ class DebateListContracts {
         fun presentDebates(response: DebatesResponse, shouldReloadCategories: Boolean)
         fun updateDebateDataSource()
         fun addNewDebates(response: DebatesResponse)
+        fun presentError()
     }
 
     // Presenter -> View
@@ -32,6 +33,7 @@ class DebateListContracts {
         fun updateDebateDataSource()
         fun setupEmptyState(text: String)
         fun addNewDebates(response: DebatesResponse)
+        fun showErrorToast(message: String)
 
         var selectedCategoryId: String
     }

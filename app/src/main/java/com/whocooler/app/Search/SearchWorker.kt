@@ -19,7 +19,7 @@ class SearchWorker {
 
             responseSubject.onNext(searchResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"

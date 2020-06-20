@@ -1,6 +1,7 @@
 package com.whocooler.app.Search
 
 import com.whocooler.app.Common.Models.SearchResponse
+import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
 
 class SearchPresenter : SearchContracts.InteractorPresenterContract {
 
@@ -8,6 +9,10 @@ class SearchPresenter : SearchContracts.InteractorPresenterContract {
 
     override fun presentDebates(response: SearchResponse) {
         activity?.setupDebateAdapter(response)
+    }
+
+    override fun presentError() {
+        activity?.showErrorToast(UNEXPECTED_ERROR)
     }
 
 }

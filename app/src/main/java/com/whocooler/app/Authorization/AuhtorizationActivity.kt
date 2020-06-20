@@ -2,11 +2,9 @@ package com.whocooler.app.Authorization
 
 import android.content.Intent
 import android.graphics.Color
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -21,7 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -65,8 +62,8 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         var presenter = AuthorizationPresenter()
 
         activity.interactor = interactor
-        interactor.output = presenter
-        presenter.output = activity
+        interactor.presenter = presenter
+        presenter.activity = activity
     }
 
     // [START onactivityresult]
@@ -174,6 +171,10 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
     override fun dismissActivity() {
         super.onBackPressed()
+    }
+
+    override fun showErrorToast(message: String) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 
 }

@@ -17,6 +17,7 @@ class UserProfileContracts {
         // Functions for Interactor output / Presenter input
         fun presentProfile(user: User)
         fun navigateToAuth()
+        fun presentError()
     }
 
     // Presenter -> View
@@ -25,6 +26,7 @@ class UserProfileContracts {
         // Functions for Presenter output / View input
         fun displayProfile(user: User)
         fun navigateToAuth()
+        fun showErrorToast(message: String)
     }
 
     // Router

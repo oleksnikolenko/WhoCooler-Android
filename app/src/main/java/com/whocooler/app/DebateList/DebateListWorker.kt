@@ -24,7 +24,7 @@ class DebateListWorker {
 
             responseSubject.onNext(debatesResponse)
         }, Response.ErrorListener {
-            Log.d("RESPONSE ERROR ", "Error" + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -58,7 +58,7 @@ class DebateListWorker {
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -93,7 +93,7 @@ class DebateListWorker {
 
             responseSubject.onNext(emptyCallback)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -125,7 +125,7 @@ class DebateListWorker {
 
             responseSubject.onNext(emptyCallback)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"

@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -207,6 +208,10 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun showErrorToast(message: String) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 
 }

@@ -22,7 +22,7 @@ class DebateDetailWorker {
             val response = Gson().fromJson(response.toString(), Debate :: class.java)
             responseSubject.onNext(response)
         }, Response.ErrorListener {
-            Log.d("?!?!! RESPONSE ERROR ", "Error" + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -56,7 +56,7 @@ class DebateDetailWorker {
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -93,7 +93,7 @@ class DebateDetailWorker {
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -130,7 +130,7 @@ class DebateDetailWorker {
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -169,7 +169,7 @@ class DebateDetailWorker {
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
-            Log.d("?!?!RESPONSE ERROR ", "VOTE ERROR" + it.networkResponse + it.localizedMessage)
+            responseSubject.onError(it)
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"

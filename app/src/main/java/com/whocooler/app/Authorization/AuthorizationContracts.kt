@@ -10,6 +10,7 @@ class AuthorizationContracts {
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun didAuthenticate()
+        fun presentError()
     }
 
     // Presenter -> View
@@ -17,6 +18,7 @@ class AuthorizationContracts {
     interface PresenterViewContract {
         // Functions for Presenter output / View input
         fun dismissActivity()
+        fun showErrorToast(message: String)
     }
 
     // Router

@@ -27,7 +27,7 @@ class AuthorizationWorker {
                 val authResponse = Gson().fromJson(response.toString(), UserSession :: class.java)
                 responseSubject.onNext(authResponse)
             }, Response.ErrorListener {
-                Log.d("?!?!Authorize ERROR ", "ERROR" + it.networkResponse + it.localizedMessage)
+                responseSubject.onError(it)
             }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"

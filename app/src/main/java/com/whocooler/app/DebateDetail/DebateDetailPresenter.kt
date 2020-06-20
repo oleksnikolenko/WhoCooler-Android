@@ -3,6 +3,7 @@ package com.whocooler.app.DebateDetail
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
 import com.whocooler.app.Common.Models.MessagesList
+import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
 
 class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
 
@@ -53,4 +54,9 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
 
         activity?.addNewMessagesBatch(rows)
     }
+
+    override fun presentError() {
+        activity?.showErrorToast(UNEXPECTED_ERROR)
+    }
+
 }

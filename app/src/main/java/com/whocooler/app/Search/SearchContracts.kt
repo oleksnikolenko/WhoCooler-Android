@@ -15,11 +15,13 @@ class SearchContracts {
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun presentDebates(response: SearchResponse)
+        fun presentError()
     }
 
     interface PresenterViewContract {
         // Functions for Presenter output / View input
         fun setupDebateAdapter(response: SearchResponse)
+        fun showErrorToast(message: String)
     }
 
     // Router

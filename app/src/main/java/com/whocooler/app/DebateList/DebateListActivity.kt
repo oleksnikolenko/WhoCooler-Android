@@ -3,10 +3,7 @@ package com.whocooler.app.DebateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -206,6 +203,10 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             }
         }
         listRecyclerView.addOnScrollListener(scrollListener)
+    }
+
+    override fun showErrorToast(message: String) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun toggleProgressBar(isVisible: Boolean) {

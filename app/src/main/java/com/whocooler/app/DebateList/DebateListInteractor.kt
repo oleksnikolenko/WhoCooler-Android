@@ -27,7 +27,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 presenter?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
                 page = 1
             }, onError = {
-                Log.d("ERROR", it.localizedMessage)
+                presenter?.presentError()
             }
         )
     }
@@ -36,21 +36,29 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         if (response?.hasNextPage == false) {
             return
         }
-        worker.getDebates(page + 1, categoryId, selectedSorting).subscribe { response->
-            this.response?.debates?.addAll(response.debates)
-            this.response?.hasNextPage = response.hasNextPage
-            page += 1
+        worker.getDebates(page + 1, categoryId, selectedSorting).subscribeBy(
+            onNext = { response->
+                this.response?.debates?.addAll(response.debates)
+                this.response?.hasNextPage = response.hasNextPage
+                page += 1
 
-            presenter?.addNewDebates(response)
-        }
+                presenter?.addNewDebates(response)
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
     }
 
     override fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate> {
         val responseSubject = PublishSubject.create<Debate>()
-        worker.vote(debateId, sideId).subscribe {response ->
-            responseSubject.onNext(response.debate)
-            DebateService.debates.set(position, response.debate)
-        }
+        worker.vote(debateId, sideId).subscribeBy(
+            onNext = { response ->
+                responseSubject.onNext(response.debate)
+                DebateService.debates.set(position, response.debate)
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
         return responseSubject
     }
 
@@ -63,17 +71,25 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
     }
 
     private fun addToFavorites(debate: Debate) {
-        worker.addToFavorites(debate).subscribe {
-            DebateService.toggleFavorite(debate)
-            presenter?.updateDebateDataSource()
-        }
+        worker.addToFavorites(debate).subscribeBy(
+            onNext = {
+                DebateService.toggleFavorite(debate)
+                presenter?.updateDebateDataSource()
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
     }
 
     private fun deleteFromFavorites(debate: Debate) {
-        worker.deleteFromFavorites(debate).subscribe {
-            DebateService.toggleFavorite(debate)
-            presenter?.updateDebateDataSource()
-        }
+        worker.deleteFromFavorites(debate).subscribeBy(
+            onNext = {
+                DebateService.toggleFavorite(debate)
+                presenter?.updateDebateDataSource()
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
     }
 
     override fun hasDebatesListNextPage(): Boolean {

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
@@ -104,4 +105,9 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
             debateAdapter.notifyItemChanged(reloadPosition!!)
         }
     }
+
+    override fun showErrorToast(message: String) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
 }

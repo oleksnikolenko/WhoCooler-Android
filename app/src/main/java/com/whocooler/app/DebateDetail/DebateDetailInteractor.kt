@@ -39,10 +39,14 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
     }
 
     private fun sendMessage(text: String) {
-        worker.sendMessage(text, debate.id).subscribe {message->
-            debate.messagesList.messages.add(0, message)
-            presenter?.presentNewMessage(message)
-        }
+        worker.sendMessage(text, debate.id).subscribeBy(
+            onNext = {message->
+                debate.messagesList.messages.add(0, message)
+                presenter?.presentNewMessage(message)
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
     }
 
     private fun sendReply(text: String, threadId: String, index: Int) {
@@ -55,17 +59,21 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
                     debate.messagesList.messages[parentIndex].replyCount += 1
                 }
             }, onError = {
-                // TODO: Handle error
+                presenter?.presentError()
             }
         )
     }
 
     override fun vote(sideId: String) : PublishSubject<Debate> {
         val responseSubject = PublishSubject.create<Debate>()
-        worker.vote(debate.id, sideId).subscribe {response ->
-            responseSubject.onNext(response.debate)
-            presenter?.updateDebate(response.debate)
-        }
+        worker.vote(debate.id, sideId).subscribeBy(
+            onNext = { response ->
+                responseSubject.onNext(response.debate)
+                presenter?.updateDebate(response.debate)
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
         return responseSubject
     }
 
@@ -74,12 +82,16 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
             parentMessage.id,
             parentMessage.replyList.firstOrNull()?.createdTime ?: 0,
             true
-        ).subscribe {messagesList->
-            debate.messagesList.messages[index].replyList.addAll(0, messagesList.messages)
-            debate.messagesList.messages[index].notShownReplyCount -= oneReplyBatchCount
+        ).subscribeBy(
+            onNext = { messagesList->
+                debate.messagesList.messages[index].replyList.addAll(0, messagesList.messages)
+                debate.messagesList.messages[index].notShownReplyCount -= oneReplyBatchCount
 
-            presenter?.presentNewRepliesBatch(debate.messagesList.messages[index], index)
-        }
+                presenter?.presentNewRepliesBatch(debate.messagesList.messages[index], index)
+            }, onError = {
+                presenter?.presentError()
+            }
+        )
     }
 
     override fun getNextMessagesPage() {
@@ -88,12 +100,16 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
         }
         val lastTime = debate?.messagesList.messages.last().createdTime
         if (lastTime != null) {
-            worker.getNextMessages(debate.id, lastTime, false).subscribe {messagesList ->
-                debate.messagesList.messages.addAll(messagesList.messages)
-                debate.messagesList.hasNextPage = messagesList.hasNextPage
+            worker.getNextMessages(debate.id, lastTime, false).subscribeBy(
+                onNext = { messagesList ->
+                    debate.messagesList.messages.addAll(messagesList.messages)
+                    debate.messagesList.hasNextPage = messagesList.hasNextPage
 
-                presenter?.presentNewMessagesBatch(messagesList)
-            }
+                    presenter?.presentNewMessagesBatch(messagesList)
+                }, onError = {
+                    presenter?.presentError()
+                }
+            )
         }
     }
 
