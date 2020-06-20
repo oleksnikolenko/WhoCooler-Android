@@ -1,14 +1,16 @@
 package com.whocooler.app.DebateDetail
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.Message
@@ -18,7 +20,6 @@ import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_debate_detail.*
-import java.text.ParsePosition
 
 class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.PresenterViewContract {
 
@@ -26,13 +27,19 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     lateinit var router: DebateDetailContracts.RouterInterface
     lateinit var debateDetailAdapter: DebateDetailAdapter
 
+    var linearLayout = LinearLayoutManager(this)
+    private lateinit var scrollListener: RecyclerView.OnScrollListener
+
     private var inputParentMessageId: String? = null
     private var inputParentIndex: Int? = null
 
     lateinit var debate: Debate
     var debatePosition: Int = -1
 
-    var rows = ArrayList<DebateDetailAdapter.IRow>()
+    var rows = ArrayList<DebateDetailAdapter.IDetailRow>()
+
+    private val lastVisibleItemPosition: Int
+        get() = linearLayout.findLastVisibleItemPosition()
 
     private fun setup() {
         var activity = this
@@ -56,6 +63,8 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         debatePosition = intent.getIntExtra(EXTRA_DEBATE_POSITION, debatePosition)
         interactor.initDebate(debate)
         setupSendMessageOnClickListener()
+        handlePagination()
+        toggleProgressBar(false)
     }
 
     private fun setupSendMessageOnClickListener() {
@@ -63,11 +72,13 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         val editText = findViewById<EditText>(R.id.detail_edit_text)
 
         sendMessageButton.setOnClickListener {
-            interactor.handleSend(editText.text.toString(), inputParentMessageId, null, inputParentIndex)
+            if (editText.text.toString().isNotEmpty()) {
+                interactor.handleSend(editText.text.toString(), inputParentMessageId, null, inputParentIndex)
+            }
         }
     }
 
-    override fun displayDebate(rows: ArrayList<DebateDetailAdapter.IRow>) {
+    override fun displayDebate(rows: ArrayList<DebateDetailAdapter.IDetailRow>) {
         var authRequiredHandler: () -> Unit = {
             router?.navigateToAuth()
         }
@@ -97,7 +108,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         )
 
         detail_recycler_view.adapter = debateDetailAdapter
-        detail_recycler_view.layoutManager = LinearLayoutManager(this)
+        detail_recycler_view.layoutManager = linearLayout//LinearLayoutManager(this)
 
         this.rows = rows
     }
@@ -118,7 +129,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         router?.navigateToAuth()
     }
 
-    override fun addNewMessage(row: DebateDetailAdapter.IRow) {
+    override fun addNewMessage(row: DebateDetailAdapter.IDetailRow) {
         this.rows.add(2, row)
         debateDetailAdapter.update(this.rows)
     }
@@ -138,7 +149,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     }
 
     override fun addNewRepliesBatch(message: Message, index: Int) {
-        val replyRows = ArrayList<DebateDetailAdapter.IRow>()
+        val replyRows = ArrayList<DebateDetailAdapter.IDetailRow>()
 
         message.replyList.forEach { message->
             replyRows.add(DebateDetailAdapter.ReplyRow(message))
@@ -147,10 +158,38 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         debateDetailAdapter.update(this.rows)
     }
 
+    override fun addNewMessagesBatch(rows: ArrayList<DebateDetailAdapter.IDetailRow>) {
+        this.rows.addAll(rows)
+        debateDetailAdapter.update(this.rows)
+        handlePagination()
+        toggleProgressBar(false)
+    }
+
     override fun addNewReply(reply: Message, index: Int) {
         val replyRow = DebateDetailAdapter.ReplyRow(reply)
         rows.add(index + 3, replyRow)
         debateDetailAdapter.update(rows)
+    }
+
+    private fun handlePagination() {
+        scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val totalItemCount = linearLayout.itemCount
+                if (totalItemCount == lastVisibleItemPosition + 1 && interactor.hasMessageListNextPage()) {
+                    interactor.getNextMessagesPage()
+                    recyclerView.removeOnScrollListener(scrollListener)
+                    toggleProgressBar(true)
+                }
+            }
+        }
+        detail_recycler_view.addOnScrollListener(scrollListener)
+    }
+
+    private fun toggleProgressBar(isVisible: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.detail_progress_bar_bottom)
+
+        progressBar.isVisible = isVisible
     }
 
 

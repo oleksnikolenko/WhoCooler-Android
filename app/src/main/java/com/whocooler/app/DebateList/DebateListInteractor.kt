@@ -25,10 +25,24 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
             onNext = {response ->
                 this.response = response
                 presenter?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
+                page = 1
             }, onError = {
                 Log.d("ERROR", it.localizedMessage)
             }
         )
+    }
+
+    override fun getNextPage() {
+        if (response?.hasNextPage == false) {
+            return
+        }
+        worker.getDebates(page + 1, categoryId, selectedSorting).subscribe { response->
+            this.response?.debates?.addAll(response.debates)
+            this.response?.hasNextPage = response.hasNextPage
+            page += 1
+
+            presenter?.addNewDebates(response)
+        }
     }
 
     override fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate> {
@@ -62,4 +76,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         }
     }
 
+    override fun hasDebatesListNextPage(): Boolean {
+        return response?.hasNextPage ?: false
+    }
 }

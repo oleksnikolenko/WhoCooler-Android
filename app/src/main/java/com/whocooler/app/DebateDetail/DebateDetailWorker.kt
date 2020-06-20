@@ -154,10 +154,17 @@ class DebateDetailWorker {
         return responseSubject
     }
 
-    fun getNextReplies(id: String, after: Any) : PublishSubject<MessagesList> {
+    fun getNextMessages(id: String, after: Any, isReply: Boolean) : PublishSubject<MessagesList> {
         val responseSubject = PublishSubject.create<MessagesList>()
 
-        val voteRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "messages?thread_id=$id&after_time=$after", null, Response.Listener {response ->
+        val url: String
+        if (isReply) {
+            url = BASE_URL + "messages?thread_id=$id&after_time=$after"
+        } else {
+            url = BASE_URL + "messages?debate_id=$id&after_time=$after"
+        }
+
+        val voteRequest = object : JsonObjectRequest(Method.GET, url, null, Response.Listener {response ->
             val debateVoteResponse = Gson().fromJson(response.toString(), MessagesList :: class.java)
 
             responseSubject.onNext(debateVoteResponse)

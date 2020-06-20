@@ -118,7 +118,6 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
                 if (task.isSuccessful) {
                     task.result?.user?.getIdToken(true)
                         ?.addOnCompleteListener {tokenResult ->
-                            println("?!?! HANDLE FB ACCESs token RESULT")
                             val tokenResult = tokenResult.result?.token
                             if (tokenResult != null) {
                                 interactor.authorize(tokenResult)
@@ -153,7 +152,6 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         fbLoginBtn.setPermissions("email", "public_profile")
         fbLoginBtn.registerCallback(facebookCallbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
-                Log.d("letsSee", "?!?!Facebook token: " + result?.accessToken?.token)
                 val token = result?.accessToken
                 if (token != null) {
                     handleFacebookAccessToken(token)

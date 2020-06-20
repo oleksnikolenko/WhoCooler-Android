@@ -16,7 +16,16 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         if (shouldReloadCategories) {
             activity?.setupCategoryAdapter(categories)
         }
-        activity?.setupDebateAdapter(response)
+
+        if (response.debates.isEmpty() && activity?.selectedCategoryId == Category.Constant.FAVORITES.id) {
+            activity?.setupEmptyState("You have no favorites yet\nAdd them in the feed and they will appear here")
+        } else {
+            activity?.setupDebateAdapter(response)
+        }
+    }
+
+    override fun addNewDebates(response: DebatesResponse) {
+        activity?.addNewDebates(response)
     }
 
     override fun updateDebateDataSource() {

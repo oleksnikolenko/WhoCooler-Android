@@ -3,7 +3,6 @@ package com.whocooler.app.DebateDetail
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
-import com.whocooler.app.Common.Services.DebateService
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -22,6 +21,10 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
         worker.getDebate(debate.id).subscribe {
             presenter?.presentDebate(debate)
         }
+    }
+
+    override fun hasMessageListNextPage() : Boolean {
+        return debate.messagesList.hasNextPage
     }
 
     override fun handleSend(text: String, threadId: String?, editedMessage: Message?, index: Int?) {
@@ -67,14 +70,30 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
     }
 
     override fun getNextRepliesPage(parentMessage: Message, index: Int) {
-        worker.getNextReplies(
+        worker.getNextMessages(
             parentMessage.id,
-            parentMessage.replyList.firstOrNull()?.createdTime ?: 0
+            parentMessage.replyList.firstOrNull()?.createdTime ?: 0,
+            true
         ).subscribe {messagesList->
             debate.messagesList.messages[index].replyList.addAll(0, messagesList.messages)
             debate.messagesList.messages[index].notShownReplyCount -= oneReplyBatchCount
 
             presenter?.presentNewRepliesBatch(debate.messagesList.messages[index], index)
+        }
+    }
+
+    override fun getNextMessagesPage() {
+        if (debate.messagesList.hasNextPage == false) {
+            return
+        }
+        val lastTime = debate?.messagesList.messages.last().createdTime
+        if (lastTime != null) {
+            worker.getNextMessages(debate.id, lastTime, false).subscribe {messagesList ->
+                debate.messagesList.messages.addAll(messagesList.messages)
+                debate.messagesList.hasNextPage = messagesList.hasNextPage
+
+                presenter?.presentNewMessagesBatch(messagesList)
+            }
         }
     }
 

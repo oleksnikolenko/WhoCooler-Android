@@ -2,12 +2,16 @@ package com.whocooler.app.DebateList
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
@@ -27,8 +31,12 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     lateinit var router: DebateListContracts.RouterInterface
     lateinit var debateAdapter: DebateListAdapter
     private var reloadPosition: Int? = null
-    private var selectedCategoryId: String = Category.Constant.ALL.id
+    override var selectedCategoryId: String = Category.Constant.ALL.id
     private var selectedSorting: String = "popular"
+    private var linearLayout = LinearLayoutManager(this)
+    private lateinit var scrollListener: RecyclerView.OnScrollListener
+    private val lastVisibleItemPosition: Int
+        get() = linearLayout.findLastVisibleItemPosition()
 
     private fun setup() {
         var activity = this
@@ -48,8 +56,11 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         setup()
         setContentView(R.layout.activity_main)
         setupToolbar()
+        handlePagination()
 
         interactor.getDebates(DebateListModels.DebateListRequest(Category.Constant.ALL.id, selectedSorting,true))
+
+        toggleProgressBar(false)
     }
 
     private fun setupToolbar() {
@@ -115,6 +126,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     override fun setupDebateAdapter(response: DebatesResponse) {
+        println("?!?! SETUP DATA SERVICE RESPONSE COUNT ${response.debates.count()}")
         DebateService.debates = response.debates
 
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
@@ -147,8 +159,17 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         debateAdapter.notifyDataSetChanged()
 
         listRecyclerView.adapter = debateAdapter
-        val layoutManager = LinearLayoutManager(this)
-        listRecyclerView.layoutManager = layoutManager
+        listRecyclerView.layoutManager = linearLayout
+
+        val emptyTextNotification = findViewById<TextView>(R.id.list_empty_state)
+        emptyTextNotification.visibility = View.GONE
+    }
+
+    override fun addNewDebates(response: DebatesResponse) {
+        debateAdapter.debates = DebateService.debates
+        debateAdapter.notifyDataSetChanged()
+        handlePagination()
+        toggleProgressBar(false)
     }
 
     override fun onRestart() {
@@ -164,5 +185,31 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun updateDebateDataSource() {
         debateAdapter.update(DebateService.debates)
+    }
+
+    override fun setupEmptyState(text: String) {
+        val emptyTextNotification = findViewById<TextView>(R.id.list_empty_state)
+        emptyTextNotification.text = text
+        emptyTextNotification.visibility = View.VISIBLE
+    }
+
+    private fun handlePagination() {
+        scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val totalItemCount = linearLayout.itemCount
+                if (totalItemCount == lastVisibleItemPosition + 1 && interactor.hasDebatesListNextPage()) {
+                    interactor.getNextPage()
+                    recyclerView.removeOnScrollListener(scrollListener)
+                    toggleProgressBar(true)
+                }
+            }
+        }
+        listRecyclerView.addOnScrollListener(scrollListener)
+    }
+
+    private fun toggleProgressBar(isVisible: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.list_bottom_progress_bar)
+        progressBar.isVisible = isVisible
     }
 }

@@ -2,13 +2,14 @@ package com.whocooler.app.DebateDetail
 
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
+import com.whocooler.app.Common.Models.MessagesList
 
 class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
 
     var activity: DebateDetailContracts.PresenterViewContract? = null
 
     override fun presentDebate(debate: Debate) {
-        val rows = ArrayList<DebateDetailAdapter.IRow>()
+        val rows = ArrayList<DebateDetailAdapter.IDetailRow>()
         rows.add(DebateDetailAdapter.HeaderRow(debate))
         rows.add(DebateDetailAdapter.MessageHeaderRow(debate.messageCount))
 
@@ -41,5 +42,15 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
         activity?.addNewReply(threadMessage, index)
         activity?.resetEditText()
         activity?.updateMessageCounter(1)
+    }
+
+    override fun presentNewMessagesBatch(messagesList: MessagesList) {
+        val rows = ArrayList<DebateDetailAdapter.IDetailRow>()
+
+        messagesList.messages.forEach {message->
+            rows.add(DebateDetailAdapter.MessageRow(message))
+        }
+
+        activity?.addNewMessagesBatch(rows)
     }
 }

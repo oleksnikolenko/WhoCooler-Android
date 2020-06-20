@@ -1,6 +1,5 @@
 package com.whocooler.app.DebateDetail
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
@@ -24,19 +22,12 @@ import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.Common.Views.RoundRectCornerImageView
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerModel
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
-import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
-import okhttp3.internal.http2.Header
-import org.w3c.dom.Text
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.util.*
 
 class DebateDetailAdapter(
     val context: Context,
-    var rows: List<IRow>,
+    var rows: List<IDetailRow>,
     val voteClick: (DebateSide) -> PublishSubject<Debate>,
     val authRequired: () -> Unit,
     val getNextRepliesPage: (message: Message, index: Int) -> Unit,
@@ -44,11 +35,11 @@ class DebateDetailAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    interface IRow
-    class HeaderRow(val debate: Debate) : IRow
-    class MessageRow(val message: Message) : IRow
-    class MessageHeaderRow(var messageCount: Int) : IRow
-    class ReplyRow(var reply: Message): IRow
+    interface IDetailRow
+    class HeaderRow(val debate: Debate) : IDetailRow
+    class MessageRow(val message: Message) : IDetailRow
+    class MessageHeaderRow(var messageCount: Int) : IDetailRow
+    class ReplyRow(var reply: Message): IDetailRow
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -473,7 +464,7 @@ class DebateDetailAdapter(
         return sdf.format(date)
     }
 
-    fun update(rows: List<IRow>) {
+    fun update(rows: List<IDetailRow>) {
         this.rows = rows
         notifyDataSetChanged()
     }

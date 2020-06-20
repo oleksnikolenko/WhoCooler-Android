@@ -19,7 +19,7 @@ class DebateListWorker {
     fun getDebates(page: Int, categoryId: String? = "all", sorting: String) : PublishSubject<DebatesResponse> {
         val responseSubject = PublishSubject.create<DebatesResponse>()
 
-        val debatesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "en/debates" + "?category_id=$categoryId&sorting=$sorting", null, Response.Listener {response ->
+        val debatesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "en/debates" + "?category_id=$categoryId&sorting=$sorting&page=$page", null, Response.Listener {response ->
             val debatesResponse = Gson().fromJson(response.toString(), DebatesResponse :: class.java)
 
             responseSubject.onNext(debatesResponse)
