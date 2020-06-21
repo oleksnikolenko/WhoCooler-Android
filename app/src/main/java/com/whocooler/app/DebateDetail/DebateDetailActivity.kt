@@ -89,7 +89,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         }
         var getNextRepliesHandler: (message: Message, index: Int) -> Unit = { message, index ->
             // Index - 2 because messages start counting after main header + message header views
-            interactor.getNextRepliesPage(message, index-2)
+            interactor.getNextRepliesPage(message, index)
         }
         var didClickReply: (parentMessageId: String, index: Int) -> Unit = {messageId, index->
             inputParentMessageId = messageId
@@ -161,7 +161,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         message.replyList.forEach { message->
             replyRows.add(DebateDetailAdapter.ReplyRow(message))
         }
-        this.rows.addAll(index + 3, replyRows)
+        this.rows.addAll(index + 1, replyRows)
         debateDetailAdapter.update(this.rows)
     }
 

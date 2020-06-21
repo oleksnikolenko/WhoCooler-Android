@@ -84,10 +84,13 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
             true
         ).subscribeBy(
             onNext = { messagesList->
-                debate.messagesList.messages[index].replyList.addAll(0, messagesList.messages)
-                debate.messagesList.messages[index].notShownReplyCount -= oneReplyBatchCount
+                var parentIndex = debate.messagesList.messages.indexOf(parentMessage)
+                if (parentIndex != -1) {
+                    debate.messagesList.messages[parentIndex].notShownReplyCount -= oneReplyBatchCount
+                    debate.messagesList.messages[parentIndex].replyList.addAll(0, messagesList.messages)
 
-                presenter?.presentNewRepliesBatch(debate.messagesList.messages[index], index)
+                    presenter?.presentNewRepliesBatch(debate.messagesList.messages[parentIndex], index)
+                }
             }, onError = {
                 presenter?.presentError()
             }
