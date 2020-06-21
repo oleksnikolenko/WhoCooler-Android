@@ -118,7 +118,6 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         }
 
         listCategoriesRecyclerView.adapter = DebateListCategoryAdapter(categories, categoryClickHandler)
-
         listCategoriesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
@@ -207,6 +206,10 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun showErrorToast(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateToAuth() {
+        router?.navigateToAuthorization()
     }
 
     private fun toggleProgressBar(isVisible: Boolean) {

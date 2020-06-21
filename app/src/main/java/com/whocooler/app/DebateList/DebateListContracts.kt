@@ -22,6 +22,7 @@ class DebateListContracts {
         fun updateDebateDataSource()
         fun addNewDebates(response: DebatesResponse)
         fun presentError()
+        fun presentAuthScreen()
     }
 
     // Presenter -> View
@@ -34,6 +35,7 @@ class DebateListContracts {
         fun setupEmptyState(text: String)
         fun addNewDebates(response: DebatesResponse)
         fun showErrorToast(message: String)
+        fun navigateToAuth()
 
         var selectedCategoryId: String
     }

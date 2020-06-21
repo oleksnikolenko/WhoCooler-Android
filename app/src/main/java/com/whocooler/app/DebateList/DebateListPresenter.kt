@@ -25,6 +25,10 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         }
     }
 
+    override fun presentAuthScreen() {
+        activity?.navigateToAuth()
+    }
+
     override fun addNewDebates(response: DebatesResponse) {
         activity?.addNewDebates(response)
     }

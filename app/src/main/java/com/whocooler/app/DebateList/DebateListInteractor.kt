@@ -1,6 +1,7 @@
 package com.whocooler.app.DebateList
 
 import android.util.Log
+import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
@@ -63,7 +64,9 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
     }
 
     override fun toggleFavorites(debate: Debate) {
-        if (!debate.isFavorite) {
+        if (App.prefs.isTokenEmpty()) {
+            presenter?.presentAuthScreen()
+        } else if (!debate.isFavorite) {
             addToFavorites(debate)
         } else {
             deleteFromFavorites(debate)
