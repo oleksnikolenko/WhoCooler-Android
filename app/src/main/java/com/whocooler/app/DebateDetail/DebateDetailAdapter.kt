@@ -41,12 +41,14 @@ class DebateDetailAdapter(
     class MessageRow(val message: Message) : IDetailRow
     class MessageHeaderRow(var messageCount: Int) : IDetailRow
     class ReplyRow(var reply: Message): IDetailRow
+    class EmptyMessagesRow(): IDetailRow
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_MESSAGE = 1
         private const val TYPE_MESSAGE_HEADER = 2
         private const val TYPE_REPLY = 3
+        private const val TYPE_EMPTY_MESSAGES = 4
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -78,11 +80,14 @@ class DebateDetailAdapter(
         var reply: MaterialTextView = itemView.findViewById(R.id.detail_reply_reply)
     }
 
+    class EmptyMessagesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
+
     override fun getItemViewType(position: Int): Int = when(rows[position]) {
         is HeaderRow -> TYPE_HEADER
         is MessageRow -> TYPE_MESSAGE
         is MessageHeaderRow -> TYPE_MESSAGE_HEADER
         is ReplyRow -> TYPE_REPLY
+        is EmptyMessagesRow -> TYPE_EMPTY_MESSAGES
         else -> throw IllegalArgumentException()
     }
 
@@ -91,6 +96,7 @@ class DebateDetailAdapter(
         TYPE_MESSAGE -> messageViewHolder(parent)
         TYPE_MESSAGE_HEADER -> messageHeaderViewHolder(parent)
         TYPE_REPLY -> replyViewHolder(parent)
+        TYPE_EMPTY_MESSAGES -> emptyMessagesViewHolder(parent)
         else -> throw IllegalArgumentException()
     }
 
@@ -101,6 +107,7 @@ class DebateDetailAdapter(
         TYPE_MESSAGE -> onBindMessage(holder, rows[position] as MessageRow)
         TYPE_MESSAGE_HEADER -> onBindMessageHeader(holder, rows[position] as MessageHeaderRow)
         TYPE_REPLY -> onBindReply(holder, rows[position] as ReplyRow)
+        TYPE_EMPTY_MESSAGES -> onBindEmptyMessages(holder, rows[position] as EmptyMessagesRow)
         else -> throw IllegalArgumentException()
     }
 
@@ -181,6 +188,8 @@ class DebateDetailAdapter(
             }
         }
     }
+
+    private fun onBindEmptyMessages(holder: RecyclerView.ViewHolder, row: EmptyMessagesRow) {}
 
     private fun headerViewHolder() : RecyclerView.ViewHolder {
         val container = LinearLayout(context).apply {
@@ -474,6 +483,33 @@ class DebateDetailAdapter(
         }
 
         return MessageHeaderViewHolder(container)
+    }
+
+    private fun emptyMessagesViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder {
+        var container = LinearLayout(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.MATCH_PARENT
+            ).apply {
+                setMargins(0, dip(80), 0, 0)
+            }
+
+            gravity = Gravity.CENTER_HORIZONTAL
+
+            addView(
+                MaterialTextView(context).apply {
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.WRAP_CONTENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        text = "There are no messages yet.\nBe first to share your opinion!"
+                    }
+                }
+            )
+        }
+
+        return EmptyMessagesViewHolder(container)
     }
 
     private fun getDateTime(d: Double): String? {

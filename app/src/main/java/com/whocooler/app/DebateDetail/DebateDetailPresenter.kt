@@ -18,6 +18,14 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
             rows.add(DebateDetailAdapter.MessageRow(message))
         }
 
+        if (debate.messagesList.messages.isEmpty()) {
+            rows.add(DebateDetailAdapter.EmptyMessagesRow())
+        } else {
+            debate.messagesList.messages.forEach { message ->
+                rows.add(DebateDetailAdapter.MessageRow(message))
+            }
+        }
+
         activity?.displayDebate(rows)
     }
 
