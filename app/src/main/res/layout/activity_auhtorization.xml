@@ -90,4 +90,17 @@
         app:layout_constraintTop_toBottomOf="@+id/authInfoText"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/auth_terms_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/auth_facebook_btn"
+        app:layout_constraintStart_toStartOf="@+id/auth_facebook_btn"
+        app:layout_constraintTop_toBottomOf="@+id/auth_facebook_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

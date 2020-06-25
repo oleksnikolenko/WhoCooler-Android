@@ -1,11 +1,20 @@
 package com.whocooler.app.Authorization
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
+import android.view.View
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.facebook.AccessToken
@@ -140,7 +149,38 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         auth_google_button.setOnClickListener {
             signInGoogle()
         }
+
+        val authTermsInfo = findViewById<TextView>(R.id.auth_terms_info)
+        authTermsInfo.text = "By proceeding you agree with our Terms of Use. To find out how we use your data please see our Privacy Policy."
+
+        makeTextLink(authTermsInfo, "Terms of Use", true, null, action = {
+            openUrl("https://api.whocooler.com/terms", this)
+        })
+        makeTextLink(authTermsInfo, "Privacy Policy", true, null, action = {
+            openUrl("https://www.iubenda.com/privacy-policy/66454455", this)
+        })
+
         setupFacebook()
+    }
+
+    private fun makeTextLink(textView: TextView, str: String, underlined: Boolean, color: Int?, action: (() -> Unit)? = null) {
+        val spannableString = SpannableString(textView.text)
+        val textColor = color ?: textView.currentTextColor
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                action?.invoke()
+            }
+            override fun updateDrawState(drawState: TextPaint) {
+                super.updateDrawState(drawState)
+                drawState.isUnderlineText = underlined
+                drawState.color = textColor
+            }
+        }
+        val index = spannableString.indexOf(str)
+        spannableString.setSpan(clickableSpan, index, index + str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.highlightColor = Color.TRANSPARENT
     }
 
     private fun setupFacebook() {
@@ -175,6 +215,12 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
     override fun showErrorToast(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun openUrl(url: String, context: Context) {
+        val uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
 }
