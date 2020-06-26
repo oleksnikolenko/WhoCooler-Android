@@ -14,10 +14,6 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
         rows.add(DebateDetailAdapter.HeaderRow(debate))
         rows.add(DebateDetailAdapter.MessageHeaderRow(debate.messageCount))
 
-        debate.messagesList.messages.forEach { message ->
-            rows.add(DebateDetailAdapter.MessageRow(message))
-        }
-
         if (debate.messagesList.messages.isEmpty()) {
             rows.add(DebateDetailAdapter.EmptyMessagesRow())
         } else {
