@@ -21,7 +21,7 @@ class DebateListContracts {
         fun presentDebates(response: DebatesResponse, shouldReloadCategories: Boolean)
         fun updateDebateDataSource()
         fun addNewDebates(response: DebatesResponse)
-        fun presentError()
+        fun presentError(message: String)
         fun presentAuthScreen()
     }
 

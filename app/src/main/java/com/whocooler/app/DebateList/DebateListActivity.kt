@@ -50,8 +50,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setup()
         setContentView(R.layout.activity_main)
+        setup()
         setupToolbar()
         handlePagination()
 
@@ -122,7 +122,6 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     override fun setupDebateAdapter(response: DebatesResponse) {
-        println("?!?! SETUP DATA SERVICE RESPONSE COUNT ${response.debates.count()}")
         DebateService.debates = response.debates
 
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->

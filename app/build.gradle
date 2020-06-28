@@ -4,6 +4,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release {
+            storePassword 'Asdfg765834'
+            keyAlias = 'oleksnikolenko'
+            keyPassword 'Asdfg765834'
+            storeFile file('/Users/nikolenko/Desktop/android/storefile')
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 

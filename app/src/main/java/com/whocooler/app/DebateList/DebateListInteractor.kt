@@ -28,7 +28,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 presenter?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
                 page = 1
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -45,7 +45,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
 
                 presenter?.addNewDebates(response)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -57,7 +57,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 responseSubject.onNext(response.debate)
                 DebateService.debates.set(position, response.debate)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
         return responseSubject
@@ -79,7 +79,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 DebateService.toggleFavorite(debate)
                 presenter?.updateDebateDataSource()
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -90,7 +90,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 DebateService.toggleFavorite(debate)
                 presenter?.updateDebateDataSource()
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }

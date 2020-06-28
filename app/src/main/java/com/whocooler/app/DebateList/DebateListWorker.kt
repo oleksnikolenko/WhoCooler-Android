@@ -2,6 +2,7 @@ package com.whocooler.app.DebateList
 
 import android.util.Log
 import com.android.volley.Response
+import com.android.volley.VolleyError
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
 import com.whocooler.app.Common.App.App
@@ -9,6 +10,7 @@ import com.whocooler.app.Common.Models.DebateVoteResponse
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Utilities.BASE_URL
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Empty
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -16,20 +18,20 @@ import org.json.JSONObject
 
 class DebateListWorker {
 
+    var gson = GsonBuilder().create()
+
     fun getDebates(page: Int, categoryId: String? = "all", sorting: String) : PublishSubject<DebatesResponse> {
         val responseSubject = PublishSubject.create<DebatesResponse>()
 
         val debatesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "en/debates" + "?category_id=$categoryId&sorting=$sorting&page=$page", null, Response.Listener {response ->
-            val debatesResponse = Gson().fromJson(response.toString(), DebatesResponse :: class.java)
+            val debatesResponse = gson.fromJson(response.toString(), DebatesResponse::class.java)
 
-            responseSubject.onNext(debatesResponse)
+            if (debatesResponse != null) {
+                responseSubject.onNext(debatesResponse)
+            }
         }, Response.ErrorListener {
             responseSubject.onError(it)
         }) {
-            override fun getBodyContentType(): String {
-                return "application/json; charset=utf-8"
-            }
-
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 var token = App.prefs.userSession?.accessToken
@@ -54,7 +56,7 @@ class DebateListWorker {
         val requestBody = jsonBody.toString()
 
         val voteRequest = object : JsonObjectRequest(Method.POST, BASE_URL + "vote", null, Response.Listener {response ->
-            val debateVoteResponse = Gson().fromJson(response.toString(), DebateVoteResponse :: class.java)
+            val debateVoteResponse = gson.fromJson(response.toString(), DebateVoteResponse :: class.java)
 
             responseSubject.onNext(debateVoteResponse)
         }, Response.ErrorListener {
@@ -89,7 +91,7 @@ class DebateListWorker {
         jsonBody.put("debate_id", debate.id)
 
         val addFavoritesRequest = object : JsonObjectRequest(Method.POST, BASE_URL + "favorites", null, Response.Listener {
-            val emptyCallback = Gson().fromJson(it.toString(), Empty :: class.java)
+            val emptyCallback = gson.fromJson(it.toString(), Empty :: class.java)
 
             responseSubject.onNext(emptyCallback)
         }, Response.ErrorListener {
@@ -121,7 +123,7 @@ class DebateListWorker {
         val responseSubject = PublishSubject.create<Empty>()
 
         val deleteFavoritesRequest = object : JsonObjectRequest(Method.DELETE, BASE_URL + "favorites?debate_id=${debate.id}", null, Response.Listener {
-            val emptyCallback = Gson().fromJson(it.toString(), Empty :: class.java)
+            val emptyCallback = gson.fromJson(it.toString(), Empty :: class.java)
 
             responseSubject.onNext(emptyCallback)
         }, Response.ErrorListener {

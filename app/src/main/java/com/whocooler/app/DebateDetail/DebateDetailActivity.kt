@@ -138,6 +138,9 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
     override fun addNewMessage(row: DebateDetailAdapter.IDetailRow) {
         this.rows.add(2, row)
+        if (this.rows.get(3) is DebateDetailAdapter.EmptyMessagesRow) {
+            this.rows.removeAt(3)
+        }
         debateDetailAdapter.update(this.rows)
     }
 

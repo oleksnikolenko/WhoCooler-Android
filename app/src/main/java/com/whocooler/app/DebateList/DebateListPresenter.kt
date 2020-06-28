@@ -37,8 +37,8 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         activity?.updateDebateDataSource()
     }
 
-    override fun presentError() {
-        activity?.showErrorToast(UNEXPECTED_ERROR)
+    override fun presentError(message: String) {
+        activity?.showErrorToast(UNEXPECTED_ERROR + message)
     }
 
 }
