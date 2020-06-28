@@ -19,7 +19,7 @@ android {
         applicationId "com.whocooler.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
+        versionCode 5
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -60,6 +60,7 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.android:flexbox:2.0.1'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.1'

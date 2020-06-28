@@ -150,12 +150,16 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         debateDetailAdapter.update(this.rows)
 
         debate.messageCount += value
-        DebateService.debates.set(debatePosition, debate)
+        if (debatePosition != -1) {
+            DebateService.debates.set(debatePosition, debate)
+        }
     }
 
     override fun updateDebate(debate: Debate) {
         this.debate = debate
-        DebateService.debates.set(debatePosition, debate)
+        if (debatePosition != -1) {
+            DebateService.debates.set(debatePosition, debate)
+        }
     }
 
     override fun addNewRepliesBatch(message: Message, index: Int) {

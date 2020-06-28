@@ -9,6 +9,8 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.whocooler.app.Common.App.App
@@ -30,7 +32,8 @@ class DebateListAdapter(
     val debateClick: (Debate, Int) -> Unit,
     val authRequired: () -> Unit,
     val toggleFavorites: ((Debate) -> Unit)? = null,
-    val shouldShowDebateInfo: Boolean = false
+    val shouldShowDebateInfo: Boolean = false,
+    val didClickMore: () -> Unit
 ) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,6 +44,7 @@ class DebateListAdapter(
         private val votesCounter: MaterialTextView?= itemView?.findViewById(R.id.listVotesCounter)
         private val messageCounter: MaterialTextView? = itemView?.findViewById(R.id.listMessageCounter)
         private val favorites: AppCompatImageView? = itemView?.findViewById(R.id.detail_favorites)
+        private val more: AppCompatImageView? = itemView?.findViewById(R.id.list_more)
 
         fun bindDebate(debate: Debate) {
             Picasso.get().load(debate.leftSide.image).into(leftSideImage)
@@ -74,6 +78,10 @@ class DebateListAdapter(
                 debateClick(debate, adapterPosition)
             }
 
+            more?.setOnClickListener {
+                didClickMore()
+            }
+
             voteContainer.leftClicked = {
                 if (App.prefs.isTokenEmpty()) {
                     authRequired()
@@ -103,21 +111,46 @@ class DebateListAdapter(
                 RecyclerView.LayoutParams.MATCH_PARENT,
                 RecyclerView.LayoutParams.WRAP_CONTENT
             )
-            addView(
-                MaterialTextView(parent.context).apply {
-                    id = R.id.category_id
-                    gravity = Gravity.CENTER_VERTICAL
-                    layoutParams = LinearLayout.LayoutParams(
-                        RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.WRAP_CONTENT
-                    )
-                    updatePadding(
-                        left = parent.dip(12),
-                        top = parent.dip(12),
-                        bottom = parent.dip(12)
-                    )
+            addView(ConstraintLayout(parent.context).apply {
+                id = R.id.list_constraint_layout
+                layoutParams = LinearLayout.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(dip(12), dip(12), dip(12), dip(12))
                 }
-            )
+                addView(
+                    MaterialTextView(parent.context).apply {
+                        id = R.id.category_id
+                        gravity = Gravity.CENTER_VERTICAL or Gravity.START or Gravity.LEFT
+                        layoutParams = LinearLayout.LayoutParams(
+                            RecyclerView.LayoutParams.WRAP_CONTENT,
+                            RecyclerView.LayoutParams.WRAP_CONTENT
+                        )
+                    }
+                )
+                addView(
+                    AppCompatImageView(parent.context).apply {
+                        id = R.id.list_more
+                        setImageResource(R.drawable.more)
+                        gravity = Gravity.CENTER_VERTICAL or Gravity.END or Gravity.RIGHT
+                        layoutParams = LinearLayout.LayoutParams(
+                            dip(16),
+                            dip(16)
+                        )
+                    }
+                )
+
+                val set = ConstraintSet()
+                var parentLayout = findViewById<ConstraintLayout>(R.id.list_constraint_layout)
+                set.clone(parentLayout)
+                set.connect(R.id.category_id, ConstraintSet.START, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.START)
+                set.connect(R.id.category_id, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP)
+                set.connect(R.id.list_more, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP)
+                set.connect(R.id.list_more, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END)
+
+                set.applyTo(parentLayout)
+            })
 
             addView(LinearLayout(parent.context).apply {
                 val customLayoutParams = LinearLayout.LayoutParams(

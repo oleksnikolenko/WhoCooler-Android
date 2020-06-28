@@ -47,6 +47,7 @@ class DebateListContracts {
         fun navigateToAuthorization()
         fun navigateToUserProfile()
         fun navigateToSearch()
+        fun navigateToCreateDebate()
     }
 
 }

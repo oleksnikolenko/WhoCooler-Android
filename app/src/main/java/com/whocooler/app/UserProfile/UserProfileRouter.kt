@@ -8,8 +8,8 @@ class UserProfileRouter: UserProfileContracts.RouterInterface {
     var activity: UserProfileActivity? = null
 
     override fun navigateToAuth() {
-        val authItent = Intent(activity, AuhtorizationActivity:: class.java)
-        activity?.startActivity(authItent)
+        val authIntent = Intent(activity, AuhtorizationActivity:: class.java)
+        activity?.startActivity(authIntent)
         activity?.finish()
     }
 

@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
@@ -82,12 +83,17 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
             router?.navigateToAuth()
         }
 
+        val didClickMoreHandler: () -> Unit = {
+            showMoreAlert()
+        }
+
         debateAdapter =
             DebateListAdapter(
                 response.debates,
                 voteClickHandler,
                 debateClickHandler,
-                authRequiredHandler
+                authRequiredHandler,
+                didClickMore = didClickMoreHandler
             )
 
         debateAdapter.notifyDataSetChanged()
@@ -108,6 +114,17 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
     override fun showErrorToast(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showMoreAlert() {
+        val builder = AlertDialog.Builder(this)
+        val options = arrayOf("Report")
+
+        // TODO: - Fix when more will function properly
+        builder.setItems(options) { _, _ -> }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
 }

@@ -34,4 +34,6 @@
     <item name="detail_reply_reply" type="id" />
     <item name="detail_favorites" type="id" />
     <item name="detail_message_more" type="id" />
+    <item name="list_more" type="id" />
+    <item name="list_constraint_layout" type="id" />
 </resources>

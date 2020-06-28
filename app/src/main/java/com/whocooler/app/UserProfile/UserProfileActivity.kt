@@ -156,7 +156,7 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery()
                 } else {
                     Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
@@ -54,6 +55,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         setup()
         setupToolbar()
         handlePagination()
+        setupCreateDebateListener()
 
         interactor.getDebates(DebateListModels.DebateListRequest(Category.Constant.ALL.id, selectedSorting,true))
 
@@ -101,6 +103,13 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         dialog.show()
     }
 
+    private fun setupCreateDebateListener() {
+        val createDebateButton = findViewById<FloatingActionButton>(R.id.list_floating_button)
+        createDebateButton.setOnClickListener {
+            router?.navigateToCreateDebate()
+        }
+    }
+
     private fun updateSorting(sorting: String) {
         val toolbarSorting = findViewById<TextView>(R.id.toolbar_sorting)
         toolbarSorting.text = "Sorting: $sorting"
@@ -141,6 +150,10 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             interactor?.toggleFavorites(debate)
         }
 
+        val didClickMoreHandler: () -> Unit = {
+            showMoreAlert()
+        }
+
         debateAdapter =
             DebateListAdapter(
                 response.debates,
@@ -148,7 +161,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
                 debateClickHandler,
                 authRequiredHandler,
                 toggleFavoritesHandler,
-                true
+                true,
+                didClickMoreHandler
             )
 
         debateAdapter.notifyDataSetChanged()
@@ -214,5 +228,16 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private fun toggleProgressBar(isVisible: Boolean) {
         val progressBar = findViewById<ProgressBar>(R.id.list_bottom_progress_bar)
         progressBar.isVisible = isVisible
+    }
+
+    private fun showMoreAlert() {
+        val builder = AlertDialog.Builder(this)
+        val options = arrayOf("Report")
+
+        // TODO: - Fix when more will function properly
+        builder.setItems(options) { _, _ -> }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }

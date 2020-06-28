@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/we"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="0.5"
+    tools:context=".CreateDebate.CreateDebateActivity">
+
+    <LinearLayout
+        android:id="@+id/create_linearLayout_images"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/create_image_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="0.5"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/picture_placeholder" />
+
+        <ImageView
+            android:id="@+id/create_image_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="0.5"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/picture_placeholder" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/create_linearLayout_names"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_images">
+
+        <EditText
+            android:id="@+id/create_left_name_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@null"
+            android:hint="Left side name"
+            android:inputType="textMultiLine"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp" />
+
+        <EditText
+            android:id="@+id/create_right_name_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="0.5"
+            android:background="@null"
+            android:gravity="end"
+            android:hint="Right side name"
+            android:inputType="textMultiLine"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/create_create_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/create_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+    </NumberPicker>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Category"
+        app:layout_constraintStart_toStartOf="@+id/create_linearLayout_names"
+        app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_names" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
