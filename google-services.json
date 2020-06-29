@@ -59,6 +59,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "264606055840-hribb7bkoad0bbu9lddfskqm59l0fcuj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whocooler.app",
+            "certificate_hash": "f4375c7a350bd820829bebd19861c518d915b80d"
+          }
+        },
+        {
+          "client_id": "264606055840-emjani47ihp78qr1scgjuio22r99kd3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whocooler.app",
+            "certificate_hash": "1960a2e686d4f93e1b2fc7d71b9a38bbfafb1d16"
+          }
+        },
+        {
+          "client_id": "264606055840-si2eqlkgpued0r4ir70tpqj66hb6ofn3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whocooler.app",
+            "certificate_hash": "ea60a8da270c0a0a83aa295371a68325cfd45a20"
+          }
+        },
+        {
           "client_id": "264606055840-7h8n7a9avp4bo8idiidlbq033ec9dfpb.apps.googleusercontent.com",
           "client_type": 3
         }
