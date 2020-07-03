@@ -16,7 +16,7 @@ class CreateDebatePresenter : CreateDebateContracts.InteractorPresenterContract 
         activity?.navigateToDebate(debate)
     }
 
-    override fun presentError() {
-        activity?.showError(UNEXPECTED_ERROR)
+    override fun presentError(errorDescription: String) {
+        activity?.showError(UNEXPECTED_ERROR + errorDescription)
     }
 }

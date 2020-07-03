@@ -59,8 +59,8 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
         activity?.addNewMessagesBatch(rows)
     }
 
-    override fun presentError() {
-        activity?.showErrorToast(UNEXPECTED_ERROR)
+    override fun presentError(errorDescription: String) {
+        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
     }
 
 }

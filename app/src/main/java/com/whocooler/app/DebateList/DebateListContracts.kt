@@ -21,7 +21,7 @@ class DebateListContracts {
         fun presentDebates(response: DebatesResponse, shouldReloadCategories: Boolean)
         fun updateDebateDataSource()
         fun addNewDebates(response: DebatesResponse)
-        fun presentError(message: String)
+        fun presentNoInternet()
         fun presentAuthScreen()
     }
 
@@ -34,8 +34,9 @@ class DebateListContracts {
         fun updateDebateDataSource()
         fun setupEmptyState(text: String)
         fun addNewDebates(response: DebatesResponse)
-        fun showErrorToast(message: String)
+        fun showNoInternerError()
         fun navigateToAuth()
+        fun toggleErrorWidgetVisibility(isVisible: Boolean)
 
         var selectedCategoryId: String
     }

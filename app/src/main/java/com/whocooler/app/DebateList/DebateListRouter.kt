@@ -6,6 +6,7 @@ import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
+import com.whocooler.app.Common.Utilities.LAUNCH_AUTH_WITH_RESULT
 import com.whocooler.app.CreateDebate.CreateDebateActivity
 import com.whocooler.app.DebateDetail.DebateDetailActivity
 import com.whocooler.app.Search.SearchActivity
@@ -24,7 +25,7 @@ class DebateListRouter : DebateListContracts.RouterInterface {
 
     override fun navigateToAuthorization() {
         val authItent = Intent(activity, AuhtorizationActivity:: class.java)
-        activity?.startActivity(authItent)
+        activity?.startActivityForResult(authItent, LAUNCH_AUTH_WITH_RESULT)
     }
 
     override fun navigateToUserProfile() {
@@ -32,7 +33,7 @@ class DebateListRouter : DebateListContracts.RouterInterface {
             navigateToAuthorization()
         } else {
             val authItent = Intent(activity, UserProfileActivity:: class.java)
-            activity?.startActivity(authItent)
+            activity?.startActivityForResult(authItent, LAUNCH_AUTH_WITH_RESULT)
         }
     }
 

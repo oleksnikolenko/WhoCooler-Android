@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
@@ -24,6 +25,7 @@ import com.whocooler.app.R
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlin.properties.Delegates
 
 
 class DebateListAdapter(

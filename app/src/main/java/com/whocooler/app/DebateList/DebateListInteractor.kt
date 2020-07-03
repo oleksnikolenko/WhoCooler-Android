@@ -1,11 +1,16 @@
 package com.whocooler.app.DebateList
 
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import com.android.volley.NetworkError
+import com.android.volley.NoConnectionError
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Services.DebateService
+import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -28,7 +33,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 presenter?.presentDebates(response, shouldReloadCategories = request.shouldReloadCategories)
                 page = 1
             }, onError = {
-                presenter?.presentError(it.localizedMessage)
+                handleError(it)
             }
         )
     }
@@ -45,7 +50,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
 
                 presenter?.addNewDebates(response)
             }, onError = {
-                presenter?.presentError(it.localizedMessage)
+                handleError(it)
             }
         )
     }
@@ -57,7 +62,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 responseSubject.onNext(response.debate)
                 DebateService.debates.set(position, response.debate)
             }, onError = {
-                presenter?.presentError(it.localizedMessage)
+                handleError(it)
             }
         )
         return responseSubject
@@ -79,7 +84,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 DebateService.toggleFavorite(debate)
                 presenter?.updateDebateDataSource()
             }, onError = {
-                presenter?.presentError(it.localizedMessage)
+                handleError(it)
             }
         )
     }
@@ -90,7 +95,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
                 DebateService.toggleFavorite(debate)
                 presenter?.updateDebateDataSource()
             }, onError = {
-                presenter?.presentError(it.localizedMessage)
+                handleError(it)
             }
         )
     }
@@ -98,4 +103,13 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
     override fun hasDebatesListNextPage(): Boolean {
         return response?.hasNextPage ?: false
     }
+
+    private fun handleError(error: Throwable) {
+        if (error is NetworkError) {
+            presenter?.presentNoInternet()
+        } else if (error is NoConnectionError) {
+            Toast.makeText(App.appContext, error.localizedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

@@ -10,7 +10,7 @@ class AuthorizationPresenter: AuthorizationContracts.InteractorPresenterContract
         activity?.dismissActivity()
     }
 
-    override fun presentError() {
-        activity?.showErrorToast(UNEXPECTED_ERROR)
+    override fun presentError(errorDescription: String) {
+        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
     }
 }

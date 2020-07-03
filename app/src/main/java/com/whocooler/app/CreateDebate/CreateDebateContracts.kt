@@ -22,7 +22,7 @@ class CreateDebateContracts {
         // Functions for Interactor output / Presenter input
         fun didFetchCategories(categories: ArrayList<Category>)
         fun navigateToDebate(debate: Debate)
-        fun presentError()
+        fun presentError(errorDescription: String)
     }
 
     // Presenter -> View

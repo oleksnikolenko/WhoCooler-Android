@@ -31,7 +31,7 @@ class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
                 App.prefs.userSession?.user = response.user
                 presenter?.presentProfile(response.user)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -42,7 +42,7 @@ class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
                 App.prefs.userSession?.user = response.user
                 presenter?.presentProfile(response.user)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }

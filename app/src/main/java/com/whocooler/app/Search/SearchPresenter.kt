@@ -11,8 +11,8 @@ class SearchPresenter : SearchContracts.InteractorPresenterContract {
         activity?.setupDebateAdapter(response)
     }
 
-    override fun presentError() {
-        activity?.showErrorToast(UNEXPECTED_ERROR)
+    override fun presentError(errorDescription: String) {
+        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
     }
 
 }

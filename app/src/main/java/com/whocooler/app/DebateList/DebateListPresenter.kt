@@ -23,6 +23,8 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         } else {
             activity?.setupDebateAdapter(response)
         }
+
+        activity?.toggleErrorWidgetVisibility(false)
     }
 
     override fun presentAuthScreen() {
@@ -37,8 +39,8 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         activity?.updateDebateDataSource()
     }
 
-    override fun presentError(message: String) {
-        activity?.showErrorToast(UNEXPECTED_ERROR + message)
+    override fun presentNoInternet() {
+        activity?.showNoInternerError()
     }
 
 }

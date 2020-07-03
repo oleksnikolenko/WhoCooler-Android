@@ -4,6 +4,7 @@ const val BASE_URL = "https://api.whocooler.com/"
 const val EXTRA_DEBATE = "debate"
 const val EXTRA_DEBATE_POSITION = "debate_position"
 const val EXTRA_SHOULD_DISMISS = "shouldDismissAfterSuccess"
+const val EXTRA_SHOULD_RELOAD_DEBATE_LIST = "shouldReloadDebateList"
 
 const val PREFS_USER_SESSION = "USER_SESSION"
 
@@ -14,3 +15,5 @@ const val VOTE_BUTTON_RIGHT_END_COLOR = "#4A569D"
 const val VOTE_BUTTON_SHADE_COLOR = "#E6E6E6"
 
 const val UNEXPECTED_ERROR = "An unexpected error occured. Please try again. "
+
+const val LAUNCH_AUTH_WITH_RESULT = 1

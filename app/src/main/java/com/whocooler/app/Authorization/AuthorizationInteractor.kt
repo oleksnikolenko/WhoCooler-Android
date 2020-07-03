@@ -14,7 +14,7 @@ class AuthorizationInteractor: AuthorizationContracts.ViewInteractorContract {
                 presenter?.didAuthenticate()
                 App.prefs.userSession = userSession
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }

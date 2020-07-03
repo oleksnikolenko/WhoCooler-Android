@@ -1,5 +1,6 @@
 package com.whocooler.app.Authorization
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -33,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.whocooler.app.Common.Utilities.EXTRA_SHOULD_RELOAD_DEBATE_LIST
 import kotlinx.android.synthetic.main.activity_auhtorization.*
 
 class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.PresenterViewContract {
@@ -46,6 +48,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var facebookCallbackManager: CallbackManager
     lateinit var interactor: AuthorizationContracts.ViewInteractorContract
+    private var shouldReloadList = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +61,10 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
+
+        if (intent.extras != null) {
+            shouldReloadList = intent.getBooleanExtra(EXTRA_SHOULD_RELOAD_DEBATE_LIST, false)
+        }
 
         setupModule()
         setupViews()
@@ -210,7 +217,9 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
     }
 
     override fun dismissActivity() {
-        super.onBackPressed()
+        val returnIntent = Intent()
+        setResult(Activity.RESULT_OK, returnIntent)
+        finish()
     }
 
     override fun showErrorToast(message: String) {

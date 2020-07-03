@@ -1,7 +1,11 @@
 package com.whocooler.app.DebateList
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +19,8 @@ import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Services.DebateService
+import com.whocooler.app.Common.Utilities.LAUNCH_AUTH_WITH_RESULT
+import com.whocooler.app.Common.ui.error.ErrorInternetWidget
 import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.DebateList.Adapters.DebateListCategoryAdapter
 import com.whocooler.app.R
@@ -35,6 +41,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private lateinit var scrollListener: RecyclerView.OnScrollListener
     private val lastVisibleItemPosition: Int
         get() = linearLayout.findLastVisibleItemPosition()
+    private lateinit var errorWidget: ErrorInternetWidget
 
     private fun setup() {
         var activity = this
@@ -57,9 +64,40 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         handlePagination()
         setupCreateDebateListener()
 
-        interactor.getDebates(DebateListModels.DebateListRequest(Category.Constant.ALL.id, selectedSorting,true))
+        interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
+
+        errorWidget = findViewById(R.id.list_error_widget)
+        errorWidget.refreshButton.setOnClickListener {
+            refreshDebates()
+        }
 
         toggleProgressBar(false)
+    }
+
+    private fun refreshDebates() {
+        var shouldReloadCategories = this::debateAdapter.isInitialized
+        interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting, !shouldReloadCategories))
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        if (reloadPosition != null)  {
+            debateAdapter.debates = DebateService.debates
+            listRecyclerView.itemAnimator = null
+            debateAdapter.notifyItemChanged(reloadPosition!!)
+            reloadPosition = null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LAUNCH_AUTH_WITH_RESULT) {
+            if (resultCode == Activity.RESULT_OK) {
+                interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -181,17 +219,6 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         toggleProgressBar(false)
     }
 
-    override fun onRestart() {
-        super.onRestart()
-
-        if (reloadPosition != null)  {
-            debateAdapter.debates = DebateService.debates
-            debateAdapter.notifyItemChanged(reloadPosition!!)
-        } else {
-            interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
-        }
-    }
-
     override fun updateDebateDataSource() {
         debateAdapter.update(DebateService.debates)
     }
@@ -217,8 +244,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         listRecyclerView.addOnScrollListener(scrollListener)
     }
 
-    override fun showErrorToast(message: String) {
-        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    override fun showNoInternerError() {
+        toggleErrorWidgetVisibility(true)
     }
 
     override fun navigateToAuth() {
@@ -239,5 +266,9 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun toggleErrorWidgetVisibility(isVisible: Boolean) {
+        errorWidget.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 }

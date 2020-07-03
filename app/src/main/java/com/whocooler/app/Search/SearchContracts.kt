@@ -15,7 +15,7 @@ class SearchContracts {
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun presentDebates(response: SearchResponse)
-        fun presentError()
+        fun presentError(errorDescription: String)
     }
 
     interface PresenterViewContract {

@@ -149,8 +149,8 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         startActivity(intent)
     }
 
-    override fun navigateToAuth() {
-        router?.navigateToAuth()
+    override fun navigateToDebateList() {
+        router?.navigateToDebateList()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

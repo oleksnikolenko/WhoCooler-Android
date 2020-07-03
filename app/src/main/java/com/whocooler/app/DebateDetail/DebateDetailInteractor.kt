@@ -44,7 +44,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
                 debate.messagesList.messages.add(0, message)
                 presenter?.presentNewMessage(message)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -59,7 +59,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
                     debate.messagesList.messages[parentIndex].replyCount += 1
                 }
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -71,7 +71,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
                 responseSubject.onNext(response.debate)
                 presenter?.updateDebate(response.debate)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
         return responseSubject
@@ -92,7 +92,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
                     presenter?.presentNewRepliesBatch(debate.messagesList.messages[parentIndex], index)
                 }
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -110,7 +110,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
 
                     presenter?.presentNewMessagesBatch(messagesList)
                 }, onError = {
-                    presenter?.presentError()
+                    presenter?.presentError(it.localizedMessage)
                 }
             )
         }

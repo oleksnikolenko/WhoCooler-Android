@@ -13,7 +13,7 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
             onNext = { response ->
                 presenter?.didFetchCategories(response.categories)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }
@@ -29,7 +29,7 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
             onNext = { debate ->
                 presenter?.navigateToDebate(debate)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
     }

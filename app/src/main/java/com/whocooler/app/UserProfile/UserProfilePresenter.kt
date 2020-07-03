@@ -12,10 +12,10 @@ class UserProfilePresenter: UserProfileContracts.InteractorPresenterContract {
     }
 
     override fun navigateToAuth() {
-        activity?.navigateToAuth()
+        activity?.navigateToDebateList()
     }
 
-    override fun presentError() {
-        activity?.showErrorToast(UNEXPECTED_ERROR)
+    override fun presentError(errorDescription: String) {
+        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
     }
 }

@@ -101,6 +101,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.whocooler.app.Common.ui.error.ErrorInternetWidget
+        android:id="@+id/list_error_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone">
+
+    </com.whocooler.app.Common.ui.error.ErrorInternetWidget>
+
     <TextView
         android:id="@+id/list_empty_state"
         android:layout_width="wrap_content"
@@ -130,4 +139,5 @@
         app:backgroundTint="#FFFFFF"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@android:drawable/ic_input_add" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

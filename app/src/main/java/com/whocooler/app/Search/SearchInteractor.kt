@@ -25,7 +25,7 @@ class SearchInteractor : SearchContracts.ViewInteractorContract {
                 responseSubject.onNext(response.debate)
                 DebateService.updateDebate(response.debate)
             }, onError = {
-                presenter?.presentError()
+                presenter?.presentError(it.localizedMessage)
             }
         )
         return responseSubject

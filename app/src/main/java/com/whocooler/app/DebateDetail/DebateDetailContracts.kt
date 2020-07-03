@@ -26,7 +26,7 @@ class DebateDetailContracts {
         fun updateDebate(debate: Debate)
         fun presentNewRepliesBatch(message: Message, index: Int)
         fun presentNewMessagesBatch(messagesList: MessagesList)
-        fun presentError()
+        fun presentError(errorDescription: String)
     }
 
     // Presenter -> View

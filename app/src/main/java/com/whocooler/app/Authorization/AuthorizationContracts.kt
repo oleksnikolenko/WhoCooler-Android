@@ -10,7 +10,7 @@ class AuthorizationContracts {
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
         fun didAuthenticate()
-        fun presentError()
+        fun presentError(errorDescription: String)
     }
 
     // Presenter -> View
