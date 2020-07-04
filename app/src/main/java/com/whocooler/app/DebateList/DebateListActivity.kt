@@ -46,10 +46,10 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private lateinit var errorWidget: ErrorInternetWidget
 
     private fun setup() {
-        var activity = this
-        var interactor = DebateListInteractor()
-        var presenter = DebateListPresenter()
-        var router = DebateListRouter()
+        val activity = this
+        val interactor = DebateListInteractor()
+        val presenter = DebateListPresenter()
+        val router = DebateListRouter()
 
         activity.interactor = interactor
         activity.router = router

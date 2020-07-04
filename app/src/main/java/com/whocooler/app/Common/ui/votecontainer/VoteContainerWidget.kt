@@ -83,7 +83,6 @@ class VoteContainerWidget @JvmOverloads constructor(
         weightSum = 100F
         gravity = Gravity.CENTER_VERTICAL
 
-
         val customLayoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
             dip(74)

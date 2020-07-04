@@ -3,6 +3,7 @@ package com.whocooler.app.DebateDetail
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
+import com.whocooler.app.Common.Services.DebateService
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -19,7 +20,9 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
         presenter?.presentDebate(debate)
 
         worker.getDebate(debate.id).subscribe {
-            presenter?.presentDebate(debate)
+            DebateService.updateDebate(it)
+            this.debate = it
+            presenter?.presentDebate(it)
         }
     }
 
@@ -86,7 +89,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
             onNext = { messagesList->
                 var parentIndex = debate.messagesList.messages.indexOf(parentMessage)
                 if (parentIndex != -1) {
-                    debate.messagesList.messages[parentIndex].notShownReplyCount -= oneReplyBatchCount
+                    debate.messagesList.messages[parentIndex].setNotShowReplyCount(oneReplyBatchCount)
                     debate.messagesList.messages[parentIndex].replyList.addAll(0, messagesList.messages)
 
                     presenter?.presentNewRepliesBatch(debate.messagesList.messages[parentIndex], index)

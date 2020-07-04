@@ -116,17 +116,22 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
             showMoreAlert()
         }
 
+        val errorHandler: () -> Unit = {
+            showErrorToast(getString(R.string.error_unexpected))
+        }
+
         debateDetailAdapter = DebateDetailAdapter(this,
             rows,
             voteClickHandler,
             authRequiredHandler,
             getNextRepliesHandler,
             didClickReply,
-            showMoreHandler
+            showMoreHandler,
+            errorHandler
         )
 
         detail_recycler_view.adapter = debateDetailAdapter
-        detail_recycler_view.layoutManager = linearLayout//LinearLayoutManager(this)
+        detail_recycler_view.layoutManager = linearLayout
 
         this.rows = rows
     }

@@ -41,4 +41,9 @@
     <item name="detail_message_user_name" type="id" />
     <item name="listMessageCounter" type="id" />
     <item name="listVotesCounter" type="id" />
+    <item name="detail_message_vote" type="id" />
+    <item name="vote_message_counter" type="id" />
+    <item name="vote_thumbs_up" type="id" />
+    <item name="vote_thumbs_down" type="id" />
+    <item name="detail_reply_vote" type="id" />
 </resources>

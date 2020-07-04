@@ -1,10 +1,7 @@
 package com.whocooler.app.Search
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -12,12 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.SearchResponse
-import com.whocooler.app.Common.Services.DebateService
 import com.whocooler.app.DebateList.Adapters.DebateListAdapter
-import com.whocooler.app.DebateList.DebateListModels
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_debate_detail.*
 import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContract {
@@ -68,15 +62,13 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
     }
 
     override fun setupDebateAdapter(response: SearchResponse) {
-        DebateService.debates = response.debates
-
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
             interactor.vote(debate.id, debateSide.id, position)
         }
 
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
-            router?.navigateToDebate(DebateService.debates[adapterPosition], adapterPosition)
+            router?.navigateToDebate(debateAdapter.debates[adapterPosition], adapterPosition)
         }
 
         val authRequiredHandler: () -> Unit = {
@@ -101,15 +93,6 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
         search_recycler_view.adapter = debateAdapter
         val layoutManager = LinearLayoutManager(this)
         search_recycler_view.layoutManager = layoutManager
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-
-        if (reloadPosition != null)  {
-            debateAdapter.debates = DebateService.debates
-            debateAdapter.notifyItemChanged(reloadPosition!!)
-        }
     }
 
     override fun showErrorToast(message: String) {

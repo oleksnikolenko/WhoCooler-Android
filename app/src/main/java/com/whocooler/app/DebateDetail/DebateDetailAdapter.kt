@@ -24,6 +24,7 @@ import com.whocooler.app.Common.Views.RoundRectCornerImageView
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerModel
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
 import com.whocooler.app.R
+import com.whocooler.app.VoteMessage.VoteMessageView
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebateDetailAdapter(
@@ -33,7 +34,8 @@ class DebateDetailAdapter(
     val authRequired: () -> Unit,
     val getNextRepliesPage: (message: Message, index: Int) -> Unit,
     val didClickReply: (parentMessageId: String, index: Int) -> Unit,
-    val didClickMore: () -> Unit
+    val didClickMore: () -> Unit,
+    val errorHappened: () -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -66,6 +68,7 @@ class DebateDetailAdapter(
         var showRepliesTextView: MaterialTextView = itemView.findViewById(R.id.detail_message_show_replies)
         var messageReply: MaterialTextView = itemView.findViewById(R.id.detail_message_reply)
         var moreImage: AppCompatImageView = itemView.findViewById(R.id.detail_message_more)
+        var voteMessageView: VoteMessageView = itemView.findViewById(R.id.detail_message_vote)
     }
 
     class MessageHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -79,6 +82,7 @@ class DebateDetailAdapter(
         var messageText: TextView = itemView.findViewById(R.id.detail_reply_text)
         var messageDate: TextView = itemView.findViewById(R.id.detail_reply_date)
         var reply: MaterialTextView = itemView.findViewById(R.id.detail_reply_reply)
+        var voteReplyView: VoteMessageView = itemView.findViewById(R.id.detail_reply_vote)
     }
 
     class EmptyMessagesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
@@ -147,7 +151,7 @@ class DebateDetailAdapter(
         Picasso.get().load(row.message.user.avatar).into(messageRow.userAvatar)
         messageRow.userName.text = row.message.user.name
         messageRow.messageText.text = row.message.text
-        messageRow.messageDate.text = getDateTime(row.message.createdTime) //row.message.createdTime.toFloat().toString()
+        messageRow.messageDate.text = getDateTime(row.message.createdTime)
 
         messageRow.messageReply.setOnClickListener {
             didClickReply(row.message.id, messageRow.adapterPosition - 2)
@@ -157,13 +161,24 @@ class DebateDetailAdapter(
             didClickMore()
         }
 
-        if (row.message.notShownReplyCount > 0) {
-            messageRow.showRepliesTextView.text = "${context.getString(R.string.message_show)} ${row.message.notShownReplyCount} ${context.getString(R.string.message_more_replies)}"
-            messageRow.showRepliesTextView.setOnClickListener {
-                getNextRepliesPage(row.message, messageRow.adapterPosition)
-            }
+        messageRow.voteMessageView.acceptModel(row.message)
+
+        messageRow.voteMessageView.authRequired.subscribe {
+            authRequired()
+        }
+
+        messageRow.voteMessageView.errorHappened.subscribe {
+            errorHappened()
+        }
+
+        if (row.message.getNotShownReplyCount() > 0) {
+            messageRow.showRepliesTextView.text = "${context.getString(R.string.message_show)} ${row.message.getNotShownReplyCount()} ${context.getString(R.string.message_more_replies)}"
         } else {
             messageRow.showRepliesTextView.visibility = View.GONE
+        }
+
+        messageRow.showRepliesTextView.setOnClickListener {
+            getNextRepliesPage(row.message, messageRow.adapterPosition)
         }
     }
 
@@ -187,6 +202,15 @@ class DebateDetailAdapter(
             if (threadId != null) {
                 didClickReply(threadId, replyRow.adapterPosition - 2)
             }
+        }
+
+        replyRow.voteReplyView.acceptModel(row.reply)
+
+        replyRow.voteReplyView.authRequired.subscribe {
+            authRequired()
+        }
+        replyRow.voteReplyView.errorHappened.subscribe {
+            errorHappened()
         }
     }
 
@@ -321,6 +345,9 @@ class DebateDetailAdapter(
                     }
                 }
             )
+            addView(VoteMessageView(context).apply {
+                id = R.id.detail_message_vote
+            })
             addView(
                 MaterialTextView(context).apply {
                     id = R.id.detail_message_show_replies
@@ -350,10 +377,15 @@ class DebateDetailAdapter(
             set.connect(R.id.detail_message_text, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
             set.connect(R.id.detail_message_reply, ConstraintSet.TOP, R.id.detail_message_text, ConstraintSet.BOTTOM, dip(6))
             set.connect(R.id.detail_message_reply, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.START)
+            set.connect(R.id.detail_message_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(12))
+            set.connect(R.id.detail_message_vote, ConstraintSet.TOP, R.id.detail_message_reply, ConstraintSet.TOP)
+            set.connect(R.id.detail_message_vote, ConstraintSet.BOTTOM, R.id.detail_message_reply, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_message_show_replies, ConstraintSet.TOP, R.id.detail_message_reply, ConstraintSet.BOTTOM, dip(8))
             set.connect(R.id.detail_message_show_replies, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.START)
 
             set.applyTo(parentLayout)
+
+            refreshDrawableState()
         }
 
         return MessageViewHolder(container)
@@ -421,6 +453,9 @@ class DebateDetailAdapter(
                     }
                 }
             )
+            addView(VoteMessageView(context).apply {
+                id = R.id.detail_reply_vote
+            })
 
             val set = ConstraintSet()
             var parentLayout = findViewById<ConstraintLayout>(R.id.reply_constraint_layout)
@@ -437,8 +472,13 @@ class DebateDetailAdapter(
             set.connect(R.id.detail_reply_text, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
             set.connect(R.id.detail_reply_reply, ConstraintSet.TOP, R.id.detail_reply_text, ConstraintSet.BOTTOM, dip(6))
             set.connect(R.id.detail_reply_reply, ConstraintSet.START, R.id.detail_reply_user_name, ConstraintSet.START)
+            set.connect(R.id.detail_reply_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(12))
+            set.connect(R.id.detail_reply_vote, ConstraintSet.TOP, R.id.detail_reply_reply, ConstraintSet.TOP)
+            set.connect(R.id.detail_reply_vote, ConstraintSet.BOTTOM, R.id.detail_reply_reply, ConstraintSet.BOTTOM)
 
             set.applyTo(parentLayout)
+
+            refreshDrawableState()
         }
 
         return ReplyViewHolder(container)
