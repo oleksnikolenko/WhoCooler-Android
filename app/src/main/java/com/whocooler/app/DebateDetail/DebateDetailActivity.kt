@@ -3,6 +3,7 @@ package com.whocooler.app.DebateDetail
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -33,7 +34,6 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     var linearLayout = LinearLayoutManager(this)
     private lateinit var scrollListener: RecyclerView.OnScrollListener
     private lateinit var editText: EditText
-
 
     private var inputParentMessageId: String? = null
     private var inputParentIndex: Int? = null
@@ -70,7 +70,15 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         setupSendMessageOnClickListener()
         handlePagination()
         toggleProgressBar(false)
+        setupActionBar()
+
         editText = findViewById(R.id.detail_edit_text)
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(findViewById(R.id.detail_toolbar))
+        supportActionBar?.setTitle("")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun setupSendMessageOnClickListener() {
@@ -133,6 +141,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     }
 
     private fun hideKeyboard() {
+        inputParentIndex = null
         this.currentFocus?.let { v->
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(v.windowToken, 0)
@@ -240,6 +249,16 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
 }

@@ -15,8 +15,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateDebate.CreateDebateActivity"></activity>
-        <activity android:name=".Search.SearchActivity" />
+        <activity
+            android:name=".CreateDebate.CreateDebateActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            >
+
+        </activity>
+        <activity
+            android:name=".Search.SearchActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            />
         <activity
             android:name=".DebateDetail.DebateDetailActivity"
             android:screenOrientation="portrait"

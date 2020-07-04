@@ -50,16 +50,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="ABC" />
 
-                <TextView
-                    android:id="@+id/toolbar_sorting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/toolbar_search"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.555" />
-
                 <ImageButton
                     android:id="@+id/toolbar_search"
                     android:layout_width="wrap_content"
@@ -67,10 +57,26 @@
                     android:layout_marginEnd="16dp"
                     android:background="@android:color/transparent"
                     android:scaleType="centerCrop"
+                    android:tint="@android:color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/toolbar_profile"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+                <ImageButton
+                    android:id="@+id/list_toolbar_sorting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@android:color/transparent"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/toolbar_search"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/sort" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -91,7 +97,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="658dp"
+        android:layout_height="match_parent"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -114,6 +120,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:textAlignment="center"
         android:visibility="gone" />
 

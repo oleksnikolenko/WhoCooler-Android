@@ -3,10 +3,12 @@ package com.whocooler.app.DebateList
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -95,7 +97,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         if (requestCode == LAUNCH_AUTH_WITH_RESULT) {
             if (resultCode == Activity.RESULT_OK) {
-                interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting,true))
+                refreshDebates()
             }
         }
     }
@@ -113,8 +115,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             router.navigateToUserProfile()
         }
 
-        val toolbarSorting = toolbar.findViewById<TextView>(R.id.toolbar_sorting)
-        toolbarSorting.text = getString(R.string.sorting_title) + getString(R.string.sorting_popular)
+        val toolbarSorting = toolbar.findViewById<ImageButton>(R.id.list_toolbar_sorting)
         toolbarSorting.setOnClickListener {
             showSortingAlert()
         }
@@ -135,8 +136,14 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             getString(R.string.sorting_newest),
             getString(R.string.sorting_oldest))
 
+
+        val defaultSortingNamesForBackend = arrayOf(
+            "popular",
+            "newest",
+            "oldest")
+
         builder.setItems(sortings) { _, which ->
-            updateSorting(sortings[which])
+            updateSorting(defaultSortingNamesForBackend[which])
         }
 
         val dialog = builder.create()
@@ -151,11 +158,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         }
     }
 
-    private fun updateSorting(sorting: String) {
-        val toolbarSorting = findViewById<TextView>(R.id.toolbar_sorting)
-        toolbarSorting.text = getString(R.string.sorting_title) + " " + sorting
-
-        selectedSorting = sorting.toLowerCase(Locale.ROOT)
+    private fun updateSorting(sortingForBackend: String) {
+        selectedSorting = sortingForBackend
         interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
     }
 

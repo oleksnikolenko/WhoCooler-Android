@@ -35,7 +35,7 @@
     <string name="category_favorites_name">Favorites</string>
     <string name="empty_favorites">You have no favorites yet\nAdd them in the feed and they will appear here</string>
     <string name="error_unexpected">An unexpected error occured. Please try again. </string>
-    <string name="sign_in_google">Sign in with Google</string>
+    <string name="sign_in_google">Continue with Google</string>
     <string name="create_left_side_name">Left side name</string>
     <string name="create_right_side_name">Right side name</string>
     <string name="create_create">create</string>

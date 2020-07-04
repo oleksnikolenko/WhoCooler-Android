@@ -24,6 +24,7 @@ import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
 import com.whocooler.app.R
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
+import com.whocooler.app.Common.Utilities.VOTE_BUTTON_SHADE_COLOR
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlin.properties.Delegates
 
@@ -182,6 +183,7 @@ class DebateListAdapter(
                         parent.dip(140)
                     ).apply {
                         weight = 1.0f
+                        setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
                     }
                 })
 
@@ -193,6 +195,7 @@ class DebateListAdapter(
                         parent.dip(140)
                     ).apply {
                         weight = 1.0f
+                        setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
                     }
                 })
             })
@@ -203,7 +206,7 @@ class DebateListAdapter(
                 addView(LinearLayout(parent.context).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        dip(18)
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         setMargins(0, dip(16), 0, 0)
                     }
@@ -223,7 +226,7 @@ class DebateListAdapter(
                         id = R.id.listVotesCounter
                         layoutParams = LinearLayout.LayoutParams(
                             RecyclerView.LayoutParams.WRAP_CONTENT,
-                            RecyclerView.LayoutParams.MATCH_PARENT
+                            RecyclerView.LayoutParams.WRAP_CONTENT
                         ).apply {
                             setMargins(dip(10), 0, 0, 0)
                             setTextColor(Color.BLACK)
@@ -232,8 +235,8 @@ class DebateListAdapter(
                     addView(AppCompatImageView(parent.context).apply {
                         id = R.id.message_counter_image
                         layoutParams = LinearLayout.LayoutParams(
-                            dip(18),
-                            LinearLayout.LayoutParams.MATCH_PARENT
+                            parent.dip(18),
+                            parent.dip(18)
                         ).apply {
                             setMargins(dip(12), 0, 0, 0)
                             setImageResource(R.drawable.message)
@@ -243,7 +246,7 @@ class DebateListAdapter(
                         id = R.id.listMessageCounter
                         layoutParams = LinearLayout.LayoutParams(
                             RecyclerView.LayoutParams.WRAP_CONTENT,
-                            RecyclerView.LayoutParams.MATCH_PARENT
+                            RecyclerView.LayoutParams.WRAP_CONTENT
                         ).apply {
                             setMargins(dip(12), 0, 0, 0)
                             setTextColor(Color.BLACK)

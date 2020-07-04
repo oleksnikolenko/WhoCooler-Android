@@ -19,12 +19,12 @@
     <string name="sorting_popular" >Популярные</string>
     <string name="sorting_newest">Новые</string>
     <string name="sorting_oldest">Старые</string>
-    <string name="sorting_title">Сначала: </string>
+    <string name="sorting_title">Сортировка:</string>
     <string name="message_show">Покакзать еще</string>
-    <string name="message_more_replies">ответа</string>
+    <string name="message_more_replies">ответа(ов)</string>
     <string name="reply">Ответить</string>
     <string name="comments_header">Комментарии</string>
-    <string name="empty_messages">Здесь пока еще нет комментариев\nбудь первым(ой), поделись мнением!</string>
+    <string name="empty_messages">Здесь пока еще нет комментариев.\nБудь первым(ой), поделись мнением!</string>
     <string name="create_not_enough_data">Недостаточно данных, нужно заполнить все поля</string>
     <string name="auth_failed" >Войти не получилось :(</string>
     <string name="auth_terms_info_full">Продолжая, вы соглашаетесь с нашими Правилами Пользования. Чтобы узнать, как мы используем Ваши данные, загляните в Политику Конфиденциальности.</string>
