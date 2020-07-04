@@ -14,6 +14,4 @@ const val VOTE_BUTTON_RIGHT_START_COLOR = "#DC2424"
 const val VOTE_BUTTON_RIGHT_END_COLOR = "#4A569D"
 const val VOTE_BUTTON_SHADE_COLOR = "#E6E6E6"
 
-const val UNEXPECTED_ERROR = "An unexpected error occured. Please try again. "
-
 const val LAUNCH_AUTH_WITH_RESULT = 1

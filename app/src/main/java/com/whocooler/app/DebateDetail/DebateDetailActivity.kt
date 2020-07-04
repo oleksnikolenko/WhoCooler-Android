@@ -1,8 +1,9 @@
 package com.whocooler.app.DebateDetail
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
+import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
@@ -31,6 +32,8 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
     var linearLayout = LinearLayoutManager(this)
     private lateinit var scrollListener: RecyclerView.OnScrollListener
+    private lateinit var editText: EditText
+
 
     private var inputParentMessageId: String? = null
     private var inputParentIndex: Int? = null
@@ -61,17 +64,17 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         setup()
         setContentView(R.layout.activity_debate_detail)
 
-        debate = intent.getParcelableExtra<Debate>(EXTRA_DEBATE)
+        debate = intent.getParcelableExtra(EXTRA_DEBATE)
         debatePosition = intent.getIntExtra(EXTRA_DEBATE_POSITION, debatePosition)
         interactor.initDebate(debate)
         setupSendMessageOnClickListener()
         handlePagination()
         toggleProgressBar(false)
+        editText = findViewById(R.id.detail_edit_text)
     }
 
     private fun setupSendMessageOnClickListener() {
         val sendMessageButton = findViewById<ImageButton>(R.id.detail_send_button)
-        val editText = findViewById<EditText>(R.id.detail_edit_text)
 
         sendMessageButton.setOnClickListener {
             if (editText.text.toString().isNotEmpty()) {
@@ -123,13 +126,17 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     override fun resetEditText() {
         detail_edit_text.text.clear()
 
+        hideKeyboard()
+
+        inputParentIndex = null
+        inputParentMessageId = null
+    }
+
+    private fun hideKeyboard() {
         this.currentFocus?.let { v->
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
-
-        inputParentIndex = null
-        inputParentMessageId = null
     }
 
     override fun navigateToAuth() {
@@ -145,7 +152,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     }
 
     override fun updateMessageCounter(value: Int) {
-        var headerRow = rows.get(1) as? DebateDetailAdapter.MessageHeaderRow
+        val headerRow = rows.get(1) as? DebateDetailAdapter.MessageHeaderRow
         headerRow?.messageCount = headerRow?.messageCount?.plus(value)!!
         debateDetailAdapter.update(this.rows)
 
@@ -208,7 +215,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
     private fun showMoreAlert() {
         val builder = AlertDialog.Builder(this)
-        val options = arrayOf("Report")
+        val options = arrayOf(getString(R.string.report))
 
         // TODO: - Fix when more will function properly
         builder.setItems(options) { _, _ -> }
@@ -219,6 +226,20 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
     override fun showErrorToast(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev?.action == MotionEvent.ACTION_DOWN) {
+            if (editText.isFocused()) {
+                val outRect = Rect()
+                editText.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    editText.clearFocus()
+                    hideKeyboard()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
 }

@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
     private fun setupSearchView() {
         val searchView = findViewById<SearchView>(R.id.search_view)
-        searchView.queryHint = "Start searching"
+        searchView.queryHint = getString(R.string.search_hint)
         searchView.onActionViewExpanded()
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -118,7 +118,7 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
     private fun showMoreAlert() {
         val builder = AlertDialog.Builder(this)
-        val options = arrayOf("Report")
+        val options = arrayOf(getString(R.string.report))
 
         // TODO: - Fix when more will function properly
         builder.setItems(options) { _, _ -> }

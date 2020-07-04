@@ -58,7 +58,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     }
 
     private fun setupModule() {
-        var activity = this
+        val activity = this
         val interactor = CreateDebateInteractor()
         val presenter = CreateDebatePresenter()
         val router = CreateDebateRouter()
@@ -117,8 +117,8 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     private fun showAlertNotEnoughData() {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Not enough data, please fill all the fields")
-        builder.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->  })
+        builder.setMessage(getString(R.string.create_not_enough_data))
+        builder.setPositiveButton(getString(R.string.ok), DialogInterface.OnClickListener { _, _ ->  })
         builder.create().show()
     }
 
@@ -197,7 +197,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery()
                 } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
             }
         }

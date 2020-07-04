@@ -97,20 +97,19 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
     }
 
     private fun showEditNameAlert() {
-        var text = ""
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Edit name")
+        builder.setTitle(R.string.profile_change_name)
 
         val input = EditText(this)
         input.inputType = InputType.TYPE_CLASS_TEXT
         input.setText(user?.name)
         builder.setView(input)
 
-        builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(R.string.ok, DialogInterface.OnClickListener { dialog, which ->
             interactor.updateUserName(input.text.toString())
         })
 
-        builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
+        builder.setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, which ->
             dialog.cancel()
         })
 
@@ -129,10 +128,10 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         val privacyPolicyTextView = findViewById<TextView>(R.id.profile_privacy_policy)
 
         Picasso.get().load(user.avatar).into(userAvatarView)
-        namePlaceholder.text = "Name"
+        namePlaceholder.text = getString(R.string.profile_name)
         userName.text = user.name
-        logoutBtn.text = "Logout"
-        privacyPolicyTextView.text = "Privacy policy"
+        logoutBtn.text = getString(R.string.profile_logout)
+        privacyPolicyTextView.text = getString(R.string.privacy_policy)
 
         logoutBtn.setOnClickListener {
             interactor.logout()
@@ -159,7 +158,7 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery()
                 } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
             }
         }

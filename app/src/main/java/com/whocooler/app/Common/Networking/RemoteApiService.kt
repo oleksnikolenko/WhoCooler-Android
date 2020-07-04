@@ -10,12 +10,10 @@ import retrofit2.http.*
 @JvmSuppressWildcards
 interface RemoteApiService {
 
-    @POST("en/debatecreate")
-    fun createDebate(@Body request: RequestBody): retrofit2.Call<ResponseBody>
-
     @Multipart
-    @POST("en/debatecreate")
-    fun acreateDebate(
+    @POST
+    fun createDebate(
+        @Url url: String,
         @Header("Authorization") authorization: String,
         @PartMap params: Map<String, RequestBody>
     ): retrofit2.Call<ResponseBody>

@@ -75,7 +75,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     private fun refreshDebates() {
-        var shouldReloadCategories = this::debateAdapter.isInitialized
+        val shouldReloadCategories = this::debateAdapter.isInitialized
         interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting, !shouldReloadCategories))
     }
 
@@ -106,15 +106,15 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         toolbar.setBackgroundColor(Color.WHITE)
 
         val toolbarTitle = toolbar.findViewById<TextView>(R.id.toolbar_title)
-        toolbarTitle.text = "Who's Cooler"
+        toolbarTitle.text = getString(R.string.list_toolbar_title)
 
         val toolbarProfile = toolbar.findViewById<Button>(R.id.toolbar_profile)
         toolbarProfile.setOnClickListener {
-            router?.navigateToUserProfile()
+            router.navigateToUserProfile()
         }
 
         val toolbarSorting = toolbar.findViewById<TextView>(R.id.toolbar_sorting)
-        toolbarSorting.text = "Sorting: Popular"
+        toolbarSorting.text = getString(R.string.sorting_title) + getString(R.string.sorting_popular)
         toolbarSorting.setOnClickListener {
             showSortingAlert()
         }
@@ -122,15 +122,18 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         var searchButton = toolbar.findViewById<ImageButton>(R.id.toolbar_search)
         searchButton.setOnClickListener {
             reloadPosition = null
-            router?.navigateToSearch()
+            router.navigateToSearch()
         }
     }
 
     private fun showSortingAlert() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Sorting")
+        builder.setTitle(getString(R.string.sorting_title))
 
-        val sortings = arrayOf("Popular", "Newest", "Oldest")
+        val sortings = arrayOf(
+            getString(R.string.sorting_popular),
+            getString(R.string.sorting_newest),
+            getString(R.string.sorting_oldest))
 
         builder.setItems(sortings) { _, which ->
             updateSorting(sortings[which])
@@ -144,13 +147,13 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private fun setupCreateDebateListener() {
         val createDebateButton = findViewById<FloatingActionButton>(R.id.list_floating_button)
         createDebateButton.setOnClickListener {
-            router?.navigateToCreateDebate()
+            router.navigateToCreateDebate()
         }
     }
 
     private fun updateSorting(sorting: String) {
         val toolbarSorting = findViewById<TextView>(R.id.toolbar_sorting)
-        toolbarSorting.text = "Sorting: $sorting"
+        toolbarSorting.text = getString(R.string.sorting_title) + " " + sorting
 
         selectedSorting = sorting.toLowerCase(Locale.ROOT)
         interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
@@ -177,15 +180,15 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
-            router?.navigateToDebate(DebateService.debates[adapterPosition], adapterPosition)
+            router.navigateToDebate(DebateService.debates[adapterPosition], adapterPosition)
         }
 
         val authRequiredHandler: () -> Unit = {
-            router?.navigateToAuthorization()
+            router.navigateToAuthorization()
         }
 
         val toggleFavoritesHandler: (Debate) -> Unit = {debate->
-            interactor?.toggleFavorites(debate)
+            interactor.toggleFavorites(debate)
         }
 
         val didClickMoreHandler: () -> Unit = {
@@ -249,7 +252,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     override fun navigateToAuth() {
-        router?.navigateToAuthorization()
+        router.navigateToAuthorization()
     }
 
     private fun toggleProgressBar(isVisible: Boolean) {
@@ -259,7 +262,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     private fun showMoreAlert() {
         val builder = AlertDialog.Builder(this)
-        val options = arrayOf("Report")
+        val options = arrayOf(getString(R.string.report))
 
         // TODO: - Fix when more will function properly
         builder.setItems(options) { _, _ -> }

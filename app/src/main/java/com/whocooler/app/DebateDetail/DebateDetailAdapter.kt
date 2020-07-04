@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
@@ -157,7 +158,7 @@ class DebateDetailAdapter(
         }
 
         if (row.message.notShownReplyCount > 0) {
-            messageRow.showRepliesTextView.text = "Show ${row.message.notShownReplyCount} more replies"
+            messageRow.showRepliesTextView.text = "${context.getString(R.string.message_show)} ${row.message.notShownReplyCount} ${context.getString(R.string.message_more_replies)}"
             messageRow.showRepliesTextView.setOnClickListener {
                 getNextRepliesPage(row.message, messageRow.adapterPosition)
             }
@@ -316,7 +317,7 @@ class DebateDetailAdapter(
                         0,
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        text = "Reply"
+                        text = context.getString(R.string.reply)
                     }
                 }
             )
@@ -416,7 +417,7 @@ class DebateDetailAdapter(
                         0,
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        text = "Reply"
+                        text = context.getString(R.string.reply)
                     }
                 }
             )
@@ -462,7 +463,7 @@ class DebateDetailAdapter(
                     ).apply {
                         textSize = 18f
                         setTextColor(Color.BLACK)
-                        text = "Comments"
+                        text = context.getString(R.string.comments_header)
                         setTypeface(Typeface.DEFAULT_BOLD)
                         setMargins(dip(16), dip(12), dip(12),0)
                     }
@@ -503,7 +504,7 @@ class DebateDetailAdapter(
                         RecyclerView.LayoutParams.WRAP_CONTENT,
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        text = "There are no messages yet.\nBe first to share your opinion!"
+                        text = context.getString(R.string.empty_messages)
                     }
                 }
             )

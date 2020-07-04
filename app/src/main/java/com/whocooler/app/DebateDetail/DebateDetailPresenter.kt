@@ -1,9 +1,10 @@
 package com.whocooler.app.DebateDetail
 
+import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
 import com.whocooler.app.Common.Models.MessagesList
-import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
+import com.whocooler.app.R
 
 class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
 
@@ -60,7 +61,7 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
     }
 
     override fun presentError(errorDescription: String) {
-        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
+        activity?.showErrorToast(App.appContext.getString(R.string.error_unexpected) + errorDescription)
     }
 
 }

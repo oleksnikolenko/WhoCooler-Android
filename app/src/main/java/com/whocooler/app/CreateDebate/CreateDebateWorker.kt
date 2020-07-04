@@ -3,14 +3,9 @@ package com.whocooler.app.CreateDebate
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.gson.Gson
-import com.t2r2.volleyexample.FileDataPart
-import com.t2r2.volleyexample.VolleyFileUploadRequest
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.CategoriesResponse
 import com.whocooler.app.Common.Models.Debate
-import com.whocooler.app.Common.Models.DebatesResponse
-import com.whocooler.app.Common.Models.Empty
-import com.whocooler.app.Common.Networking.RemoteApiService
 import com.whocooler.app.Common.Utilities.BASE_URL
 import io.reactivex.rxjava3.subjects.PublishSubject
 import okhttp3.*
@@ -24,7 +19,7 @@ class CreateDebateWorker {
 
     fun getCategories() : PublishSubject<CategoriesResponse> {
         val responseSubject = PublishSubject.create<CategoriesResponse>()
-        val categoriesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "en/categories", null, Response.Listener {response ->
+        val categoriesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "${App.locale}/categories", null, Response.Listener {response ->
             val categoriesResponse = Gson().fromJson(response.toString(), CategoriesResponse :: class.java)
             responseSubject.onNext(categoriesResponse)
         }, Response.ErrorListener {
@@ -59,8 +54,9 @@ class CreateDebateWorker {
         map.put("rightside_image\"; filename=\"right.jpg\"", rightImageReq);
 
         val authToken = "Bearer ${App.prefs.userSession?.accessToken}"
+        val url = "${App.locale}/debatecreate"
 
-        App.apiService.acreateDebate(authToken, map).enqueue(
+        App.apiService.createDebate(url, authToken, map).enqueue(
             object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     responseSubject.onError(t)

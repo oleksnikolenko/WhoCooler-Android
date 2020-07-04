@@ -1,8 +1,9 @@
 package com.whocooler.app.DebateList
 
+import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.DebatesResponse
-import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
+import com.whocooler.app.R
 
 class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
 
@@ -19,7 +20,7 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         }
 
         if (response.debates.isEmpty() && activity?.selectedCategoryId == Category.Constant.FAVORITES.id) {
-            activity?.setupEmptyState("You have no favorites yet\nAdd them in the feed and they will appear here")
+            activity?.setupEmptyState(App.appContext.getString(R.string.empty_favorites))
         } else {
             activity?.setupDebateAdapter(response)
         }

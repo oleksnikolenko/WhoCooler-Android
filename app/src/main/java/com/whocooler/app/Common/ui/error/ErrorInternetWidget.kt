@@ -22,7 +22,7 @@ class ErrorInternetWidget @JvmOverloads constructor(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            text = "Refresh"
+            text = context.getString(R.string.refresh)
             setMargins(0, dip(12), 0, 0)
         }
     }
@@ -54,7 +54,7 @@ class ErrorInternetWidget @JvmOverloads constructor(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                text = "There is no internet connection"
+                text = context.getString(R.string.error_no_internet)
                 setMargins(0, dip(12), 0, 0)
             }
         })

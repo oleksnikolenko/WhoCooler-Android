@@ -10,7 +10,6 @@ import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
 import com.whocooler.app.Common.Services.DebateService
-import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
 

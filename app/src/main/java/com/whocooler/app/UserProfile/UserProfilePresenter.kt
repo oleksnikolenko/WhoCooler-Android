@@ -1,7 +1,8 @@
 package com.whocooler.app.UserProfile
 
+import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.User
-import com.whocooler.app.Common.Utilities.UNEXPECTED_ERROR
+import com.whocooler.app.R
 
 class UserProfilePresenter: UserProfileContracts.InteractorPresenterContract {
 
@@ -16,6 +17,6 @@ class UserProfilePresenter: UserProfileContracts.InteractorPresenterContract {
     }
 
     override fun presentError(errorDescription: String) {
-        activity?.showErrorToast(UNEXPECTED_ERROR + errorDescription)
+        activity?.showErrorToast(App.appContext.getString(R.string.error_unexpected) + errorDescription)
     }
 }

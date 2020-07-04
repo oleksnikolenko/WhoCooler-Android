@@ -36,4 +36,9 @@
     <item name="detail_message_more" type="id" />
     <item name="list_more" type="id" />
     <item name="list_constraint_layout" type="id" />
+    <item name="detail_message_date" type="id" />
+    <item name="detail_message_text" type="id" />
+    <item name="detail_message_user_name" type="id" />
+    <item name="listMessageCounter" type="id" />
+    <item name="listVotesCounter" type="id" />
 </resources>

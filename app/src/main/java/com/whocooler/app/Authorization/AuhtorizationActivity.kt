@@ -41,7 +41,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
 
     companion object {
         private const val RC_SIGN_IN = 9001
-        private const val TAG = "?!?!GoogleActivity"
+        private const val TAG = "GoogleActivity"
     }
 
     private lateinit var auth: FirebaseAuth
@@ -115,7 +115,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
                             }
                         }
                 } else {
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.auth_failed), Toast.LENGTH_SHORT).show()
                 }
 
                 toggleProgressBar(false)
@@ -137,7 +137,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
                             }
                         }
                 } else {
-                    Toast.makeText(baseContext, "Authentication failed.",
+                    Toast.makeText(baseContext, getString(R.string.auth_failed),
                         Toast.LENGTH_SHORT).show()
                 }
 
@@ -158,12 +158,12 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         }
 
         val authTermsInfo = findViewById<TextView>(R.id.auth_terms_info)
-        authTermsInfo.text = "By proceeding you agree with our Terms of Use. To find out how we use your data please see our Privacy Policy."
+        authTermsInfo.text = getString(R.string.auth_terms_info_full)
 
-        makeTextLink(authTermsInfo, "Terms of Use", true, null, action = {
+        makeTextLink(authTermsInfo, getString(R.string.auth_terms_short), true, null, action = {
             openUrl("https://api.whocooler.com/terms", this)
         })
-        makeTextLink(authTermsInfo, "Privacy Policy", true, null, action = {
+        makeTextLink(authTermsInfo, getString(R.string.auth_privacy_short), true, null, action = {
             openUrl("https://www.iubenda.com/privacy-policy/66454455", this)
         })
 
