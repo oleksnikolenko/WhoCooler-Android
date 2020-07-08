@@ -15,4 +15,5 @@ data class Debate(
     @SerializedName("votes_count") var votesCount: Int,
     @SerializedName("message_list") var messagesList: MessagesList,
     @SerializedName("is_favorite") var isFavorite: Boolean,
-    @SerializedName("message_count") var messageCount: Int) : Parcelable
+    @SerializedName("message_count") var messageCount: Int,
+    var name: String?) : Parcelable

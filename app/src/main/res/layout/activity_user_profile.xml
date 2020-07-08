@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     android:outlineProvider="bounds">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <TextView
         android:id="@+id/profile_name_placeholder"
         android:layout_width="wrap_content"
@@ -29,11 +39,11 @@
         android:id="@+id/profile_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         app:cardCornerRadius="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
 
         <ImageView
             android:id="@+id/rounded_user_image"
@@ -43,23 +53,15 @@
             android:scaleType="fitXY" />
     </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/user_profile_logout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
-        app:layout_constraintTop_toBottomOf="@+id/profile_privacy_policy" />
-
     <TextView
         android:id="@+id/profile_privacy_policy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textColor="#2196F3"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_name" />
+        android:layout_marginStart="24dp"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_privacy_image"
+        app:layout_constraintStart_toEndOf="@+id/profile_privacy_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_privacy_image" />
 
     <TextView
         android:id="@+id/profile_change_avatar"
@@ -81,4 +83,58 @@
         android:textColor="#2196F3"
         app:layout_constraintStart_toStartOf="@+id/profile_name_txt"
         app:layout_constraintTop_toBottomOf="@+id/profile_name_txt" />
+
+    <ImageView
+        android:id="@+id/profile_feedback_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
+        app:srcCompat="@drawable/email" />
+
+    <ImageView
+        android:id="@+id/profile_privacy_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="@+id/profile_feedback_image"
+        app:layout_constraintTop_toBottomOf="@+id/profile_feedback_image"
+        app:srcCompat="@drawable/privacy" />
+
+    <ImageView
+        android:id="@+id/profile_logout_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        app:layout_constraintStart_toStartOf="@+id/profile_privacy_image"
+        app:layout_constraintTop_toBottomOf="@+id/profile_privacy_image"
+        app:srcCompat="@drawable/logout" />
+
+    <TextView
+        android:id="@+id/profile_logout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/profile_logout"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_logout_image"
+        app:layout_constraintStart_toEndOf="@+id/profile_logout_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_logout_image" />
+
+    <TextView
+        android:id="@+id/profile_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Send your feedback"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_feedback_image"
+        app:layout_constraintStart_toEndOf="@+id/profile_feedback_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_feedback_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

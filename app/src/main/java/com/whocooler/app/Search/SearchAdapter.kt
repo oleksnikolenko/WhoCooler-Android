@@ -11,11 +11,8 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginStart
 import androidx.recyclerview.widget.RecyclerView
-import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
-import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerModel
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
@@ -23,29 +20,24 @@ import com.whocooler.app.R
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import com.whocooler.app.Common.Utilities.VOTE_BUTTON_SHADE_COLOR
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 
-class DebateListAdapter(
+class SearchAdapter(
     var debates: ArrayList<Debate>,
-    val voteClick: (Debate, DebateSide, Int) -> PublishSubject<Debate>,
     val debateClick: (Debate, Int) -> Unit,
-    val authRequired: () -> Unit,
-    val toggleFavorites: ((Debate) -> Unit)? = null,
-    val shouldShowDebateInfo: Boolean = false,
     val didClickMore: () -> Unit
-) : RecyclerView.Adapter<DebateListAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val category: MaterialTextView = itemView.findViewById(R.id.category_id)
         private val leftSideImage: AppCompatImageView = itemView.findViewById(R.id.left_image)
         private val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.right_image)
-        private var debateName: MaterialTextView? = itemView.findViewById(R.id.list_debate_name)
         private val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.vote_container)
         private val votesCounter: MaterialTextView?= itemView?.findViewById(R.id.listVotesCounter)
         private val messageCounter: MaterialTextView? = itemView?.findViewById(R.id.listMessageCounter)
         private val favorites: AppCompatImageView? = itemView?.findViewById(R.id.detail_favorites)
         private val more: AppCompatImageView? = itemView?.findViewById(R.id.list_more)
+        private var debateName: MaterialTextView? = itemView.findViewById(R.id.list_debate_name)
 
         fun bindDebate(debate: Debate) {
             Picasso.get().load(debate.leftSide.image).into(leftSideImage)
@@ -70,11 +62,8 @@ class DebateListAdapter(
             }
 
             favorites?.setOnClickListener {
-                toggleFavorites?.let {
-                    it(debate)
-                }
+                debateClick(debate, adapterPosition)
             }
-
             voteContainer.acceptModel(VoteContainerModel(debate = debate))
 
             leftSideImage.setOnClickListener {
@@ -90,23 +79,11 @@ class DebateListAdapter(
             }
 
             voteContainer.leftClicked = {
-                if (App.prefs.isTokenEmpty()) {
-                    authRequired()
-                } else {
-                    voteClick(debate, debate.leftSide, adapterPosition).subscribe {
-                        voteContainer.acceptModel(VoteContainerModel(debate = it), true)
-                    }
-                }
+                debateClick(debate, adapterPosition)
             }
 
             voteContainer.rightClicked = {
-                if (App.prefs.isTokenEmpty()) {
-                    authRequired()
-                } else {
-                    voteClick(debate, debate.rightSide, adapterPosition).subscribe {
-                        voteContainer.acceptModel(VoteContainerModel(debate = it), true)
-                    }
-                }
+                debateClick(debate, adapterPosition)
             }
         }
     }
@@ -219,7 +196,6 @@ class DebateListAdapter(
             addView(VoteContainerWidget(parent.context).apply {
                 id = R.id.vote_container
             })
-            // DEBATE INFO VIEW
             addView(LinearLayout(parent.context).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -280,13 +256,15 @@ class DebateListAdapter(
                 })
             })
             addView(LinearLayout(parent.context).apply {
-                layoutParams = LinearLayout.LayoutParams(
+                val dividerLayoutParams = LinearLayout.LayoutParams(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     parent.dip(1)
-                ).apply {
-                    setMargins(0, dip(16), 0, 0)
-                    setBackgroundColor(Color.LTGRAY)
-                }
+                )
+                dividerLayoutParams.topMargin = 40
+
+                layoutParams = dividerLayoutParams
+
+                setBackgroundColor(Color.LTGRAY)
             })
 
             refreshDrawableState()

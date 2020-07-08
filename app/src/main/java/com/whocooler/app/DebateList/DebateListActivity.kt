@@ -44,6 +44,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private val lastVisibleItemPosition: Int
         get() = linearLayout.findLastVisibleItemPosition()
     private lateinit var errorWidget: ErrorInternetWidget
+    private lateinit var mainDataProgressBar: ProgressBar
 
     private fun setup() {
         val activity = this
@@ -73,7 +74,9 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             refreshDebates()
         }
 
-        toggleProgressBar(false)
+        mainDataProgressBar = findViewById(R.id.list_main_data_progress_bar)
+
+        togglePaginationProgressBar(false)
     }
 
     private fun refreshDebates() {
@@ -129,7 +132,17 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     private fun showSortingAlert() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.sorting_title))
+        var currentSorting: String
+        if (selectedSorting == "popular") {
+            currentSorting = getString(R.string.sorting_popular)
+        } else if (selectedSorting == "newest") {
+            currentSorting = getString(R.string.sorting_newest)
+        } else if (selectedSorting == "oldest") {
+            currentSorting = getString(R.string.sorting_oldest)
+        } else {
+            currentSorting = getString(R.string.sorting_popular)
+        }
+        builder.setTitle(getString(R.string.sorting_title) + currentSorting)
 
         val sortings = arrayOf(
             getString(R.string.sorting_popular),
@@ -159,8 +172,10 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     private fun updateSorting(sortingForBackend: String) {
-        selectedSorting = sortingForBackend
-        interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
+        if (sortingForBackend != selectedSorting) {
+            selectedSorting = sortingForBackend
+            interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
+        }
     }
 
     override fun setupCategoryAdapter(categories: ArrayList<Category>) {
@@ -177,6 +192,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun setupDebateAdapter(response: DebatesResponse) {
         DebateService.debates = response.debates
+        mainDataProgressBar.visibility = View.GONE
 
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
             interactor.vote(debate.id, debateSide.id, position)
@@ -223,7 +239,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         debateAdapter.debates = DebateService.debates
         debateAdapter.notifyDataSetChanged()
         handlePagination()
-        toggleProgressBar(false)
+        togglePaginationProgressBar(false)
     }
 
     override fun updateDebateDataSource() {
@@ -244,7 +260,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
                 if (totalItemCount == lastVisibleItemPosition + 1 && interactor.hasDebatesListNextPage()) {
                     interactor.getNextPage()
                     recyclerView.removeOnScrollListener(scrollListener)
-                    toggleProgressBar(true)
+                    togglePaginationProgressBar(true)
                 }
             }
         }
@@ -259,7 +275,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         router.navigateToAuthorization()
     }
 
-    private fun toggleProgressBar(isVisible: Boolean) {
+    private fun togglePaginationProgressBar(isVisible: Boolean) {
         val progressBar = findViewById<ProgressBar>(R.id.list_bottom_progress_bar)
         progressBar.isVisible = isVisible
     }

@@ -2,7 +2,11 @@ package com.whocooler.app.Search
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +14,7 @@ import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.SearchResponse
 import com.whocooler.app.DebateList.Adapters.DebateListAdapter
+import com.whocooler.app.DebateList.Adapters.SearchAdapter
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_search.*
@@ -18,8 +23,9 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
     lateinit var interactor: SearchContracts.ViewInteractorContract
     var router: SearchContracts.RouterInterface? = null
-    lateinit var debateAdapter: DebateListAdapter
+    lateinit var debateAdapter: SearchAdapter
     private var reloadPosition: Int? = null
+    private lateinit var emptyData: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,9 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
         setupSearchView()
         setupModule()
+        setupActionBar()
+
+        emptyData = findViewById(R.id.search_empty_data)
     }
 
     private fun setupModule() {
@@ -47,11 +56,31 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
         searchView.queryHint = getString(R.string.search_hint)
         searchView.onActionViewExpanded()
 
+        // Counter is needed to set delays for search
+        var counter: CountDownTimer? = null
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.count() > 2) {
-                    interactor?.search(newText, 1)
+                if (counter != null) {
+                    counter?.cancel()
                 }
+
+                counter = object: CountDownTimer(750, 375) {
+                    override fun onTick(millisUntilFinished: Long) {}
+
+                    override fun onFinish() {
+                        if (newText.length > 1) {
+                            toggleEmptyDataVisibility(false)
+                            interactor?.search(newText, 1)
+                        } else if (newText.isEmpty() && ::debateAdapter.isInitialized) {
+                            toggleEmptyDataVisibility(false)
+                            debateAdapter.debates = ArrayList()
+                            debateAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+                counter?.start()
+
                 return false
             }
 
@@ -62,17 +91,9 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
     }
 
     override fun setupDebateAdapter(response: SearchResponse) {
-        val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
-            interactor.vote(debate.id, debateSide.id, position)
-        }
-
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
             router?.navigateToDebate(debateAdapter.debates[adapterPosition], adapterPosition)
-        }
-
-        val authRequiredHandler: () -> Unit = {
-            router?.navigateToAuth()
         }
 
         val didClickMoreHandler: () -> Unit = {
@@ -80,12 +101,10 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
         }
 
         debateAdapter =
-            DebateListAdapter(
+            SearchAdapter(
                 response.debates,
-                voteClickHandler,
                 debateClickHandler,
-                authRequiredHandler,
-                didClickMore = didClickMoreHandler
+                didClickMoreHandler
             )
 
         debateAdapter.notifyDataSetChanged()
@@ -108,6 +127,38 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    // Prepares nav bar
+    private fun setupActionBar() {
+        setSupportActionBar(findViewById(R.id.search_toolbar))
+        supportActionBar?.setTitle("")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    // Handles navigation back
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun setupNotFound() {
+        toggleEmptyDataVisibility(true)
+    }
+
+    private fun toggleEmptyDataVisibility(isEmptyDataShown: Boolean) {
+        if (isEmptyDataShown) {
+            emptyData.visibility = View.VISIBLE
+            search_recycler_view.visibility = View.GONE
+        } else {
+            emptyData.visibility = View.GONE
+            search_recycler_view.visibility = View.VISIBLE
+        }
     }
 
 }

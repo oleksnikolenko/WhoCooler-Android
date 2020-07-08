@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,7 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
 
         setupOnClickListeners()
         interactor.getProfile()
+        setupActionBar()
     }
 
     private fun setupOnClickListeners() {
@@ -124,22 +127,62 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         val userAvatarView = findViewById<ImageView>(R.id.rounded_user_image)
         val namePlaceholder = findViewById<TextView>(R.id.profile_name_placeholder)
         val userName = findViewById<TextView>(R.id.profile_name_txt)
-        val logoutBtn = findViewById<Button>(R.id.user_profile_logout_btn)
+        val feedback = findViewById<TextView>(R.id.profile_feedback)
+        val feedbackImg = findViewById<ImageView>(R.id.profile_feedback_image)
+        val logoutBtn = findViewById<TextView>(R.id.profile_logout_btn)
+        val logoutImg = findViewById<ImageView>(R.id.profile_logout_image)
         val privacyPolicyTextView = findViewById<TextView>(R.id.profile_privacy_policy)
+        val privacyPolicyImg = findViewById<ImageView>(R.id.profile_privacy_image)
 
         Picasso.get().load(user.avatar).into(userAvatarView)
         namePlaceholder.text = getString(R.string.profile_name)
         userName.text = user.name
         logoutBtn.text = getString(R.string.profile_logout)
+        feedback.text = getString(R.string.profile_feedback)
         privacyPolicyTextView.text = getString(R.string.privacy_policy)
 
+        feedback.setOnClickListener {
+            navigateToFeedback()
+        }
+
+        feedbackImg.setOnClickListener {
+            navigateToFeedback()
+        }
+
+        logoutImg.setOnClickListener {
+            showLogoutAlertDialog()
+        }
+
         logoutBtn.setOnClickListener {
-            interactor.logout()
+            showLogoutAlertDialog()
         }
 
         privacyPolicyTextView.setOnClickListener {
             openUrl("https://www.iubenda.com/privacy-policy/66454455", this)
         }
+
+        privacyPolicyImg.setOnClickListener {
+            openUrl("https://www.iubenda.com/privacy-policy/66454455", this)
+        }
+    }
+
+    private fun navigateToFeedback() {
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:whocoolerfeedback@gmail.com?subject=WhoCooler Support")
+        }
+        startActivity(Intent.createChooser(emailIntent, "Send feedback"))
+    }
+
+    private fun showLogoutAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle(getString(R.string.profile_logout_alert))
+        builder.setPositiveButton(getString(R.string.yes)) { dialog, which ->
+            interactor.logout()
+        }
+        builder.setNegativeButton(getString(R.string.no)) {_,_ ->}
+
+        builder.create().show()
     }
 
     private fun openUrl(url: String, context: Context) {
@@ -173,6 +216,24 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
 
     override fun showErrorToast(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Prepares nav bar
+    private fun setupActionBar() {
+        setSupportActionBar(findViewById(R.id.profile_toolbar))
+        supportActionBar?.setTitle("")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    // Handles navigation back
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
 }

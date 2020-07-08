@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.whocooler.app.Common.App.App
@@ -38,6 +39,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private lateinit var leftName: EditText
     private lateinit var rightName: EditText
     private lateinit var picker: NumberPicker
+    private lateinit var debateName: EditText
 
     private var fileLeftImage: File? = null
     private var fileRightImage: File? = null
@@ -55,6 +57,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
         assignViewsById()
         setupOnClickListeners()
+        setupActionBar()
     }
 
     private fun setupModule() {
@@ -68,6 +71,12 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         interactor.presenter = presenter
         presenter.activity = activity
         router.activity = activity
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(findViewById(R.id.create_debate_toolbar))
+        supportActionBar?.setTitle("")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun displayCategories(categories: ArrayList<Category>) {
@@ -84,6 +93,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         leftName = findViewById(R.id.create_left_name_edit_text)
         rightName = findViewById(R.id.create_right_name_edit_text)
         picker = findViewById(R.id.create_picker)
+        debateName = findViewById(R.id.create_debate_name_edit_text)
     }
 
     private fun setupOnClickListeners() {
@@ -100,24 +110,30 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         createButton.setOnClickListener {
             if (App.prefs.isTokenEmpty()) {
                 router?.navigateToAuth()
-            } else if (fileLeftImage != null && fileRightImage != null && leftName.text.isNotEmpty()
-                && rightName.text.isNotEmpty()) {
+            } else if (fileLeftImage == null) {
+                showAlertNotEnoughData(getString(R.string.create_left_image))
+            } else if (fileRightImage == null) {
+                showAlertNotEnoughData(getString(R.string.create_right_image))
+            } else if (leftName.text.isEmpty()) {
+                showAlertNotEnoughData(getString(R.string.create_left_side_name))
+            } else if (rightName.text.isEmpty()) {
+                showAlertNotEnoughData(getString(R.string.create_right_side_name))
+            } else {
                 interactor?.createDebate(
                     leftName.text.toString(),
                     rightName.text.toString(),
                     fileLeftImage!!,
                     fileRightImage!!,
-                    categories.get(picker.value).id
+                    categories.get(picker.value).id,
+                    if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
                 )
-            } else {
-                showAlertNotEnoughData()
             }
         }
     }
 
-    private fun showAlertNotEnoughData() {
+    private fun showAlertNotEnoughData(missingElement: String) {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage(getString(R.string.create_not_enough_data))
+        builder.setMessage(getString(R.string.create_not_enough_data) + missingElement)
         builder.setPositiveButton(getString(R.string.ok), DialogInterface.OnClickListener { _, _ ->  })
         builder.create().show()
     }
@@ -216,5 +232,16 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     override fun showError(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Handles navigation back
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

@@ -23,9 +23,10 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
         rightName: String,
         leftImage: File,
         rightImage: File,
-        categoryId: String
+        categoryId: String,
+        debateName: String?
     ) {
-        worker.createDebate(leftName, rightName, leftImage, rightImage, categoryId).subscribeBy(
+        worker.createDebate(leftName, rightName, leftImage, rightImage, categoryId, debateName).subscribeBy(
             onNext = { debate ->
                 presenter?.navigateToDebate(debate)
             }, onError = {

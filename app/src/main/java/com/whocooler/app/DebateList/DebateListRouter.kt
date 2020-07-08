@@ -6,6 +6,7 @@ import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
+import com.whocooler.app.Common.Utilities.EXTRA_SHOULD_UPDATE_WITH_INTERNET
 import com.whocooler.app.Common.Utilities.LAUNCH_AUTH_WITH_RESULT
 import com.whocooler.app.CreateDebate.CreateDebateActivity
 import com.whocooler.app.DebateDetail.DebateDetailActivity
@@ -18,8 +19,11 @@ class DebateListRouter : DebateListContracts.RouterInterface {
 
     override fun navigateToDebate(debate: Debate, position: Int) {
         val debateDetailIntent = Intent(activity, DebateDetailActivity::class.java)
+
         debateDetailIntent.putExtra(EXTRA_DEBATE, debate)
         debateDetailIntent.putExtra(EXTRA_DEBATE_POSITION, position)
+        debateDetailIntent.putExtra(EXTRA_SHOULD_UPDATE_WITH_INTERNET, true)
+
         activity?.startActivity(debateDetailIntent)
     }
 

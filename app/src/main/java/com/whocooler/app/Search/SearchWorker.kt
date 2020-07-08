@@ -16,7 +16,7 @@ class SearchWorker {
     fun search(context: String, page: Int) : PublishSubject<SearchResponse> {
         val responseSubject = PublishSubject.create<SearchResponse>()
 
-        val searchRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "search?search_context=$context&page=$page", null, Response.Listener { response ->
+        val searchRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "${App.locale}/search?search_context=$context&page=$page", null, Response.Listener { response ->
             val searchResponse = Gson().fromJson(response.toString(), SearchResponse :: class.java)
 
             responseSubject.onNext(searchResponse)
@@ -38,43 +38,6 @@ class SearchWorker {
         }
 
         App.prefs.requestQueue.add(searchRequest)
-
-        return responseSubject
-    }
-
-    fun vote(debateId: String, sideId: String) : PublishSubject<DebateVoteResponse> {
-        val responseSubject = PublishSubject.create<DebateVoteResponse>()
-
-        val jsonBody = JSONObject()
-        jsonBody.put("debate_id", debateId)
-        jsonBody.put("side_id", sideId)
-        val requestBody = jsonBody.toString()
-
-        val voteRequest = object : JsonObjectRequest(Method.POST, BASE_URL + "vote", null, Response.Listener {response ->
-            val debateVoteResponse = Gson().fromJson(response.toString(), DebateVoteResponse :: class.java)
-
-            responseSubject.onNext(debateVoteResponse)
-        }, Response.ErrorListener {
-            responseSubject.onError(it)
-        }) {
-            override fun getBodyContentType(): String {
-                return "application/json; charset=utf-8"
-            }
-            override fun getBody(): ByteArray {
-                return requestBody.toByteArray()
-            }
-
-            override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap<String, String>()
-                var token = App.prefs.userSession?.accessToken
-                if (token != null) {
-                    headers.put("Authorization", "Bearer " + token)
-                }
-                return headers
-            }
-        }
-
-        App.prefs.requestQueue.add(voteRequest)
 
         return responseSubject
     }

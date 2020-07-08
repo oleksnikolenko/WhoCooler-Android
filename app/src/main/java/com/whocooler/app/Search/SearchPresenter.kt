@@ -9,7 +9,11 @@ class SearchPresenter : SearchContracts.InteractorPresenterContract {
     var activity: SearchContracts.PresenterViewContract? = null
 
     override fun presentDebates(response: SearchResponse) {
-        activity?.setupDebateAdapter(response)
+        if (response.debates.isNotEmpty()) {
+            activity?.setupDebateAdapter(response)
+        } else {
+            activity?.setupNotFound()
+        }
     }
 
     override fun presentError(errorDescription: String) {

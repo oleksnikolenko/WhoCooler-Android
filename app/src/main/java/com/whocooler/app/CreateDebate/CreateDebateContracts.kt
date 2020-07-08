@@ -14,7 +14,8 @@ class CreateDebateContracts {
             rightName: String,
             leftImage: File,
             rightImage: File,
-            categoryId: String
+            categoryId: String,
+            debateName: String?
         )
     }
 

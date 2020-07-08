@@ -46,4 +46,6 @@
     <item name="vote_thumbs_up" type="id" />
     <item name="vote_thumbs_down" type="id" />
     <item name="detail_reply_vote" type="id" />
+    <item name="list_debate_name" type="id" />
+    <item name="detail_debate_name" type="id" />
 </resources>

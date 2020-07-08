@@ -8,6 +8,17 @@
     android:layout_weight="0.5"
     tools:context=".CreateDebate.CreateDebateActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/create_debate_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
+
     <LinearLayout
         android:id="@+id/create_linearLayout_images"
         android:layout_width="match_parent"
@@ -15,7 +26,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/create_debate_toolbar">
 
         <ImageView
             android:id="@+id/create_image_left"
@@ -38,17 +49,32 @@
             app:srcCompat="@drawable/picture_placeholder" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/create_debate_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@null"
+        android:hint="@string/create_debate_name"
+        android:inputType="textMultiLine"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_images" />
+
     <LinearLayout
         android:id="@+id/create_linearLayout_names"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_images">
+        app:layout_constraintTop_toBottomOf="@+id/create_debate_name_edit_text">
 
         <EditText
             android:id="@+id/create_left_name_edit_text"

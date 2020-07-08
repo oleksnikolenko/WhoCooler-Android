@@ -17,17 +17,4 @@ class SearchInteractor : SearchContracts.ViewInteractorContract {
         }
     }
 
-    override fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate> {
-        val responseSubject = PublishSubject.create<Debate>()
-        worker.vote(debateId, sideId).subscribeBy(
-            onNext = { response ->
-                responseSubject.onNext(response.debate)
-                DebateService.updateDebate(response.debate)
-            }, onError = {
-                presenter?.presentError(it.localizedMessage)
-            }
-        )
-        return responseSubject
-    }
-
 }

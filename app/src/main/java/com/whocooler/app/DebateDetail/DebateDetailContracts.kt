@@ -9,7 +9,7 @@ class DebateDetailContracts {
 
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
-        fun initDebate(debate: Debate)
+        fun initDebate(debate: Debate, shouldUpdateWithInternet: Boolean)
         fun handleSend(text: String, threadId: String? = null, editedMessage: Message? = null, index: Int?=null)
         fun vote(sideId: String) : PublishSubject<Debate>
         fun getNextRepliesPage(parentMessage: Message, index: Int)

@@ -14,15 +14,19 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
     val worker = DebateDetailWorker()
     lateinit var debate: Debate
 
-    override fun initDebate(debate: Debate) {
+    override fun initDebate(debate: Debate, shouldUpdateWithInternet: Boolean) {
         this.debate = debate
 
         presenter?.presentDebate(debate)
 
-        worker.getDebate(debate.id).subscribe {
-            DebateService.updateDebate(it)
-            this.debate = it
-            presenter?.presentDebate(it)
+        if (shouldUpdateWithInternet) {
+            worker.getDebate(debate.id).subscribeBy(onNext = {
+                DebateService.updateDebate(it)
+                this.debate = it
+                presenter?.presentDebate(it)
+            }, onError = {
+                presenter?.presentError(it.localizedMessage)
+            })
         }
     }
 

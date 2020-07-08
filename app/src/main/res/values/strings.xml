@@ -7,6 +7,8 @@
     <string name="fb_login_protocol_scheme">fb622900885102618</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="profile_change_name">Change name</string>
     <string name="profile_logout">Logout</string>
     <string name="profile_name">Name</string>
@@ -18,13 +20,13 @@
     <string name="sorting_popular" >Popular</string>
     <string name="sorting_newest">Newest</string>
     <string name="sorting_oldest">Oldest</string>
-    <string name="sorting_title">Sorting: </string>
+    <string name="sorting_title">Debate sorting, current is: \u0020</string>
     <string name="message_show">Show</string>
     <string name="message_more_replies">more replies</string>
     <string name="reply">Reply</string>
     <string name="comments_header">Comments</string>
     <string name="empty_messages">There are no messages yet.\nBe first to share your opinion!</string>
-    <string name="create_not_enough_data">Not enough data, please fill all the fields</string>
+    <string name="create_not_enough_data">Not enough data, please fill: \u0020</string>
     <string name="auth_failed" >Authentication Failed</string>
     <string name="auth_terms_info_full">By proceeding you agree with our Terms of Use. To find out how we use your data please see our Privacy Policy.</string>
     <string name="auth_terms_short">Terms of Use</string>
@@ -38,10 +40,16 @@
     <string name="sign_in_google">Continue with Google</string>
     <string name="create_left_side_name">Left side name</string>
     <string name="create_right_side_name">Right side name</string>
+    <string name="create_debate_name">Debate name (optional, may be left blank)</string>
     <string name="create_create">create</string>
     <string name="create_category">Category</string>
     <string name="your_comment_here">Your comment here...</string>
     <string name="profile_edit_avatar">Edit avatar</string>
     <string name="profile_edit_name">Edit name</string>
+    <string name="create_left_image">Left image</string>
+    <string name="create_right_image">Right image</string>
+    <string name="profile_feedback">Send feedback</string>
+    <string name="profile_logout_alert">Are you sure you want to log out?</string>
+    <string name="nothing_found">Nothing found</string>
 
 </resources>

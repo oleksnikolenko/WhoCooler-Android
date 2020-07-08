@@ -21,6 +21,7 @@ import com.whocooler.app.Common.Models.Message
 import com.whocooler.app.Common.Services.DebateService
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
+import com.whocooler.app.Common.Utilities.EXTRA_SHOULD_UPDATE_WITH_INTERNET
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_debate_detail.*
@@ -39,6 +40,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
     private var inputParentIndex: Int? = null
 
     lateinit var debate: Debate
+    private var shouldUpdateWithInternet: Boolean = true
     var debatePosition: Int = -1
 
     var rows = ArrayList<DebateDetailAdapter.IDetailRow>()
@@ -64,9 +66,12 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         setup()
         setContentView(R.layout.activity_debate_detail)
 
+        // EXTRAS
         debate = intent.getParcelableExtra(EXTRA_DEBATE)
         debatePosition = intent.getIntExtra(EXTRA_DEBATE_POSITION, debatePosition)
-        interactor.initDebate(debate)
+        shouldUpdateWithInternet = intent.getBooleanExtra(EXTRA_SHOULD_UPDATE_WITH_INTERNET, true)
+
+        interactor.initDebate(debate, shouldUpdateWithInternet)
         setupSendMessageOnClickListener()
         handlePagination()
         toggleProgressBar(false)
@@ -256,6 +261,7 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
         return super.dispatchTouchEvent(ev)
     }
 
+    // Handles navigation back
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

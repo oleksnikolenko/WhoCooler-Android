@@ -3,7 +3,7 @@ package com.whocooler.app.Common.Utilities
 const val BASE_URL = "https://api.whocooler.com/"
 const val EXTRA_DEBATE = "debate"
 const val EXTRA_DEBATE_POSITION = "debate_position"
-const val EXTRA_SHOULD_DISMISS = "shouldDismissAfterSuccess"
+const val EXTRA_SHOULD_UPDATE_WITH_INTERNET = "should_update_with_internet"
 const val EXTRA_SHOULD_RELOAD_DEBATE_LIST = "shouldReloadDebateList"
 
 const val PREFS_USER_SESSION = "USER_SESSION"

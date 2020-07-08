@@ -36,7 +36,8 @@ class CreateDebateWorker {
         rightName: String,
         leftImage: File,
         rightImage: File,
-        categoryId: String
+        categoryId: String,
+        debateName: String?
     ) : PublishSubject<Debate> {
         val responseSubject = PublishSubject.create<Debate>()
         val map = HashMap<String, RequestBody>()
@@ -52,6 +53,11 @@ class CreateDebateWorker {
         map.put("category_id", categoryIdReq)
         map.put("leftside_image\"; filename=\"left.jpg\"", leftImageReq);
         map.put("rightside_image\"; filename=\"right.jpg\"", rightImageReq);
+
+        if (debateName != null) {
+            val debateNameReq = RequestBody.create(MediaType.parse("text/plain"), debateName)
+            map.put("name", debateNameReq)
+        }
 
         val authToken = "Bearer ${App.prefs.userSession?.accessToken}"
         val url = "${App.locale}/debatecreate"

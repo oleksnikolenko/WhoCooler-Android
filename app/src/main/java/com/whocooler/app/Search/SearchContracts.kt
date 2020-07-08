@@ -9,7 +9,6 @@ class SearchContracts {
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
         fun search(context: String, page: Int)
-        fun vote(debateId: String, sideId: String, position: Int) : PublishSubject<Debate>
     }
 
     interface InteractorPresenterContract {
@@ -22,6 +21,7 @@ class SearchContracts {
         // Functions for Presenter output / View input
         fun setupDebateAdapter(response: SearchResponse)
         fun showErrorToast(message: String)
+        fun setupNotFound()
     }
 
     // Router

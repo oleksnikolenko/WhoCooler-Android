@@ -19,6 +19,7 @@ import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.Message
+import com.whocooler.app.Common.Utilities.VOTE_BUTTON_SHADE_COLOR
 import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.Common.Views.RoundRectCornerImageView
 import com.whocooler.app.Common.ui.votecontainer.VoteContainerModel
@@ -57,6 +58,7 @@ class DebateDetailAdapter(
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val leftSideImage: AppCompatImageView = itemView.findViewById(R.id.detail_left_image)
         val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.detail_right_image)
+        val debateName: MaterialTextView = itemView.findViewById(R.id.detail_debate_name)
         val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.detail_vote_container)
     }
 
@@ -121,6 +123,13 @@ class DebateDetailAdapter(
 
         Picasso.get().load(row.debate.leftSide.image).into(headerRow.leftSideImage)
         Picasso.get().load(row.debate.rightSide.image).into(headerRow.rightSideImage)
+
+        if (row.debate.name != null) {
+            headerRow.debateName.text = row.debate.name
+            headerRow.debateName.visibility = View.VISIBLE
+        } else {
+            headerRow.debateName.visibility = View.GONE
+        }
 
         headerRow.voteContainer.acceptModel(VoteContainerModel(debate = row.debate))
 
@@ -249,6 +258,7 @@ class DebateDetailAdapter(
                         dip(140)
                     ).apply {
                         weight = 1.0f
+                        setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
                     }
                 })
 
@@ -260,8 +270,22 @@ class DebateDetailAdapter(
                         dip(140)
                     ).apply {
                         weight = 1.0f
+                        setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
                     }
                 })
+            })
+            addView(MaterialTextView(context).apply {
+                id = R.id.detail_debate_name
+                gravity = Gravity.CENTER
+                layoutParams =  LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setTextColor(Color.BLACK)
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    textSize = 20f
+                    setMargins(dip(16), 0, dip(16), dip(12))
+                }
             })
             addView(VoteContainerWidget(context).apply {
                 id = R.id.detail_vote_container
