@@ -52,7 +52,7 @@ class DebateListCategoryAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var container = LinearLayout(parent.context).apply {
+        val container = LinearLayout(parent.context).apply {
             clipToOutline = true
             orientation = LinearLayout.VERTICAL
             layoutParams = RecyclerView.LayoutParams(

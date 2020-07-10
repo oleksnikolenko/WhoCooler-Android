@@ -17,7 +17,7 @@
     <string name="search_hint">Start searching</string>
     <string name="report">Report</string>
     <string name="list_toolbar_title">Who\'s Cooler</string>
-    <string name="sorting_popular" >Popular</string>
+    <string name="sorting_popular">Popular</string>
     <string name="sorting_newest">Newest</string>
     <string name="sorting_oldest">Oldest</string>
     <string name="sorting_title">Debate sorting, current is: \u0020</string>
@@ -27,12 +27,12 @@
     <string name="comments_header">Comments</string>
     <string name="empty_messages">There are no messages yet.\nBe first to share your opinion!</string>
     <string name="create_not_enough_data">Not enough data, please fill: \u0020</string>
-    <string name="auth_failed" >Authentication Failed</string>
+    <string name="auth_failed">Authentication Failed</string>
     <string name="auth_terms_info_full">By proceeding you agree with our Terms of Use. To find out how we use your data please see our Privacy Policy.</string>
     <string name="auth_terms_short">Terms of Use</string>
     <string name="auth_privacy_short">Privacy Policy</string>
-    <string name="refresh" >Refresh</string>
-    <string name="error_no_internet" >There is no internet connection</string>
+    <string name="refresh">Refresh</string>
+    <string name="error_no_internet">There is no internet connection</string>
     <string name="category_all_name">All</string>
     <string name="category_favorites_name">Favorites</string>
     <string name="empty_favorites">You have no favorites yet\nAdd them in the feed and they will appear here</string>
@@ -42,7 +42,10 @@
     <string name="create_right_side_name">Right side name</string>
     <string name="create_debate_name">Debate name (optional, may be left blank)</string>
     <string name="create_create">create</string>
+    <string name="create_category_hint">Pick category</string>
     <string name="create_category">Category</string>
+    <string name="create_new_category">Create a new category</string>
+    <string name="create_new_category_name">Category name</string>
     <string name="your_comment_here">Your comment here...</string>
     <string name="profile_edit_avatar">Edit avatar</string>
     <string name="profile_edit_name">Edit name</string>
@@ -51,5 +54,6 @@
     <string name="profile_feedback">Send feedback</string>
     <string name="profile_logout_alert">Are you sure you want to log out?</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="category_you_picked">You picked category: \u0020</string>
 
 </resources>

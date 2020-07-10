@@ -9,10 +9,6 @@ class CreateDebatePresenter : CreateDebateContracts.InteractorPresenterContract 
 
     var activity: CreateDebateContracts.PresenterViewContract? = null
 
-    override fun didFetchCategories(categories: ArrayList<Category>) {
-        activity?.displayCategories(categories)
-    }
-
     override fun navigateToDebate(debate: Debate) {
         activity?.navigateToDebate(debate)
     }

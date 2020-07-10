@@ -45,12 +45,16 @@
     <string name="create_right_side_name">Имя правой стороны</string>
     <string name="create_debate_name">Имя дебата (необязательно заполнять)</string>
     <string name="create_create">Создать</string>
+    <string name="create_category_hint">Выберите категорию</string>
     <string name="create_category">Категория</string>
+    <string name="create_new_category">Создать новую категорию</string>
+    <string name="create_new_category_name">Название категории</string>
     <string name="your_comment_here">Твой комментарий...</string>
     <string name="profile_edit_avatar">Изменить фото</string>
     <string name="profile_edit_name">Изменить имя</string>
     <string name="profile_feedback">Обратная связь</string>
     <string name="profile_logout_alert">Вы уверены, что хотите выйти?</string>
     <string name="nothing_found">По запросу ничего не найдено</string>
+    <string name="category_you_picked">Вы выбрали категорию: \u0020</string>
 
 </resources>

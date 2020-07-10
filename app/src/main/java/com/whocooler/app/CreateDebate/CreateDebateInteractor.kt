@@ -8,16 +8,6 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
     var presenter: CreateDebateContracts.InteractorPresenterContract? = null
     var worker = CreateDebateWorker()
 
-    override fun getCategoryList() {
-        worker.getCategories().subscribeBy(
-            onNext = { response ->
-                presenter?.didFetchCategories(response.categories)
-            }, onError = {
-                presenter?.presentError(it.localizedMessage)
-            }
-        )
-    }
-
     override fun createDebate(
         leftName: String,
         rightName: String,

@@ -6,7 +6,9 @@ import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE
 import com.whocooler.app.Common.Utilities.EXTRA_DEBATE_POSITION
 import com.whocooler.app.Common.Utilities.EXTRA_SHOULD_UPDATE_WITH_INTERNET
+import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.DebateDetail.DebateDetailActivity
+import com.whocooler.app.PickCategory.PickCategoryActivity
 
 class CreateDebateRouter: CreateDebateContracts.RouterInterface {
 
@@ -25,6 +27,12 @@ class CreateDebateRouter: CreateDebateContracts.RouterInterface {
 
         activity?.startActivity(debateDetailIntent)
         activity?.finish()
+    }
+
+    override fun navigateToPickCategory() {
+        val pickCategoryIntent = Intent(activity, PickCategoryActivity::class.java)
+
+        activity?.startActivityForResult(pickCategoryIntent, RESULT_PICK_CATEGORY)
     }
 
 }

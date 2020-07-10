@@ -4,6 +4,7 @@ import com.facebook.login.LoginManager
 import com.whocooler.app.Common.App.App
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.whocooler.app.Common.Models.UserSession
 import io.reactivex.rxjava3.kotlin.subscribeBy
 
 class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
@@ -28,7 +29,10 @@ class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
     override fun updateUserName(newName: String) {
         worker.updateUserName(newName).subscribeBy(
             onNext = {response->
-                App.prefs.userSession?.user = response.user
+                val accessToken = App.prefs.userSession?.accessToken
+                if (accessToken != null) {
+                    App.prefs.userSession = UserSession(response.user, accessToken)
+                }
                 presenter?.presentProfile(response.user)
             }, onError = {
                 presenter?.presentError(it.localizedMessage)
@@ -39,7 +43,10 @@ class UserProfileInteractor: UserProfileContracts.ViewInteractorContract {
     override fun updateUserAvatar(image: ByteArray) {
         worker.updateUserAvatar(image).subscribeBy(
             onNext = { response ->
-                App.prefs.userSession?.user = response.user
+                val accessToken = App.prefs.userSession?.accessToken
+                if (accessToken != null) {
+                    App.prefs.userSession = UserSession(response.user, accessToken)
+                }
                 presenter?.presentProfile(response.user)
             }, onError = {
                 presenter?.presentError(it.localizedMessage)

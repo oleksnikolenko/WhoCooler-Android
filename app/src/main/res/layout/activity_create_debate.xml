@@ -115,25 +115,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <NumberPicker
-        android:id="@+id/create_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-    </NumberPicker>
-
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/create_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/create_category"
+        android:text="@string/create_category_hint"
+        android:textColor="?android:textColorHint"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/create_linearLayout_names"
         app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_names" />
 

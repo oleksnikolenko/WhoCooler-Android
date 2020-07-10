@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +19,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
+import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
+import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.R
+import kotlinx.android.synthetic.main.activity_create_debate.*
 import java.io.File
 import java.io.IOException
 
@@ -38,13 +42,13 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private lateinit var createButton: Button
     private lateinit var leftName: EditText
     private lateinit var rightName: EditText
-    private lateinit var picker: NumberPicker
     private lateinit var debateName: EditText
+    private lateinit var categoryTextView: TextView
 
     private var fileLeftImage: File? = null
     private var fileRightImage: File? = null
 
-    private lateinit var categories: ArrayList<Category>
+    private var selectedCategory: Category? = null
 
     var isLeftImageSelected = true
 
@@ -52,8 +56,6 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_debate)
         setupModule()
-
-        interactor?.getCategoryList()
 
         assignViewsById()
         setupOnClickListeners()
@@ -79,21 +81,14 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun displayCategories(categories: ArrayList<Category>) {
-        this.categories = categories
-        picker.minValue = 0
-        picker.maxValue = categories.count() - 1
-        picker.displayedValues = categories.map {it.name}.toTypedArray()
-    }
-
     private fun assignViewsById() {
         leftImage = findViewById(R.id.create_image_left)
         rightImage = findViewById(R.id.create_image_right)
         createButton = findViewById(R.id.create_create_button)
         leftName = findViewById(R.id.create_left_name_edit_text)
         rightName = findViewById(R.id.create_right_name_edit_text)
-        picker = findViewById(R.id.create_picker)
         debateName = findViewById(R.id.create_debate_name_edit_text)
+        categoryTextView = findViewById(R.id.create_category)
     }
 
     private fun setupOnClickListeners() {
@@ -107,6 +102,10 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
             tryToGetImageFromUser()
         }
 
+        categoryTextView.setOnClickListener {
+            router?.navigateToPickCategory()
+        }
+
         createButton.setOnClickListener {
             if (App.prefs.isTokenEmpty()) {
                 router?.navigateToAuth()
@@ -118,13 +117,15 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 showAlertNotEnoughData(getString(R.string.create_left_side_name))
             } else if (rightName.text.isEmpty()) {
                 showAlertNotEnoughData(getString(R.string.create_right_side_name))
+            } else if (selectedCategory == null) {
+                showAlertNotEnoughData(getString(R.string.create_category))
             } else {
                 interactor?.createDebate(
                     leftName.text.toString(),
                     rightName.text.toString(),
                     fileLeftImage!!,
                     fileRightImage!!,
-                    categories.get(picker.value).id,
+                    selectedCategory!!.id,
                     if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
                 )
             }
@@ -145,6 +146,13 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
             val imageUri = data?.data
             if (imageUri != null) {
                 updateUserImage(imageUri)
+            }
+        } else if (resultCode == RESULT_PICK_CATEGORY) {
+            val category: Category? = data?.extras?.getParcelable(EXTRA_PICK_CATEGORY)
+            if (category != null) {
+                selectedCategory = category
+                categoryTextView.text = category.name
+                categoryTextView.setTextColor(Color.BLACK)
             }
         }
     }

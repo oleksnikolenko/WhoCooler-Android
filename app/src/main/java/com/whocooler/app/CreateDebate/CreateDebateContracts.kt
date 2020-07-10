@@ -8,7 +8,6 @@ class CreateDebateContracts {
 
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
-        fun getCategoryList()
         fun createDebate(
             leftName: String,
             rightName: String,
@@ -21,7 +20,6 @@ class CreateDebateContracts {
 
     interface InteractorPresenterContract {
         // Functions for Interactor output / Presenter input
-        fun didFetchCategories(categories: ArrayList<Category>)
         fun navigateToDebate(debate: Debate)
         fun presentError(errorDescription: String)
     }
@@ -30,7 +28,6 @@ class CreateDebateContracts {
 
     interface PresenterViewContract {
         // Functions for Presenter output / View input
-        fun displayCategories(categories: ArrayList<Category>)
         fun navigateToDebate(debate: Debate)
         fun showError(message: String)
     }
@@ -40,6 +37,7 @@ class CreateDebateContracts {
     interface RouterInterface {
         fun navigateToAuth()
         fun navigateToDebate(debate: Debate)
+        fun navigateToPickCategory()
     }
 
 }

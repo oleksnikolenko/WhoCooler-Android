@@ -293,5 +293,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun toggleErrorWidgetVisibility(isVisible: Boolean) {
         errorWidget.visibility = if (isVisible) View.VISIBLE else View.GONE
+        if (isVisible) {
+            mainDataProgressBar.visibility = View.GONE
+        }
     }
 }

@@ -17,20 +17,6 @@ class CreateDebateWorker {
 
     private val gson = Gson()
 
-    fun getCategories() : PublishSubject<CategoriesResponse> {
-        val responseSubject = PublishSubject.create<CategoriesResponse>()
-        val categoriesRequest = object : JsonObjectRequest(Method.GET, BASE_URL + "${App.locale}/categories", null, Response.Listener {response ->
-            val categoriesResponse = Gson().fromJson(response.toString(), CategoriesResponse :: class.java)
-            responseSubject.onNext(categoriesResponse)
-        }, Response.ErrorListener {
-            responseSubject.onError(it)
-        }) {}
-
-        App.prefs.requestQueue.add(categoriesRequest)
-
-        return responseSubject
-    }
-
     fun createDebate(
         leftName: String,
         rightName: String,
@@ -50,7 +36,7 @@ class CreateDebateWorker {
 
         map.put("leftside_name", leftNameReq)
         map.put("rightside_name", rightNameReq)
-        map.put("category_id", categoryIdReq)
+        map.put("category_list", categoryIdReq)
         map.put("leftside_image\"; filename=\"left.jpg\"", leftImageReq);
         map.put("rightside_image\"; filename=\"right.jpg\"", rightImageReq);
 
