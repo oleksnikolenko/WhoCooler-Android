@@ -111,7 +111,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         toolbar.setBackgroundColor(Color.WHITE)
 
         val toolbarTitle = toolbar.findViewById<TextView>(R.id.toolbar_title)
-        toolbarTitle.text = getString(R.string.list_toolbar_title)
+        toolbarTitle.text = getString(R.string.app_name)
 
         val toolbarProfile = toolbar.findViewById<Button>(R.id.toolbar_profile)
         toolbarProfile.setOnClickListener {

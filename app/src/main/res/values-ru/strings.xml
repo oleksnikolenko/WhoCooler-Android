@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WhoCooler</string>
+    <string name="app_name">Sporno</string>
     <string name="percent">%s%%,</string>
     <string name="vote">%s голосов</string>
     <string name="auth_info">Пожалуйста, залогинься чтобы голосовать, комментировать и создавать дебаты на Whocooler</string>

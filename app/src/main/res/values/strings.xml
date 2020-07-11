@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WhoCooler</string>
+    <string name="app_name">Sporno</string>
     <string name="percent">%s%%,</string>
     <string name="vote">%s votes</string>
     <string name="auth_info">Please log in to vote, comment and create debates on WhoCooler</string>
