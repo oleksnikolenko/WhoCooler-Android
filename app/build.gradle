@@ -19,8 +19,8 @@ android {
         applicationId "com.whocooler.app"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "1.2.1"
+        versionCode 12
+        versionName "1.3.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
