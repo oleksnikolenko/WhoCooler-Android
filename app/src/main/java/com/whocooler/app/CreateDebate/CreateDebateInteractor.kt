@@ -8,7 +8,7 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
     var presenter: CreateDebateContracts.InteractorPresenterContract? = null
     var worker = CreateDebateWorker()
 
-    override fun createDebate(
+    override fun createDebateSides(
         leftName: String,
         rightName: String,
         leftImage: File,
@@ -16,7 +16,23 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
         categoryId: String,
         debateName: String?
     ) {
-        worker.createDebate(leftName, rightName, leftImage, rightImage, categoryId, debateName).subscribeBy(
+        worker.createDebateSides(leftName, rightName, leftImage, rightImage, categoryId, debateName).subscribeBy(
+            onNext = { debate ->
+                presenter?.navigateToDebate(debate)
+            }, onError = {
+                presenter?.presentError(it.localizedMessage)
+            }
+        )
+    }
+
+    override fun createDebateStatement(
+        leftName: String,
+        rightName: String,
+        debateImage: File,
+        categoryId: String,
+        debateName: String
+    ) {
+        worker.createDebateStatement(leftName, rightName, debateImage, categoryId, debateName).subscribeBy(
             onNext = { debate ->
                 presenter?.navigateToDebate(debate)
             }, onError = {

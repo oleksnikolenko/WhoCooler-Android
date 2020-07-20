@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
@@ -41,23 +40,31 @@ class DebateDetailAdapter(
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface IDetailRow
-    class HeaderRow(val debate: Debate) : IDetailRow
+    class HeaderSidesRow(val debate: Debate) : IDetailRow
+    class HeaderStatementRow(val debate: Debate) : IDetailRow
     class MessageRow(val message: Message) : IDetailRow
     class MessageHeaderRow(var messageCount: Int) : IDetailRow
     class ReplyRow(var reply: Message): IDetailRow
     class EmptyMessagesRow(): IDetailRow
 
     companion object {
-        private const val TYPE_HEADER = 0
-        private const val TYPE_MESSAGE = 1
-        private const val TYPE_MESSAGE_HEADER = 2
-        private const val TYPE_REPLY = 3
-        private const val TYPE_EMPTY_MESSAGES = 4
+        private const val TYPE_HEADER_SIDES = 0
+        private const val TYPE_HEADER_STATEMENT = 1
+        private const val TYPE_MESSAGE = 2
+        private const val TYPE_MESSAGE_HEADER = 3
+        private const val TYPE_REPLY = 4
+        private const val TYPE_EMPTY_MESSAGES = 5
     }
 
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class HeaderSidesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val leftSideImage: AppCompatImageView = itemView.findViewById(R.id.detail_left_image)
         val rightSideImage: AppCompatImageView = itemView.findViewById(R.id.detail_right_image)
+        val debateName: MaterialTextView = itemView.findViewById(R.id.detail_debate_name)
+        val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.detail_vote_container)
+    }
+
+    class HeaderStatementViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val debateImage: AppCompatImageView = itemView.findViewById(R.id.detail_left_image)
         val debateName: MaterialTextView = itemView.findViewById(R.id.detail_debate_name)
         val voteContainer: VoteContainerWidget = itemView.findViewById(R.id.detail_vote_container)
     }
@@ -90,7 +97,8 @@ class DebateDetailAdapter(
     class EmptyMessagesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 
     override fun getItemViewType(position: Int): Int = when(rows[position]) {
-        is HeaderRow -> TYPE_HEADER
+        is HeaderSidesRow -> TYPE_HEADER_SIDES
+        is HeaderStatementRow -> TYPE_HEADER_STATEMENT
         is MessageRow -> TYPE_MESSAGE
         is MessageHeaderRow -> TYPE_MESSAGE_HEADER
         is ReplyRow -> TYPE_REPLY
@@ -99,7 +107,8 @@ class DebateDetailAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        TYPE_HEADER -> headerViewHolder()
+        TYPE_HEADER_SIDES -> headerSidesViewHolder()
+        TYPE_HEADER_STATEMENT -> headerStatementViewHolder()
         TYPE_MESSAGE -> messageViewHolder(parent)
         TYPE_MESSAGE_HEADER -> messageHeaderViewHolder(parent)
         TYPE_REPLY -> replyViewHolder(parent)
@@ -110,7 +119,8 @@ class DebateDetailAdapter(
     override fun getItemCount(): Int = rows.count()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = when (holder.itemViewType) {
-        TYPE_HEADER -> onBindHeader(holder, rows[position] as HeaderRow)
+        TYPE_HEADER_SIDES -> onBindSidesHeader(holder, rows[position] as HeaderSidesRow)
+        TYPE_HEADER_STATEMENT -> onBindStatementHeader(holder, rows[position] as HeaderStatementRow)
         TYPE_MESSAGE -> onBindMessage(holder, rows[position] as MessageRow)
         TYPE_MESSAGE_HEADER -> onBindMessageHeader(holder, rows[position] as MessageHeaderRow)
         TYPE_REPLY -> onBindReply(holder, rows[position] as ReplyRow)
@@ -118,11 +128,46 @@ class DebateDetailAdapter(
         else -> throw IllegalArgumentException()
     }
 
-    private fun onBindHeader(holder: RecyclerView.ViewHolder, row: HeaderRow) {
-        val headerRow = holder as HeaderViewHolder
+    private fun onBindSidesHeader(holder: RecyclerView.ViewHolder, row: HeaderSidesRow) {
+        val headerRow = holder as HeaderSidesViewHolder
 
         Picasso.get().load(row.debate.leftSide.image).into(headerRow.leftSideImage)
         Picasso.get().load(row.debate.rightSide.image).into(headerRow.rightSideImage)
+
+        if (row.debate.name != null) {
+            headerRow.debateName.text = row.debate.name
+            headerRow.debateName.visibility = View.VISIBLE
+        } else {
+            headerRow.debateName.visibility = View.GONE
+        }
+
+        headerRow.voteContainer.acceptModel(VoteContainerModel(debate = row.debate))
+
+        headerRow.voteContainer.leftClicked = {
+            if (App.prefs.isTokenEmpty()) {
+                authRequired()
+            } else {
+                voteClick(row.debate.leftSide).subscribe {
+                    headerRow.voteContainer.acceptModel(VoteContainerModel(debate = it), true)
+                }
+            }
+        }
+
+        headerRow.voteContainer.rightClicked = {
+            if (App.prefs.isTokenEmpty()) {
+                authRequired()
+            } else {
+                voteClick(row.debate.rightSide).subscribe {
+                    headerRow.voteContainer.acceptModel(VoteContainerModel(debate = it), true)
+                }
+            }
+        }
+    }
+
+    private fun onBindStatementHeader(holder: RecyclerView.ViewHolder, row: HeaderStatementRow) {
+        val headerRow = holder as HeaderStatementViewHolder
+
+        Picasso.get().load(row.debate.image).into(headerRow.debateImage)
 
         if (row.debate.name != null) {
             headerRow.debateName.text = row.debate.name
@@ -225,7 +270,7 @@ class DebateDetailAdapter(
 
     private fun onBindEmptyMessages(holder: RecyclerView.ViewHolder, row: EmptyMessagesRow) {}
 
-    private fun headerViewHolder() : RecyclerView.ViewHolder {
+    private fun headerSidesViewHolder() : RecyclerView.ViewHolder {
         val container = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = RecyclerView.LayoutParams(
@@ -255,7 +300,7 @@ class DebateDetailAdapter(
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     layoutParams = LinearLayout.LayoutParams(
                         0,
-                        dip(140)
+                        dip(150)
                     ).apply {
                         weight = 1.0f
                         setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
@@ -267,7 +312,7 @@ class DebateDetailAdapter(
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     layoutParams = LinearLayout.LayoutParams(
                         0,
-                        dip(140)
+                        dip(150)
                     ).apply {
                         weight = 1.0f
                         setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
@@ -294,7 +339,66 @@ class DebateDetailAdapter(
             refreshDrawableState()
         }
 
-        return HeaderViewHolder(container)
+        return HeaderSidesViewHolder(container)
+    }
+
+    private fun headerStatementViewHolder() : RecyclerView.ViewHolder {
+        val container = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT
+            )
+
+            addView(LinearLayout(context).apply {
+                val customLayoutParams = LinearLayout.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
+                customLayoutParams.setMargins(0, 0, 0, dip(20))
+
+                layoutParams = customLayoutParams
+                orientation = LinearLayout.HORIZONTAL
+                dividerDrawable = GradientDrawable().apply {
+                    setSize(dip(1), 0)
+                }
+                clipToOutline = true
+                outlineProvider = ViewOutlineProvider.BACKGROUND
+                weightSum = 1.0f
+
+                addView(AppCompatImageView(context).apply {
+                    id = R.id.detail_left_image
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    layoutParams = LinearLayout.LayoutParams(
+                        0,
+                        dip(225)
+                    ).apply {
+                        weight = 1.0f
+                        setBackgroundColor(Color.parseColor(VOTE_BUTTON_SHADE_COLOR))
+                    }
+                })
+            })
+            addView(MaterialTextView(context).apply {
+                id = R.id.detail_debate_name
+                gravity = Gravity.CENTER
+                layoutParams =  LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setTextColor(Color.BLACK)
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    textSize = 20f
+                    setMargins(dip(16), 0, dip(16), dip(12))
+                }
+            })
+            addView(VoteContainerWidget(context).apply {
+                id = R.id.detail_vote_container
+            })
+
+            refreshDrawableState()
+        }
+
+        return HeaderStatementViewHolder(container)
     }
 
     private fun messageViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder {

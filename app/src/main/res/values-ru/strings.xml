@@ -21,7 +21,7 @@
     <string name="sorting_popular" >Популярные</string>
     <string name="sorting_newest">Новые</string>
     <string name="sorting_oldest">Старые</string>
-    <string name="sorting_title">Сортировать дебаты, текущая сортировка:</string>
+    <string name="sorting_title">Сортировать дебаты, текущая сортировка: \u0020</string>
     <string name="message_show">Покакзать еще</string>
     <string name="message_more_replies">ответа(ов)</string>
     <string name="reply">Ответить</string>
@@ -43,8 +43,7 @@
     <string name="create_right_image">Фото правой стороны</string>
     <string name="create_left_side_name">Имя левой стороны</string>
     <string name="create_right_side_name">Имя правой стороны</string>
-    <string name="create_debate_name">Имя дебата (необязательно заполнять)</string>
-    <string name="create_create">Создать</string>
+=    <string name="create_create">Создать</string>
     <string name="create_category_hint">Выберите категорию</string>
     <string name="create_category">Категория</string>
     <string name="create_new_category">Создать новую категорию</string>
@@ -56,5 +55,15 @@
     <string name="profile_logout_alert">Вы уверены, что хотите выйти?</string>
     <string name="nothing_found">По запросу ничего не найдено</string>
     <string name="category_you_picked">Вы выбрали категорию: \u0020</string>
+    <string name="create_debate_name_optional">Название дебата (необязательно заполнять)</string>
+    <string name="create_debate_name_required">Название дебата</string>
+    <string name="create_debate_image" >Фото дебата </string>
+    <string name="create_left_side_name_short">Да</string>
+    <string name="create_right_side_name_short">Нет</string>
+    <string name="create_choose_type">"Выберите тип дебата"</string>
+    <string name="create_debate_type_sides_type" >Тип: Левая/Правая сторона</string>
+    <string name="create_debate_type_sides" >Левая/Правая сторона</string>
+    <string name="create_debate_type_statement_type" >Тип: Да/Нет</string>
+    <string name="create_debate_type_statement" >Утверждение Да/Нет</string>
 
 </resources>

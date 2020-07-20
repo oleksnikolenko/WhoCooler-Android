@@ -49,7 +49,6 @@ class PickCategoryActivity : AppCompatActivity(), PickCategoryContracts.Presente
     override fun displayCategories(categories: ArrayList<Category>) {
         val pickCategoryHandler: (Category) -> Unit = { category ->
             didSelectCategory(category)
-            Toast.makeText(this, getString(R.string.category_you_picked) + category.name, Toast.LENGTH_SHORT).show()
         }
         categoryAdapter = PickCategoryAdapter(categories, pickCategoryHandler)
 

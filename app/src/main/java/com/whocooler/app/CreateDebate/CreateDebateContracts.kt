@@ -1,6 +1,5 @@
 package com.whocooler.app.CreateDebate
 
-import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import java.io.File
 
@@ -8,13 +7,20 @@ class CreateDebateContracts {
 
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
-        fun createDebate(
+        fun createDebateSides(
             leftName: String,
             rightName: String,
             leftImage: File,
             rightImage: File,
             categoryId: String,
             debateName: String?
+        )
+        fun createDebateStatement(
+            leftName: String,
+            rightName: String,
+            debateImage: File,
+            categoryId: String,
+            debateName: String
         )
     }
 

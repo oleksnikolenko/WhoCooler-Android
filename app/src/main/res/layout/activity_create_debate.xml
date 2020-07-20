@@ -22,31 +22,74 @@
     <LinearLayout
         android:id="@+id/create_linearLayout_images"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_debate_toolbar">
+        app:layout_constraintTop_toBottomOf="@id/create_debate_type"
+        android:weightSum="1">
 
-        <ImageView
-            android:id="@+id/create_image_left"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/create_image_left_container"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="6dp"
+            android:layout_height="150dp"
             android:layout_weight="0.5"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/picture_placeholder" />
+            android:layout_marginEnd="3dp"
+            android:layout_marginTop="12dp">
+            <ImageView
+                android:id="@+id/create_image_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ACACAC"
+                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/create_left_image_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Set photo"
+                android:textAlignment="gravity"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/create_image_right"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/create_image_right_container"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="12dp"
+            android:layout_height="150dp"
             android:layout_weight="0.5"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/picture_placeholder" />
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="12dp">
+            <ImageView
+                android:id="@+id/create_image_right"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ACACAC"
+                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/create_right_image_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Set photo"
+                android:textAlignment="gravity"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--        <ImageView-->
+<!--            android:id="@+id/create_image_right"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginStart="6dp"-->
+<!--            android:layout_marginEnd="12dp"-->
+<!--            android:layout_weight="0.5"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            app:srcCompat="@drawable/picture_placeholder" />-->
     </LinearLayout>
 
     <EditText
@@ -55,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@null"
-        android:hint="@string/create_debate_name"
+        android:hint="@string/create_debate_name_optional"
         android:inputType="textMultiLine"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
@@ -125,6 +168,17 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/create_linearLayout_names"
         app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_names" />
+
+    <TextView
+        android:id="@+id/create_debate_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_debate_toolbar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

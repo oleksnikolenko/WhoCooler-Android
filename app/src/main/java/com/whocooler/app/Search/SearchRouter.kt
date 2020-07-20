@@ -22,7 +22,7 @@ class SearchRouter : SearchContracts.RouterInterface {
 
         debateDetailIntent.putExtra(EXTRA_DEBATE, debate)
         debateDetailIntent.putExtra(EXTRA_DEBATE_POSITION, position)
-        debateDetailIntent.putExtra(EXTRA_SHOULD_UPDATE_WITH_INTERNET, true)
+        debateDetailIntent.putExtra(EXTRA_SHOULD_UPDATE_WITH_INTERNET, false)
 
         activity?.startActivity(debateDetailIntent)
     }

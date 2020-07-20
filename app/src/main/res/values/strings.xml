@@ -40,7 +40,6 @@
     <string name="sign_in_google">Continue with Google</string>
     <string name="create_left_side_name">Left side name</string>
     <string name="create_right_side_name">Right side name</string>
-    <string name="create_debate_name">Debate name (optional, may be left blank)</string>
     <string name="create_create">create</string>
     <string name="create_category_hint">Pick category</string>
     <string name="create_category">Category</string>
@@ -55,5 +54,15 @@
     <string name="profile_logout_alert">Are you sure you want to log out?</string>
     <string name="nothing_found">Nothing found</string>
     <string name="category_you_picked">You picked category: \u0020</string>
+    <string name="create_debate_name_optional">Debate name (optional, may be left blank)</string>
+    <string name="create_debate_name_required">Debate name</string>
+    <string name="create_debate_image" >Debate image </string>
+    <string name="create_left_side_name_short">Yes</string>
+    <string name="create_right_side_name_short">No</string>
+    <string name="create_choose_type">"Choose debate type"</string>
+    <string name="create_debate_type_sides_type" >Type: Left/Right Side</string>
+    <string name="create_debate_type_sides" >Left/Right Side</string>
+    <string name="create_debate_type_statement_type" >Type: Yes/No</string>
+    <string name="create_debate_type_statement" >Yes/No Statement</string>
 
 </resources>

@@ -14,15 +14,19 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
+import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.R
-import kotlinx.android.synthetic.main.activity_create_debate.*
+import org.w3c.dom.Text
 import java.io.File
 import java.io.IOException
 
@@ -44,11 +48,18 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private lateinit var rightName: EditText
     private lateinit var debateName: EditText
     private lateinit var categoryTextView: TextView
+    private lateinit var debateTypeTextView: TextView
+
+    private lateinit var leftImageContainer: ConstraintLayout
+    private lateinit var leftImageText: TextView
+    private lateinit var rightImageContainer: ConstraintLayout
+    private lateinit var rightImageText: TextView
 
     private var fileLeftImage: File? = null
     private var fileRightImage: File? = null
 
     private var selectedCategory: Category? = null
+    private var debateType: String = "sides"
 
     var isLeftImageSelected = true
 
@@ -89,6 +100,14 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         rightName = findViewById(R.id.create_right_name_edit_text)
         debateName = findViewById(R.id.create_debate_name_edit_text)
         categoryTextView = findViewById(R.id.create_category)
+        debateTypeTextView = findViewById(R.id.create_debate_type)
+        leftImageContainer = findViewById(R.id.create_image_left_container)
+        rightImageContainer = findViewById(R.id.create_image_right_container)
+        leftImageText = findViewById(R.id.create_left_image_text)
+        rightImageText = findViewById(R.id.create_right_image_text)
+
+        // TODO - Localize
+        debateTypeTextView.text = getString(R.string.create_debate_type_sides_type)
     }
 
     private fun setupOnClickListeners() {
@@ -106,28 +125,15 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
             router?.navigateToPickCategory()
         }
 
+        debateTypeTextView.setOnClickListener {
+            showDebateTypeAlert()
+        }
+
         createButton.setOnClickListener {
-            if (App.prefs.isTokenEmpty()) {
-                router?.navigateToAuth()
-            } else if (fileLeftImage == null) {
-                showAlertNotEnoughData(getString(R.string.create_left_image))
-            } else if (fileRightImage == null) {
-                showAlertNotEnoughData(getString(R.string.create_right_image))
-            } else if (leftName.text.isEmpty()) {
-                showAlertNotEnoughData(getString(R.string.create_left_side_name))
-            } else if (rightName.text.isEmpty()) {
-                showAlertNotEnoughData(getString(R.string.create_right_side_name))
-            } else if (selectedCategory == null) {
-                showAlertNotEnoughData(getString(R.string.create_category))
-            } else {
-                interactor?.createDebate(
-                    leftName.text.toString(),
-                    rightName.text.toString(),
-                    fileLeftImage!!,
-                    fileRightImage!!,
-                    selectedCategory!!.id,
-                    if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
-                )
+            if (debateType == "sides") {
+                handleSidesTap()
+            } else if (debateType == "statement") {
+                handleStatementTap()
             }
         }
     }
@@ -180,23 +186,13 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
             if (isLeftImageSelected) {
                 fileLeftImage = File(getRealPathFromURI(uri))
                 leftImage.setImageBitmap(selectedImage)
-                leftImage.layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-                ).apply {
-                    setMargins(0, 0, 0, 0)
-                    weight = 0.5f
-                }
+                leftImage.setBackgroundColor(0x00000000)
+                leftImageText.visibility = View.GONE
             } else {
                 fileRightImage = File(getRealPathFromURI(uri))
                 rightImage.setImageBitmap(selectedImage)
-                rightImage.layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-                ).apply {
-                    setMargins(0, 0, 0, 0)
-                    weight = 0.5f
-                }
+                rightImage.setBackgroundColor(0x00000000)
+                rightImageText.visibility = View.GONE
             }
         }
     }
@@ -252,4 +248,111 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+    private fun showDebateTypeAlert() {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.create_choose_type))
+
+        val debateTypes = arrayOf(getString(R.string.create_debate_type_sides), getString(R.string.create_debate_type_statement))
+
+        val debateTypesForBackend = arrayOf("sides", "statement")
+
+        builder.setItems(debateTypes) { _, which ->
+            debateType = debateTypesForBackend[which]
+            setupDebateTypeLayout(debateType)
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun setupDebateTypeLayout(type: String) {
+        if (type == "sides") {
+            debateName.hint = getString(R.string.create_debate_name_optional)
+            leftName.hint = getString(R.string.create_left_side_name)
+            rightName.hint = getString(R.string.create_right_side_name)
+            rightImageContainer.visibility = View.VISIBLE
+            debateTypeTextView.text = getString(R.string.create_debate_type_sides_type)
+
+            leftImageContainer.layoutParams = LinearLayout.LayoutParams(
+                0,
+                dip(150)
+            ).apply {
+                weight = 0.5f
+                setMargins(0, dip(12), dip(3), 0)
+            }
+
+            rightImageContainer.layoutParams = LinearLayout.LayoutParams(
+                0,
+                dip(150)
+            ).apply {
+                weight = 0.5f
+                setMargins(dip(3), dip(12), 0, 0)
+            }
+        } else {
+            rightImageContainer.visibility = View.GONE
+            debateName.hint = getString(R.string.create_debate_name_required)
+            leftName.hint = getString(R.string.create_left_side_name_short)
+            rightName.hint = getString(R.string.create_right_side_name_short)
+            debateTypeTextView.text = getString(R.string.create_debate_type_statement_type)
+
+            leftImageContainer.layoutParams = LinearLayout.LayoutParams(
+                0,
+                dip(225)
+            ).apply {
+                weight = 1f
+                setMargins(0, dip(12), 0, 0)
+            }
+        }
+    }
+
+    private fun handleSidesTap() {
+        if (App.prefs.isTokenEmpty()) {
+            router?.navigateToAuth()
+        } else if (fileLeftImage == null) {
+            showAlertNotEnoughData(getString(R.string.create_left_image))
+        } else if (fileRightImage == null) {
+            showAlertNotEnoughData(getString(R.string.create_right_image))
+        } else if (leftName.text.isEmpty()) {
+            showAlertNotEnoughData(getString(R.string.create_left_side_name))
+        } else if (rightName.text.isEmpty()) {
+            showAlertNotEnoughData(getString(R.string.create_right_side_name))
+        } else if (selectedCategory == null) {
+            showAlertNotEnoughData(getString(R.string.create_category))
+        } else {
+            interactor?.createDebateSides(
+                leftName.text.toString(),
+                rightName.text.toString(),
+                fileLeftImage!!,
+                fileRightImage!!,
+                selectedCategory!!.id,
+                if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
+            )
+        }
+    }
+
+    private fun handleStatementTap() {
+        if (App.prefs.isTokenEmpty()) {
+            router?.navigateToAuth()
+        } else if (fileLeftImage == null) {
+            showAlertNotEnoughData(getString(R.string.create_debate_image))
+        } else if (debateName.text.isEmpty()) {
+            showAlertNotEnoughData(getString(R.string.create_debate_name_required))
+        } else if (leftName.text.isEmpty()) {
+            showAlertNotEnoughData(getString(R.string.create_left_side_name))
+        } else if (rightName.text.isEmpty()) {
+            showAlertNotEnoughData(getString(R.string.create_right_side_name))
+        } else if (selectedCategory == null) {
+            showAlertNotEnoughData(getString(R.string.create_category))
+        } else {
+            interactor?.createDebateStatement(
+                leftName.text.toString(),
+                rightName.text.toString(),
+                fileLeftImage!!,
+                selectedCategory!!.id,
+                debateName.text.toString()
+            )
+        }
+    }
+
 }

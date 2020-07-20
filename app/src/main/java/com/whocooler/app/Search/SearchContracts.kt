@@ -2,6 +2,7 @@ package com.whocooler.app.Search
 
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.SearchResponse
+import com.whocooler.app.DebateList.Adapters.SearchAdapter
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class SearchContracts {
@@ -19,7 +20,7 @@ class SearchContracts {
 
     interface PresenterViewContract {
         // Functions for Presenter output / View input
-        fun setupDebateAdapter(response: SearchResponse)
+        fun setupDebateAdapter(response: SearchResponse, rows: ArrayList<SearchAdapter.ISearchListRow>)
         fun showErrorToast(message: String)
         fun setupNotFound()
     }

@@ -12,7 +12,11 @@ class DebateDetailPresenter: DebateDetailContracts.InteractorPresenterContract {
 
     override fun presentDebate(debate: Debate) {
         val rows = ArrayList<DebateDetailAdapter.IDetailRow>()
-        rows.add(DebateDetailAdapter.HeaderRow(debate))
+        if (debate.type == "sides") {
+            rows.add(DebateDetailAdapter.HeaderSidesRow(debate))
+        } else if (debate.type == "statement") {
+            rows.add(DebateDetailAdapter.HeaderStatementRow(debate))
+        }
         rows.add(DebateDetailAdapter.MessageHeaderRow(debate.messageCount))
 
         if (debate.messagesList.messages.isEmpty()) {

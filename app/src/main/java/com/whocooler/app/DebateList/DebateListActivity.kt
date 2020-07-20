@@ -1,14 +1,10 @@
 package com.whocooler.app.DebateList
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +24,6 @@ import com.whocooler.app.DebateList.Adapters.DebateListCategoryAdapter
 import com.whocooler.app.R
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterViewContract {
@@ -88,7 +83,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         super.onRestart()
 
         if (reloadPosition != null)  {
-            debateAdapter.debates = DebateService.debates
+            debateAdapter.rows = DebateService.getListRows()
             listRecyclerView.itemAnimator = null
             debateAdapter.notifyItemChanged(reloadPosition!!)
             reloadPosition = null
@@ -180,7 +175,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
     override fun setupCategoryAdapter(categories: ArrayList<Category>) {
         val categoryClickHandler: (Category) -> Unit = { category ->
-            debateAdapter.debates.clear()
+            debateAdapter.rows.clear()
             debateAdapter.notifyDataSetChanged()
             selectedCategoryId = category.id
             interactor.getDebates(DebateListModels.DebateListRequest(selectedCategoryId, selectedSorting))
@@ -190,8 +185,8 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
         listCategoriesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    override fun setupDebateAdapter(response: DebatesResponse) {
-        DebateService.debates = response.debates
+    override fun setupDebateAdapter(rows: ArrayList<DebateListAdapter.IDebateListRow>, debates: ArrayList<Debate>) {
+        DebateService.debates = debates
         mainDataProgressBar.visibility = View.GONE
 
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
@@ -217,7 +212,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         debateAdapter =
             DebateListAdapter(
-                response.debates,
+                rows,
                 voteClickHandler,
                 debateClickHandler,
                 authRequiredHandler,
@@ -236,14 +231,14 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     override fun addNewDebates(response: DebatesResponse) {
-        debateAdapter.debates = DebateService.debates
+        debateAdapter.rows = DebateService.getListRows()
         debateAdapter.notifyDataSetChanged()
         handlePagination()
         togglePaginationProgressBar(false)
     }
 
     override fun updateDebateDataSource() {
-        debateAdapter.update(DebateService.debates)
+        debateAdapter.update(DebateService.getListRows())
     }
 
     override fun setupEmptyState(text: String) {

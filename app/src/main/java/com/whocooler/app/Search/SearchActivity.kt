@@ -74,7 +74,7 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
                             interactor?.search(newText, 1)
                         } else if (newText.isEmpty() && ::debateAdapter.isInitialized) {
                             toggleEmptyDataVisibility(false)
-                            debateAdapter.debates = ArrayList()
+                            debateAdapter.rows = ArrayList()
                             debateAdapter.notifyDataSetChanged()
                         }
                     }
@@ -90,10 +90,10 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
         })
     }
 
-    override fun setupDebateAdapter(response: SearchResponse) {
+    override fun setupDebateAdapter(response: SearchResponse, rows: ArrayList<SearchAdapter.ISearchListRow>) {
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
-            router?.navigateToDebate(debateAdapter.debates[adapterPosition], adapterPosition)
+            router?.navigateToDebate(debate, adapterPosition)
         }
 
         val didClickMoreHandler: () -> Unit = {
@@ -102,7 +102,7 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
         debateAdapter =
             SearchAdapter(
-                response.debates,
+                rows,
                 debateClickHandler,
                 didClickMoreHandler
             )

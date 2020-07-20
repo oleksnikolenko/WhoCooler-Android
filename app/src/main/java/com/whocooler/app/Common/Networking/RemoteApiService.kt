@@ -12,9 +12,18 @@ interface RemoteApiService {
 
     @Multipart
     @POST
-    fun createDebate(
+    fun createDebateSides(
         @Url url: String,
         @Header("Authorization") authorization: String,
         @PartMap params: Map<String, RequestBody>
     ): retrofit2.Call<ResponseBody>
+
+    @Multipart
+    @POST
+    fun createDebateStatement(
+        @Url url: String,
+        @Header("Authorization") authorization: String,
+        @PartMap params: Map<String, RequestBody>
+    ): retrofit2.Call<ResponseBody>
+
 }

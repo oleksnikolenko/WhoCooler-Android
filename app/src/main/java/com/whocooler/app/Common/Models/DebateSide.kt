@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 data class DebateSide(
     val id: String,
     val name: String,
-    val image: String,
+    val image: String?,
     @SerializedName("rating_count") var ratingCount: Int,
     @SerializedName("is_voted_by_user") var isVotedByUser: Boolean
 ) : Parcelable

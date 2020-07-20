@@ -3,6 +3,7 @@ package com.whocooler.app.DebateList
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebateListContracts {
@@ -29,7 +30,7 @@ class DebateListContracts {
 
     interface PresenterViewContract {
         // Functions for Presenter output / View input
-        fun setupDebateAdapter(response: DebatesResponse)
+        fun setupDebateAdapter(rows: ArrayList<DebateListAdapter.IDebateListRow>, debates: ArrayList<Debate>)
         fun setupCategoryAdapter(categories: ArrayList<Category>)
         fun updateDebateDataSource()
         fun setupEmptyState(text: String)

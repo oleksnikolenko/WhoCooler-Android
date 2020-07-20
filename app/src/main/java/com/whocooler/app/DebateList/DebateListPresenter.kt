@@ -2,7 +2,10 @@ package com.whocooler.app.DebateList
 
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
+import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.DebateDetail.DebateDetailAdapter
+import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.R
 
 class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
@@ -22,7 +25,15 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
         if (response.debates.isEmpty() && activity?.selectedCategoryId == Category.Constant.FAVORITES.id) {
             activity?.setupEmptyState(App.appContext.getString(R.string.empty_favorites))
         } else {
-            activity?.setupDebateAdapter(response)
+            var rows = ArrayList<DebateListAdapter.IDebateListRow>()
+            response.debates.forEach { debate ->
+                if (debate.type == "sides") {
+                    rows.add(DebateListAdapter.SidesRow(debate))
+                } else if (debate.type == "statement") {
+                    rows.add(DebateListAdapter.StatementRow(debate))
+                }
+            }
+            activity?.setupDebateAdapter(rows, response.debates)
         }
 
         activity?.toggleErrorWidgetVisibility(false)
