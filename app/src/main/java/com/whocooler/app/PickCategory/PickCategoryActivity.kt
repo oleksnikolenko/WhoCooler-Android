@@ -5,16 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.InputType
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.R
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_pick_category.*
 
 class PickCategoryActivity : AppCompatActivity(), PickCategoryContracts.PresenterViewContract {
@@ -25,6 +23,9 @@ class PickCategoryActivity : AppCompatActivity(), PickCategoryContracts.Presente
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
         setContentView(R.layout.activity_pick_category)
         setupModule()
 

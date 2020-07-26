@@ -11,12 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.whocooler.app.Common.Models.Debate
-import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.SearchResponse
-import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.DebateList.Adapters.SearchAdapter
 import com.whocooler.app.R
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContract {
@@ -29,6 +26,9 @@ class SearchActivity : AppCompatActivity(), SearchContracts.PresenterViewContrac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
         setContentView(R.layout.activity_search)
 
         setupSearchView()

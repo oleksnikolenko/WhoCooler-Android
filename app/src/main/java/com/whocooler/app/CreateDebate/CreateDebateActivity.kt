@@ -18,7 +18,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
@@ -26,7 +25,6 @@ import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.R
-import org.w3c.dom.Text
 import java.io.File
 import java.io.IOException
 
@@ -65,6 +63,9 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
         setContentView(R.layout.activity_create_debate)
         setupModule()
 
@@ -279,7 +280,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 dip(150)
             ).apply {
                 weight = 0.5f
-                setMargins(0, dip(12), dip(3), 0)
+                setMargins(0, dip(12), dip(1), 0)
             }
 
             rightImageContainer.layoutParams = LinearLayout.LayoutParams(
@@ -287,7 +288,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 dip(150)
             ).apply {
                 weight = 0.5f
-                setMargins(dip(3), dip(12), 0, 0)
+                setMargins(dip(1), dip(12), 0, 0)
             }
         } else {
             rightImageContainer.visibility = View.GONE
