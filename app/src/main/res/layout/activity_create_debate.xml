@@ -160,12 +160,13 @@
 
     <TextView
         android:id="@+id/create_category"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/create_category_hint"
         android:textColor="?android:textColorHint"
         android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/create_linearLayout_names"
         app:layout_constraintStart_toStartOf="@+id/create_linearLayout_names"
         app:layout_constraintTop_toBottomOf="@+id/create_linearLayout_names" />
 
