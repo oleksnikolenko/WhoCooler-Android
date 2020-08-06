@@ -104,7 +104,7 @@ class VoteContainerWidget @JvmOverloads constructor(
         return LinearLayout(context).apply {
             orientation = VERTICAL
             gravity = Gravity.CENTER
-            layoutParams = LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
             addView(AutoResizeTextView(context).apply {
                 id = R.id.name
                 maxLines = 2

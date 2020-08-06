@@ -26,4 +26,11 @@ interface RemoteApiService {
         @PartMap params: Map<String, RequestBody>
     ): retrofit2.Call<ResponseBody>
 
+    @Multipart
+    @PATCH("useredit")
+    fun editUserAvater(
+        @Header("Authorization") authorization: String,
+        @PartMap params: Map<String, RequestBody>
+    ): retrofit2.Call<ResponseBody>
+
 }

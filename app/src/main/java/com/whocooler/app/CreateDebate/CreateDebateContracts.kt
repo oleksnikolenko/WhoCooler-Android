@@ -10,15 +10,15 @@ class CreateDebateContracts {
         fun createDebateSides(
             leftName: String,
             rightName: String,
-            leftImage: File,
-            rightImage: File,
+            leftImage: ByteArray,
+            rightImage: ByteArray,
             categoryId: String,
             debateName: String?
         )
         fun createDebateStatement(
             leftName: String,
             rightName: String,
-            debateImage: File,
+            debateImage: ByteArray,
             categoryId: String,
             debateName: String
         )

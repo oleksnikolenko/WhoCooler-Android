@@ -1,5 +1,7 @@
 package com.whocooler.app.CreateDebate
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.google.gson.Gson
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
@@ -7,7 +9,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
-import java.io.File
+import java.io.ByteArrayOutputStream
 
 class CreateDebateWorker {
 
@@ -16,8 +18,8 @@ class CreateDebateWorker {
     fun createDebateSides(
         leftName: String,
         rightName: String,
-        leftImage: File,
-        rightImage: File,
+        leftImage: ByteArray,
+        rightImage: ByteArray,
         categoryId: String,
         debateName: String?
     ) : PublishSubject<Debate> {
@@ -73,7 +75,7 @@ class CreateDebateWorker {
     fun createDebateStatement(
         leftName: String,
         rightName: String,
-        debateImage: File,
+        debateImage: ByteArray,
         categoryId: String,
         debateName: String
     ) : PublishSubject<Debate> {

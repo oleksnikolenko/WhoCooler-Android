@@ -446,9 +446,11 @@ class DebateDetailAdapter(
                     id = R.id.detail_message_more
                     setImageResource(R.drawable.more)
                     layoutParams = LinearLayout.LayoutParams(
-                        dip(16),
-                        dip(16)
-                    )
+                        dip(36),
+                        dip(36)
+                    ).apply {
+                        setPadding(dip(4), dip(12), dip(16), dip(8))
+                    }
                 }
             )
             addView(
@@ -470,6 +472,7 @@ class DebateDetailAdapter(
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     ).apply {
                         text = context.getString(R.string.reply)
+                        setPadding(0, dip(6), dip(6), dip(6))
                     }
                 }
             )
@@ -495,17 +498,17 @@ class DebateDetailAdapter(
             set.connect(R.id.detail_message_avatar, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP, dip(16))
             set.connect(R.id.detail_message_user_name, ConstraintSet.START, R.id.detail_message_avatar, ConstraintSet.END, dip(12))
             set.connect(R.id.detail_message_user_name, ConstraintSet.TOP, R.id.detail_message_avatar, ConstraintSet.TOP)
-            set.connect(R.id.detail_message_more, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP, dip(12))
-            set.connect(R.id.detail_message_more, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
+            set.connect(R.id.detail_message_more, ConstraintSet.TOP, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.TOP)
+            set.connect(R.id.detail_message_more, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END)
             set.connect(R.id.detail_message_date, ConstraintSet.TOP, R.id.detail_message_user_name, ConstraintSet.TOP)
             set.connect(R.id.detail_message_date, ConstraintSet.BOTTOM, R.id.detail_message_user_name, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_message_date, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.END, dip(8))
             set.connect(R.id.detail_message_text, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.START)
             set.connect(R.id.detail_message_text, ConstraintSet.TOP, R.id.detail_message_user_name, ConstraintSet.BOTTOM, dip(4))
             set.connect(R.id.detail_message_text, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
-            set.connect(R.id.detail_message_reply, ConstraintSet.TOP, R.id.detail_message_text, ConstraintSet.BOTTOM, dip(6))
+            set.connect(R.id.detail_message_reply, ConstraintSet.TOP, R.id.detail_message_text, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_message_reply, ConstraintSet.START, R.id.detail_message_user_name, ConstraintSet.START)
-            set.connect(R.id.detail_message_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(12))
+            set.connect(R.id.detail_message_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(8))
             set.connect(R.id.detail_message_vote, ConstraintSet.TOP, R.id.detail_message_reply, ConstraintSet.TOP)
             set.connect(R.id.detail_message_vote, ConstraintSet.BOTTOM, R.id.detail_message_reply, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_message_show_replies, ConstraintSet.TOP, R.id.detail_message_reply, ConstraintSet.BOTTOM, dip(8))
@@ -578,6 +581,7 @@ class DebateDetailAdapter(
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     ).apply {
                         text = context.getString(R.string.reply)
+                        setPadding(0, dip(6), dip(6), dip(6))
                     }
                 }
             )
@@ -598,9 +602,9 @@ class DebateDetailAdapter(
             set.connect(R.id.detail_reply_text, ConstraintSet.START, R.id.detail_reply_user_name, ConstraintSet.START)
             set.connect(R.id.detail_reply_text, ConstraintSet.TOP, R.id.detail_reply_user_name, ConstraintSet.BOTTOM, dip(4))
             set.connect(R.id.detail_reply_text, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(16))
-            set.connect(R.id.detail_reply_reply, ConstraintSet.TOP, R.id.detail_reply_text, ConstraintSet.BOTTOM, dip(6))
+            set.connect(R.id.detail_reply_reply, ConstraintSet.TOP, R.id.detail_reply_text, ConstraintSet.BOTTOM)
             set.connect(R.id.detail_reply_reply, ConstraintSet.START, R.id.detail_reply_user_name, ConstraintSet.START)
-            set.connect(R.id.detail_reply_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(12))
+            set.connect(R.id.detail_reply_vote, ConstraintSet.END, ConstraintLayout.LayoutParams.PARENT_ID, ConstraintSet.END, dip(8))
             set.connect(R.id.detail_reply_vote, ConstraintSet.TOP, R.id.detail_reply_reply, ConstraintSet.TOP)
             set.connect(R.id.detail_reply_vote, ConstraintSet.BOTTOM, R.id.detail_reply_reply, ConstraintSet.BOTTOM)
 

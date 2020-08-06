@@ -6,11 +6,15 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.media.Image
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.InputType
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.whocooler.app.Common.Models.User
 import com.whocooler.app.R
 import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterViewContract {
@@ -98,10 +103,20 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
 
     @Throws(IOException::class)
     private fun updateUserImage(uri: Uri) {
-        val inputStream = contentResolver.openInputStream(uri)
-        inputStream?.buffered()?.use {
-            interactor.updateUserAvatar(it.readBytes())
+        val imageStream = contentResolver.openInputStream(uri)
+        var imageBitmap = BitmapFactory.decodeStream(imageStream)
+        var imageUri = getRealPathFromURI(uri)
+
+        if (imageUri != null) {
+            imageBitmap = modifyOrientation(imageBitmap, imageUri!!)
         }
+
+        val byteStream = ByteArrayOutputStream()
+        val compressedBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width / 4, imageBitmap.height / 4, false)
+
+        compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteStream)
+
+        interactor.updateUserAvatar(byteStream.toByteArray())
     }
 
     private fun showEditNameAlert() {
@@ -183,7 +198,7 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
 
         builder.setTitle(getString(R.string.profile_logout_alert))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, which ->
-            interactor.logout()
+            interactor.logout(this)
         }
         builder.setNegativeButton(getString(R.string.no)) {_,_ ->}
 
@@ -239,6 +254,45 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String): Bitmap {
+        val ei = ExifInterface(image_absolute_path)
+        val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flipImage(bitmap, true, false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flipImage(bitmap, false, true)
+            else -> bitmap
+        }
+    }
+
+    private fun rotateImage(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun flipImage(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+        val matrix = Matrix()
+        matrix.preScale((if (horizontal) -1 else 1).toFloat(), (if (vertical) -1 else 1).toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun getRealPathFromURI(contentURI: Uri): String? {
+        val result: String?
+        val cursor: Cursor? = contentResolver.query(contentURI, null, null, null, null)
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.path
+        } else {
+            cursor.moveToFirst()
+            val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
+        }
+        return result
     }
 
 }

@@ -1,14 +1,11 @@
 package com.whocooler.app.PickCategory
 
-import android.widget.Toast
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.gson.Gson
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.CategoriesResponse
 import com.whocooler.app.Common.Models.Category
-import com.whocooler.app.Common.Models.DebatesResponse
-import com.whocooler.app.Common.Models.SearchResponse
 import com.whocooler.app.Common.Utilities.BASE_URL
 import io.reactivex.rxjava3.subjects.PublishSubject
 

@@ -16,7 +16,7 @@ class UserProfilePresenter: UserProfileContracts.InteractorPresenterContract {
         activity?.navigateToDebateList()
     }
 
-    override fun presentError(errorDescription: String) {
+    override fun presentError(errorDescription: String?) {
         activity?.showErrorToast(App.appContext.getString(R.string.error_unexpected) + errorDescription)
     }
 }

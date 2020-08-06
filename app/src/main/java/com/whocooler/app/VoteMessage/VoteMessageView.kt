@@ -56,9 +56,11 @@ class VoteMessageView @JvmOverloads constructor(
                 id = R.id.vote_thumbs_up
                 setImageResource(R.drawable.non_chosen_thumb_up)
                 layoutParams = LayoutParams(
-                    dip(16),
-                    dip(16)
-                )
+                    dip(32),
+                    LayoutParams.MATCH_PARENT
+                ).apply {
+                    setPadding(dip(8), dip(6), dip(8), dip(10))
+                }
                 setOnClickListener {
                     if (model.voteType == VoteType.up) {
                         interactor?.deleteVote(model, model.threadId != null)
@@ -75,7 +77,7 @@ class VoteMessageView @JvmOverloads constructor(
                     LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(dip(10), 0 , dip(10), 0)
+                    setMargins(0, dip(6), 0, 0)
                 }
             }
         )
@@ -84,10 +86,10 @@ class VoteMessageView @JvmOverloads constructor(
                 id = R.id.vote_thumbs_down
                 setImageResource(R.drawable.non_chosen_thumb_down)
                 layoutParams = LayoutParams(
-                    dip(16),
-                    dip(16)
+                    dip(32),
+                    LayoutParams.MATCH_PARENT
                 ).apply {
-                    setMargins(0, dip(4), 0, 0 )
+                    setPadding(dip(8), dip(10), dip(8), dip(6))
                 }
                 setOnClickListener {
                     if (model.voteType == VoteType.down) {

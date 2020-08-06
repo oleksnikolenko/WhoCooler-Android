@@ -7,8 +7,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,15 +28,14 @@ import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.R
-import java.io.File
-import java.io.IOException
+import java.io.*
 
 
 class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.PresenterViewContract {
 
     companion object {
         private val IMAGE_PICK_CODE = 1000;
-        private val PERMISSION_CODE = 1001;
+        private val PERMISSION_CODE = 1002;
     }
 
     var interactor: CreateDebateContracts.ViewInteractorContract? = null
@@ -47,14 +49,15 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private lateinit var debateName: EditText
     private lateinit var categoryTextView: TextView
     private lateinit var debateTypeTextView: TextView
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var leftImageContainer: ConstraintLayout
     private lateinit var leftImageText: TextView
     private lateinit var rightImageContainer: ConstraintLayout
     private lateinit var rightImageText: TextView
 
-    private var fileLeftImage: File? = null
-    private var fileRightImage: File? = null
+    private var fileLeftImage: ByteArray? = null
+    private var fileRightImage: ByteArray? = null
 
     private var selectedCategory: Category? = null
     private var debateType: String = "sides"
@@ -106,8 +109,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         rightImageContainer = findViewById(R.id.create_image_right_container)
         leftImageText = findViewById(R.id.create_left_image_text)
         rightImageText = findViewById(R.id.create_right_image_text)
-
-        // TODO - Localize
+        progressBar = findViewById(R.id.create_progress_bar)
         debateTypeTextView.text = getString(R.string.create_debate_type_sides_type)
     }
 
@@ -180,21 +182,26 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     @Throws(IOException::class)
     private fun updateUserImage(uri: Uri) {
-        val inputStream = contentResolver.openInputStream(uri)
-        inputStream?.buffered()?.use {
-            val imageStream = contentResolver.openInputStream(uri)
-            val selectedImage = BitmapFactory.decodeStream(imageStream)
-            if (isLeftImageSelected) {
-                fileLeftImage = File(getRealPathFromURI(uri))
-                leftImage.setImageBitmap(selectedImage)
-                leftImage.setBackgroundColor(0x00000000)
-                leftImageText.visibility = View.GONE
-            } else {
-                fileRightImage = File(getRealPathFromURI(uri))
-                rightImage.setImageBitmap(selectedImage)
-                rightImage.setBackgroundColor(0x00000000)
-                rightImageText.visibility = View.GONE
-            }
+        val imageStream = contentResolver.openInputStream(uri)
+        var selectedImage = BitmapFactory.decodeStream(imageStream)
+
+        if (getRealPathFromURI(uri) != null) {
+            selectedImage = modifyOrientation(selectedImage, getRealPathFromURI(uri)!!)
+        }
+        if (isLeftImageSelected) {
+            fileLeftImage = bitmapToByteArray(selectedImage)
+
+            leftImage.setImageBitmap(selectedImage)
+            leftImage.setBackgroundColor(0x00000000)
+
+            leftImageText.visibility = View.GONE
+        } else {
+            fileRightImage = bitmapToByteArray(selectedImage)
+
+            rightImage.setImageBitmap(selectedImage)
+            rightImage.setBackgroundColor(0x00000000)
+
+            rightImageText.visibility = View.GONE
         }
     }
 
@@ -215,7 +222,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery()
                 } else {
                     Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
@@ -237,6 +244,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     override fun showError(message: String) {
         Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+        progressBar.visibility = View.GONE
     }
 
     // Handles navigation back
@@ -329,6 +337,8 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 selectedCategory!!.id,
                 if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
             )
+
+            progressBar.visibility = View.VISIBLE
         }
     }
 
@@ -353,7 +363,66 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 selectedCategory!!.id,
                 debateName.text.toString()
             )
+
+            progressBar.visibility = View.VISIBLE
         }
+    }
+
+    private fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String): Bitmap {
+        val ei = ExifInterface(image_absolute_path)
+        val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flipImage(bitmap, true, false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flipImage(bitmap, false, true)
+            else -> bitmap
+        }
+    }
+
+    private fun rotateImage(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun flipImage(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+        val matrix = Matrix()
+        matrix.preScale((if (horizontal) -1 else 1).toFloat(), (if (vertical) -1 else 1).toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap) : ByteArray {
+        val stream = ByteArrayOutputStream()
+
+        var bitmapWidth = bitmap.width
+        var bitmapHeight = bitmap.height
+        var compression = 100
+
+        if (byteSizeOf(bitmap) == 48000000) {
+            bitmapWidth /= 3
+            bitmapHeight /= 3
+            compression = 75
+        } else if (byteSizeOf(bitmap) > 10000000) {
+            bitmapWidth /= 2
+            bitmapHeight /= 2
+            compression = 90
+        } else if (byteSizeOf(bitmap) > 3000000) {
+            bitmapWidth /= 1.5.toInt()
+            bitmapHeight /= 1.5.toInt()
+            compression = 95
+        }
+
+        val b = Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false)
+
+        b.compress(Bitmap.CompressFormat.JPEG, compression, stream)
+
+        return stream.toByteArray()
+    }
+
+    private fun byteSizeOf(bitmap: Bitmap) : Int {
+        return bitmap.allocationByteCount
     }
 
 }

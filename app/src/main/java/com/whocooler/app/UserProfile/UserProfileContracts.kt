@@ -1,14 +1,14 @@
 package com.whocooler.app.UserProfile
 
+import android.content.Context
 import com.whocooler.app.Common.Models.User
-import java.io.ByteArrayOutputStream
 
 class UserProfileContracts {
 
     interface ViewInteractorContract {
         // Functions for View output / Interactor input
         fun getProfile()
-        fun logout()
+        fun logout(context: Context)
         fun updateUserName(newName: String)
         fun updateUserAvatar(image: ByteArray)
     }
@@ -17,7 +17,7 @@ class UserProfileContracts {
         // Functions for Interactor output / Presenter input
         fun presentProfile(user: User)
         fun navigateToAuth()
-        fun presentError(errorDescription: String)
+        fun presentError(errorDescription: String?)
     }
 
     // Presenter -> View

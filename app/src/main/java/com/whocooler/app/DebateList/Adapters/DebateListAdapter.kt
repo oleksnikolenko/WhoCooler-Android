@@ -58,6 +58,7 @@ class DebateListAdapter(
         val votesCounter: MaterialTextView?= itemView?.findViewById(R.id.listVotesCounter)
         val messageCounter: MaterialTextView? = itemView?.findViewById(R.id.listMessageCounter)
         val favorites: AppCompatImageView? = itemView?.findViewById(R.id.detail_favorites)
+        val debateInfoView: LinearLayout? = itemView?.findViewById(R.id.list_info_view)
         val more: AppCompatImageView? = itemView?.findViewById(R.id.list_more)
     }
 
@@ -69,6 +70,7 @@ class DebateListAdapter(
         val votesCounter: MaterialTextView?= itemView?.findViewById(R.id.listVotesCounter)
         val messageCounter: MaterialTextView? = itemView?.findViewById(R.id.listMessageCounter)
         val favorites: AppCompatImageView? = itemView?.findViewById(R.id.detail_favorites)
+        val debateInfoView: LinearLayout? = itemView?.findViewById(R.id.list_info_view)
         val more: AppCompatImageView? = itemView?.findViewById(R.id.list_more)
     }
 
@@ -202,11 +204,12 @@ class DebateListAdapter(
             })
             // DEBATE INFO VIEW
             addView(LinearLayout(parent.context).apply {
+                id = R.id.list_info_view
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(0, dip(16), 0, 0)
+                    setPadding(0, dip(16), 0, dip(16))
                 }
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
@@ -265,7 +268,6 @@ class DebateListAdapter(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     parent.dip(1)
                 ).apply {
-                    setMargins(0, dip(16), 0, 0)
                     setBackgroundColor(Color.LTGRAY)
                 }
             })
@@ -374,11 +376,12 @@ class DebateListAdapter(
             })
             // DEBATE INFO VIEW
             addView(LinearLayout(parent.context).apply {
+                id = R.id.list_info_view
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(0, dip(16), 0, 0)
+                    setPadding(0, dip(16), 0, dip(16))
                 }
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
@@ -437,7 +440,6 @@ class DebateListAdapter(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     parent.dip(1)
                 ).apply {
-                    setMargins(0, dip(16), 0, 0)
                     setBackgroundColor(Color.LTGRAY)
                 }
             })
@@ -450,7 +452,6 @@ class DebateListAdapter(
 
     fun onBindSides(holder: RecyclerView.ViewHolder, row: SidesRow) {
         var sidesHolder = holder as DebateListAdapter.SidesViewHolder
-
         Picasso.get().load(row.debate.leftSide.image).into(sidesHolder.leftSideImage)
         Picasso.get().load(row.debate.rightSide.image).into(sidesHolder.rightSideImage)
 
@@ -485,6 +486,18 @@ class DebateListAdapter(
         }
 
         sidesHolder.rightSideImage.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
+        }
+
+        sidesHolder.category.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
+        }
+
+        sidesHolder.debateName?.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
+        }
+
+        sidesHolder.debateInfoView?.setOnClickListener {
             debateClick(row.debate, sidesHolder.adapterPosition)
         }
 
@@ -550,6 +563,18 @@ class DebateListAdapter(
 
         sidesHolder.more?.setOnClickListener {
             didClickMore()
+        }
+
+        sidesHolder.category.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
+        }
+
+        sidesHolder.debateName?.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
+        }
+
+        sidesHolder.debateInfoView?.setOnClickListener {
+            debateClick(row.debate, sidesHolder.adapterPosition)
         }
 
         sidesHolder.voteContainer.leftClicked = {

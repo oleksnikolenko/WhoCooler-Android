@@ -49,4 +49,5 @@
     <item name="list_debate_name" type="id" />
     <item name="detail_debate_name" type="id" />
     <item name="pick_category_text" type="id" />
+    <item name="list_info_view" type="id" />
 </resources>

@@ -11,6 +11,11 @@ import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.UserEditResponse
 import com.whocooler.app.Common.Utilities.BASE_URL
 import io.reactivex.rxjava3.subjects.PublishSubject
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
 import java.nio.charset.Charset
 
 class UserProfileWorker {
@@ -87,6 +92,39 @@ class UserProfileWorker {
         }
 
         App.prefs.requestQueue.add(request)
+
+        return responseSubject
+    }
+
+    fun updateUser(avatar: ByteArray) : PublishSubject<UserEditResponse> {
+        val responseSubject = PublishSubject.create<UserEditResponse>()
+        val map = HashMap<String, RequestBody>()
+
+        val imageReq = RequestBody.create(MediaType.parse("image/jpeg"), avatar)
+
+        map.put("avatar\"; filename=\"avatar.jpg\"", imageReq)
+
+        val authToken = "Bearer ${App.prefs.userSession?.accessToken}"
+
+        App.apiService.editUserAvater(authToken, map).enqueue(
+            object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    responseSubject.onError(t)
+                }
+
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    val jsonBody = response.body()?.string()
+
+                    if (jsonBody != null) {
+                        val response = Gson().fromJson(jsonBody, UserEditResponse::class.java)
+                        responseSubject.onNext(response)
+                    }
+                }
+            }
+        )
 
         return responseSubject
     }

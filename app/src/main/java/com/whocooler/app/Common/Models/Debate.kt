@@ -18,4 +18,5 @@ data class Debate(
     @SerializedName("message_count") var messageCount: Int,
     var image: String?,
     var type: String,
-    var name: String?) : Parcelable
+    var name: String?
+) : Parcelable
