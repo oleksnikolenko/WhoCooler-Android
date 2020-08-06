@@ -4,7 +4,6 @@
     <string name="vote">%s votes</string>
     <string name="auth_info">Please log in to vote, comment and create debates on Sporno</string>
     <string name="facebook_app_id">622900885102618</string>
-    <string name="fb_login_protocol_scheme">fb622900885102618</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>

@@ -5,7 +5,6 @@
     <string name="vote">%s голосов</string>
     <string name="auth_info">Пожалуйста, залогинься чтобы голосовать, комментировать и создавать дебаты на Sporno</string>
     <string name="facebook_app_id">622900885102618</string>
-    <string name="fb_login_protocol_scheme">fb622900885102618</string>
     <string name="ok">OK</string>
     <string name="cancel">Отменить</string>
     <string name="yes">Да</string>
