@@ -177,7 +177,8 @@ class VoteContainerWidget @JvmOverloads constructor(
             containerLeft = getInnerContainer(true)
             containerRight = getInnerContainer(true)
 
-            removeAllViews()
+            removeAllViewsInLayout()
+            overlay.clear()
 
             addView(containerLeft)
             addView(containerRight)
@@ -206,7 +207,8 @@ class VoteContainerWidget @JvmOverloads constructor(
             containerLeft = getInnerContainer(true)
             containerRight = getInnerContainer(true)
 
-            removeAllViews()
+            removeAllViewsInLayout()
+            overlay.clear()
 
             addView(containerLeft)
             addView(containerRight)
@@ -234,7 +236,8 @@ class VoteContainerWidget @JvmOverloads constructor(
             containerLeft = getInnerContainer(false)
             containerRight = getInnerContainer(false)
 
-            removeAllViews()
+            removeAllViewsInLayout()
+            overlay.clear()
 
             addView(containerLeft)
             addView(divider)

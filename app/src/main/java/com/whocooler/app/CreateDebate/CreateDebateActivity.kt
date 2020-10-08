@@ -22,6 +22,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.whocooler.app.Common.App.App
+import com.whocooler.app.Common.Helpers.FileUtils
+import com.whocooler.app.Common.Helpers.PendingDownloadContent
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
@@ -29,6 +31,8 @@ import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.dip
 import com.whocooler.app.R
 import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.PresenterViewContract {
@@ -55,6 +59,8 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private lateinit var leftImageText: TextView
     private lateinit var rightImageContainer: ConstraintLayout
     private lateinit var rightImageText: TextView
+
+    private var isRequestInProgress = false
 
     private var fileLeftImage: ByteArray? = null
     private var fileRightImage: ByteArray? = null
@@ -144,7 +150,9 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     private fun showAlertNotEnoughData(missingElement: String) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.create_not_enough_data) + missingElement)
-        builder.setPositiveButton(getString(R.string.ok), DialogInterface.OnClickListener { _, _ ->  })
+        builder.setPositiveButton(
+            getString(R.string.ok),
+            DialogInterface.OnClickListener { _, _ -> })
         builder.create().show()
     }
 
@@ -152,9 +160,8 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.data
-            if (imageUri != null) {
-                updateUserImage(imageUri)
+            if (data != null) {
+                updateUserImage(data)
             }
         } else if (resultCode == RESULT_PICK_CATEGORY) {
             val category: Category? = data?.extras?.getParcelable(EXTRA_PICK_CATEGORY)
@@ -166,28 +173,39 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         }
     }
 
-    private fun getRealPathFromURI(contentURI: Uri): String? {
-        val result: String?
-        val cursor: Cursor? = contentResolver.query(contentURI, null, null, null, null)
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.path
-        } else {
-            cursor.moveToFirst()
-            val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            result = cursor.getString(idx)
-            cursor.close()
-        }
-        return result
-    }
-
     @Throws(IOException::class)
-    private fun updateUserImage(uri: Uri) {
+    private fun updateUserImage(data: Intent?) {
+        val clipData = data?.clipData
+        val path: Any? = if (clipData != null) {
+            val paths = ArrayList<Any>()
+            for (i in 0 until clipData.itemCount) {
+                val path = FileUtils.getPath(this, clipData.getItemAt(i).uri)
+                if (path != null) {
+                    paths.add(path)
+                }
+            }
+            paths.firstOrNull()
+        } else {
+            FileUtils.getPath(this, data?.data)
+        }
+
+        val file = when (path) {
+            is PendingDownloadContent -> {
+                val fileName = UUID.randomUUID().toString() + path.fileName
+                FileUtils.copyUriToFile(this, path.uri, fileName)
+            }
+            is String -> {
+                File(path)
+            }
+            else -> null
+        } ?: return
+
+        val uri = Uri.fromFile(file)
         val imageStream = contentResolver.openInputStream(uri)
         var selectedImage = BitmapFactory.decodeStream(imageStream)
 
-        if (getRealPathFromURI(uri) != null) {
-            selectedImage = modifyOrientation(selectedImage, getRealPathFromURI(uri)!!)
-        }
+        selectedImage = modifyOrientation(selectedImage, file.absolutePath)
+
         if (isLeftImageSelected) {
             fileLeftImage = bitmapToByteArray(selectedImage)
 
@@ -206,7 +224,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     }
 
     private fun tryToGetImageFromUser() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
                 requestPermissions(permissions, PERMISSION_CODE);
@@ -219,13 +237,18 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode){
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.size > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery()
                 } else {
-                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -262,7 +285,10 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.create_choose_type))
 
-        val debateTypes = arrayOf(getString(R.string.create_debate_type_sides), getString(R.string.create_debate_type_statement))
+        val debateTypes = arrayOf(
+            getString(R.string.create_debate_type_sides),
+            getString(R.string.create_debate_type_statement)
+        )
 
         val debateTypesForBackend = arrayOf("sides", "statement")
 
@@ -316,7 +342,9 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
     }
 
     private fun handleSidesTap() {
-        if (App.prefs.isTokenEmpty()) {
+        if (isRequestInProgress) {
+            return
+        } else if (App.prefs.isTokenEmpty()) {
             router?.navigateToAuth()
         } else if (fileLeftImage == null) {
             showAlertNotEnoughData(getString(R.string.create_left_image))
@@ -338,12 +366,16 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 if (debateName.text.toString().isEmpty()) null else debateName.text.toString()
             )
 
+            isRequestInProgress = true
+
             progressBar.visibility = View.VISIBLE
         }
     }
 
     private fun handleStatementTap() {
-        if (App.prefs.isTokenEmpty()) {
+        if (isRequestInProgress) {
+            return
+        } else if (App.prefs.isTokenEmpty()) {
             router?.navigateToAuth()
         } else if (fileLeftImage == null) {
             showAlertNotEnoughData(getString(R.string.create_debate_image))
@@ -364,13 +396,16 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
                 debateName.text.toString()
             )
 
+            isRequestInProgress = true
+
             progressBar.visibility = View.VISIBLE
         }
     }
 
     private fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String): Bitmap {
         val ei = ExifInterface(image_absolute_path)
-        val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        val orientation =
+            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         return when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90f)
             ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180f)
@@ -393,7 +428,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun bitmapToByteArray(bitmap: Bitmap) : ByteArray {
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
 
         var bitmapWidth = bitmap.width
@@ -421,7 +456,7 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
         return stream.toByteArray()
     }
 
-    private fun byteSizeOf(bitmap: Bitmap) : Int {
+    private fun byteSizeOf(bitmap: Bitmap): Int {
         return bitmap.allocationByteCount
     }
 

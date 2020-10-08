@@ -24,8 +24,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.whocooler.app.Common.Models.User
 import com.whocooler.app.R
 import com.squareup.picasso.Picasso
+import com.whocooler.app.Common.Helpers.FileUtils
+import com.whocooler.app.Common.Helpers.PendingDownloadContent
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterViewContract {
 
@@ -94,22 +99,44 @@ class UserProfileActivity: AppCompatActivity(), UserProfileContracts.PresenterVi
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.data
-            if (imageUri != null) {
-                updateUserImage(imageUri)
+            if (data != null) {
+                updateUserImage(data)
             }
         }
     }
 
     @Throws(IOException::class)
-    private fun updateUserImage(uri: Uri) {
+    private fun updateUserImage(data: Intent?) {
+        val clipData = data?.clipData
+        val path: Any? = if (clipData != null) {
+            val paths = ArrayList<Any>()
+            for (i in 0 until clipData.itemCount) {
+                val path = FileUtils.getPath(this, clipData.getItemAt(i).uri)
+                if (path != null) {
+                    paths.add(path)
+                }
+            }
+            paths.firstOrNull()
+        } else {
+            FileUtils.getPath(this, data?.data)
+        }
+
+        val file = when (path) {
+            is PendingDownloadContent -> {
+                val fileName = UUID.randomUUID().toString() + path.fileName
+                FileUtils.copyUriToFile(this, path.uri, fileName)
+            }
+            is String -> {
+                File(path)
+            }
+            else -> null
+        } ?: return
+
+        val uri = Uri.fromFile(file)
         val imageStream = contentResolver.openInputStream(uri)
         var imageBitmap = BitmapFactory.decodeStream(imageStream)
-        var imageUri = getRealPathFromURI(uri)
 
-        if (imageUri != null) {
-            imageBitmap = modifyOrientation(imageBitmap, imageUri!!)
-        }
+        imageBitmap = modifyOrientation(imageBitmap, file.absolutePath)
 
         val byteStream = ByteArrayOutputStream()
         val compressedBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width / 4, imageBitmap.height / 4, false)
