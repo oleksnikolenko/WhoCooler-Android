@@ -17,6 +17,7 @@ class AuthorizationWorker {
 
         val jsonBody = JSONObject()
         jsonBody.put("token", token)
+        jsonBody.put("platform","android")
         val requestBody = jsonBody.toString()
 
         val authorizeRequest = object : JsonObjectRequest(

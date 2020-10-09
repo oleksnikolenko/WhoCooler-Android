@@ -321,15 +321,16 @@ class DebateDetailAdapter(
             })
             addView(MaterialTextView(context).apply {
                 id = R.id.detail_debate_name
-                gravity = Gravity.CENTER
+                gravity = Gravity.LEFT
                 layoutParams =  LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
+                    setMargins(dip(24), 0, dip(16), dip(16))
                     setTextColor(Color.BLACK)
-                    textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    textSize = 20f
-                    setMargins(dip(16), 0, dip(16), dip(12))
+                    typeface = Typeface.DEFAULT_BOLD
+                    textAlignment = View.TEXT_ALIGNMENT_GRAVITY
+                    textSize = 24f
                 }
             })
             addView(VoteContainerWidget(context).apply {
@@ -380,15 +381,16 @@ class DebateDetailAdapter(
             })
             addView(MaterialTextView(context).apply {
                 id = R.id.detail_debate_name
-                gravity = Gravity.CENTER
+                gravity = Gravity.LEFT
                 layoutParams =  LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
+                    setMargins(dip(24), 0, dip(16), dip(16))
                     setTextColor(Color.BLACK)
-                    textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    textSize = 20f
-                    setMargins(dip(16), 0, dip(16), dip(12))
+                    typeface = Typeface.DEFAULT_BOLD
+                    textAlignment = View.TEXT_ALIGNMENT_GRAVITY
+                    textSize = 24f
                 }
             })
             addView(VoteContainerWidget(context).apply {

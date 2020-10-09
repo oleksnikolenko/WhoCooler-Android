@@ -64,5 +64,6 @@
     <string name="create_debate_type_sides" >Левая/Правая сторона</string>
     <string name="create_debate_type_statement_type" >Тип: Да/Нет</string>
     <string name="create_debate_type_statement" >Утверждение Да/Нет</string>
+    <string name="debate_of_day" >Дебат дня</string>
 
 </resources>

@@ -63,5 +63,6 @@
     <string name="create_debate_type_sides" >Left/Right Side</string>
     <string name="create_debate_type_statement_type" >Type: Yes/No</string>
     <string name="create_debate_type_statement" >Yes/No Statement</string>
+    <string name="debate_of_day" >Debate of the day</string>
 
 </resources>

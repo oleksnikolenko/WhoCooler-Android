@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.provider.Settings.Global.getString
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -189,15 +190,16 @@ class DebateListAdapter(
             })
             addView(MaterialTextView(parent.context).apply {
                 id = R.id.list_debate_name
-                gravity = Gravity.CENTER
+                gravity = Gravity.LEFT
                 layoutParams =  LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(dip(16), 0, dip(16), dip(12))
+                    setMargins(dip(24), 0, dip(16), dip(16))
                     setTextColor(Color.BLACK)
-                    textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    textSize = 20f
+                    typeface = Typeface.DEFAULT_BOLD
+                    textAlignment = View.TEXT_ALIGNMENT_GRAVITY
+                    textSize = 24f
                 }
             })
             addView(VoteContainerWidget(parent.context).apply {
@@ -454,22 +456,23 @@ class DebateListAdapter(
 
     fun onBindSides(holder: RecyclerView.ViewHolder, row: SidesRow) {
         var sidesHolder = holder as DebateListAdapter.SidesViewHolder
-        Picasso.get().load(row.debate.leftSide.image).into(sidesHolder.leftSideImage)
-        Picasso.get().load(row.debate.rightSide.image).into(sidesHolder.rightSideImage)
+        var debate = row.debate
+        Picasso.get().load(debate.leftSide.image).into(sidesHolder.leftSideImage)
+        Picasso.get().load(debate.rightSide.image).into(sidesHolder.rightSideImage)
 
-        sidesHolder.category.text = row.debate.category.name
+        sidesHolder.category.text = if (debate.promotionType == "debate_of_day") debate.category.name else "Дебат дня"
 
-        if (row.debate.name != null) {
-            sidesHolder.debateName?.text = row.debate.name
+        if (debate.name != null) {
+            sidesHolder.debateName?.text = debate.name
             sidesHolder.debateName?.visibility = View.VISIBLE
         } else {
             sidesHolder.debateName?.visibility = View.GONE
         }
 
-        sidesHolder.votesCounter?.text = row.debate.votesCount.toString()
-        sidesHolder.messageCounter?.text = row.debate.messageCount.toString()
+        sidesHolder.votesCounter?.text = debate.votesCount.toString()
+        sidesHolder.messageCounter?.text = debate.messageCount.toString()
 
-        if (row.debate.isFavorite) {
+        if (debate.isFavorite) {
             sidesHolder.favorites?.setImageResource(R.drawable.filled_favorites)
         } else {
             sidesHolder.favorites?.setImageResource(R.drawable.non_filled_favorites)
@@ -477,7 +480,7 @@ class DebateListAdapter(
 
         sidesHolder.favorites?.setOnClickListener {
             toggleFavorites?.let {
-                it(row.debate)
+                it(debate)
             }
         }
 
@@ -530,10 +533,11 @@ class DebateListAdapter(
 
     fun onBindStatement(holder: RecyclerView.ViewHolder, row: StatementRow) {
         var sidesHolder = holder as DebateListAdapter.StatementViewHolder
+        var debate = row.debate
 
         Picasso.get().load(row.debate.image).into(sidesHolder.debateImage)
 
-        sidesHolder.category.text = row.debate.category.name
+        sidesHolder.category.text = if (debate.promotionType == "debate_of_day") App.appContext.getString(R.string.debate_of_day) else debate.category.name
 
         if (row.debate.name != null) {
             sidesHolder.debateName?.text = row.debate.name

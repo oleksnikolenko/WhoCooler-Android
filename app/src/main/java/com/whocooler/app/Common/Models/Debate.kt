@@ -16,6 +16,7 @@ data class Debate(
     @SerializedName("message_list") var messagesList: MessagesList,
     @SerializedName("is_favorite") var isFavorite: Boolean,
     @SerializedName("message_count") var messageCount: Int,
+    @SerializedName("promotion_type") var promotionType: String?,
     var image: String?,
     var type: String,
     var name: String?
