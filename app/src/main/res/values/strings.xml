@@ -8,6 +8,7 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="allright">Okay</string>
     <string name="profile_change_name">Change name</string>
     <string name="profile_logout">Logout</string>
     <string name="profile_name">Name</string>
@@ -64,5 +65,12 @@
     <string name="create_debate_type_statement_type" >Type: Yes/No</string>
     <string name="create_debate_type_statement" >Yes/No Statement</string>
     <string name="debate_of_day" >Debate of the day</string>
+    <string name="feedback_contact_alert" >How can we contact you (phone/email/other)?</string>
+    <string name="agree" >Agree</string>
+    <string name="contact_feedback_description"> We need your help! Leave us a way to contact with you to make our product better!</string>
+    <string name="contact_feedback_title"> Your opinion is important!</string>
+    <string name="contact_feedback_input_description">We want to make Sporno better. Please tell us what we can improve!</string>
+    <string name="feedback_contact_thankyou">Thank you, we will contact you soon!</string>
+    <string name="feedback_input_thankyou">Thank you for feedback, we are doing our best for you!</string>
 
 </resources>

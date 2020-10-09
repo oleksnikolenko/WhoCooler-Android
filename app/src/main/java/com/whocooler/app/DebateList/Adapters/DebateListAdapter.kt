@@ -1,20 +1,18 @@
 package com.whocooler.app.DebateList.Adapters
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.provider.Settings.Global.getString
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginStart
 import androidx.recyclerview.widget.RecyclerView
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
@@ -25,11 +23,8 @@ import com.whocooler.app.Common.ui.votecontainer.VoteContainerWidget
 import com.whocooler.app.R
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
-import com.whocooler.app.Common.Models.Message
 import com.whocooler.app.Common.Utilities.VOTE_BUTTON_SHADE_COLOR
-import com.whocooler.app.DebateDetail.DebateDetailAdapter
 import io.reactivex.rxjava3.subjects.PublishSubject
-import java.sql.Statement
 
 
 class DebateListAdapter(
@@ -39,16 +34,22 @@ class DebateListAdapter(
     val authRequired: () -> Unit,
     val toggleFavorites: ((Debate) -> Unit)? = null,
     val shouldShowDebateInfo: Boolean = false,
-    val didClickMore: () -> Unit
+    val didClickMore: () -> Unit,
+    val didClickAgreeToContactFeedback: () -> Unit,
+    val didAgreeToSendInputFeedback: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface IDebateListRow
     class SidesRow(val debate: Debate) : IDebateListRow
     class StatementRow(val debate: Debate) : IDebateListRow
+    class ContactFeedbackRow: IDebateListRow
+    class FeedbackInputRow: IDebateListRow
 
     companion object {
         private const val TYPE_SIDES = 0
         private const val TYPE_STATEMENT = 1
+        private const val TYPE_CONTACT_FEEDBACK = 2
+        private const val TYPE_FEEDBACK_INPUT = 3
     }
 
     class SidesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -76,24 +77,106 @@ class DebateListAdapter(
         val more: AppCompatImageView? = itemView?.findViewById(R.id.list_more)
     }
 
+    class ContactFeedbackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: MaterialTextView = itemView.findViewById(R.id.contact_feedback_title)
+        val description: MaterialTextView = itemView.findViewById(R.id.contact_feedback_description)
+        val agreeButton: Button = itemView.findViewById(R.id.contact_feedback_agree)
+    }
+
+    class FeedbackInputViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: MaterialTextView = itemView.findViewById(R.id.contact_feedback_title)
+        val description: MaterialTextView = itemView.findViewById(R.id.contact_feedback_description)
+        val agreeButton: Button = itemView.findViewById(R.id.contact_feedback_agree)
+    }
+
     override fun getItemViewType(position: Int): Int = when(rows[position]) {
-        is DebateListAdapter.SidesRow -> DebateListAdapter.TYPE_SIDES
-        is DebateListAdapter.StatementRow -> DebateListAdapter.TYPE_STATEMENT
+        is SidesRow -> TYPE_SIDES
+        is StatementRow -> TYPE_STATEMENT
+        is ContactFeedbackRow -> TYPE_CONTACT_FEEDBACK
+        is FeedbackInputRow -> TYPE_FEEDBACK_INPUT
         else -> throw IllegalArgumentException()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        DebateListAdapter.TYPE_SIDES -> onCreateSidesViewHolder(parent)
-        DebateListAdapter.TYPE_STATEMENT -> onCreateStatementViewHolder(parent)
+        TYPE_SIDES -> onCreateSidesViewHolder(parent)
+        TYPE_STATEMENT -> onCreateStatementViewHolder(parent)
+        TYPE_CONTACT_FEEDBACK -> onCreateFeedback(parent)
+        TYPE_FEEDBACK_INPUT -> onCreateFeedback(parent)
         else -> throw IllegalArgumentException()
     }
 
     override fun getItemCount(): Int = rows.count()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = when (holder.itemViewType) {
-        DebateListAdapter.TYPE_SIDES -> onBindSides(holder, rows[position] as SidesRow)
-        DebateListAdapter.TYPE_STATEMENT -> onBindStatement(holder, rows[position] as StatementRow)
+        TYPE_SIDES -> onBindSides(holder, rows[position] as SidesRow)
+        TYPE_STATEMENT -> onBindStatement(holder, rows[position] as StatementRow)
+        TYPE_CONTACT_FEEDBACK -> onBindContactFeedBack(holder, rows[position] as ContactFeedbackRow)
+        TYPE_FEEDBACK_INPUT -> onBindFeedbackInput(holder, rows[position] as FeedbackInputRow)
         else -> throw IllegalArgumentException()
+    }
+
+    fun onCreateFeedback(parent: ViewGroup): RecyclerView.ViewHolder {
+        val container = LinearLayout(parent.context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT
+            )
+            addView(
+                MaterialTextView(parent.context).apply {
+                    id = R.id.contact_feedback_title
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.MATCH_PARENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        setMargins(dip(12), dip(16), dip(12), 0)
+                        setTextColor(Color.BLACK)
+                        typeface = Typeface.DEFAULT_BOLD
+                        textSize = 18f
+                    }
+
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                }
+            )
+            addView(
+                MaterialTextView(parent.context).apply {
+                    id = R.id.contact_feedback_description
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.MATCH_PARENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        setMargins(dip(12), dip(8), dip(12), 0)
+                        setTextColor(Color.BLACK)
+                    }
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                }
+            )
+            addView(
+                Button(parent.context).apply {
+                    id = R.id.contact_feedback_agree
+                    layoutParams = LinearLayout.LayoutParams(
+                        RecyclerView.LayoutParams.MATCH_PARENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        setMargins(dip(16), dip(8), dip(16), 0)
+
+                    }
+                }
+            )
+            addView(LinearLayout(parent.context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    parent.dip(1)
+                ).apply {
+                    setMargins(0, dip(8), 0, dip(8))
+                    setBackgroundColor(Color.LTGRAY)
+                }
+            })
+        }
+
+        return ContactFeedbackViewHolder(container)
     }
 
     fun onCreateSidesViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -528,6 +611,30 @@ class DebateListAdapter(
                     sidesHolder.voteContainer.acceptModel(VoteContainerModel(debate = it), true)
                 }
             }
+        }
+    }
+
+    fun onBindContactFeedBack(holder: RecyclerView.ViewHolder, row: ContactFeedbackRow) {
+        var contactFeedbackHolder = holder as ContactFeedbackViewHolder
+
+        contactFeedbackHolder.title.text = App.appContext.getString(R.string.contact_feedback_title)
+        contactFeedbackHolder.description.text = App.appContext.getString(R.string.contact_feedback_description)
+        contactFeedbackHolder.agreeButton.text = App.appContext.getString(R.string.agree)
+
+        contactFeedbackHolder.agreeButton.setOnClickListener {
+            didClickAgreeToContactFeedback()
+        }
+    }
+
+    fun onBindFeedbackInput(holder: RecyclerView.ViewHolder, row: FeedbackInputRow) {
+        var feedbackInputHolder = holder as ContactFeedbackViewHolder
+
+        feedbackInputHolder.title.text = App.appContext.getString(R.string.contact_feedback_title)
+        feedbackInputHolder.description.text = App.appContext.getString(R.string.contact_feedback_input_description)
+        feedbackInputHolder.agreeButton.text = App.appContext.getString(R.string.allright)
+
+        feedbackInputHolder.agreeButton.setOnClickListener {
+            didAgreeToSendInputFeedback()
         }
     }
 

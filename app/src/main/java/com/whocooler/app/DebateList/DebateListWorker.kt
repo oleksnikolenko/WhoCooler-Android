@@ -148,4 +148,28 @@ class DebateListWorker {
         return responseSubject
     }
 
+    fun sendFeedback(feedback: String) : PublishSubject<Empty> {
+        val responseSubject = PublishSubject.create<Empty>()
+
+        val jsonBody = JSONObject()
+        jsonBody.put("key", "android_generic")
+        jsonBody.put("text", feedback)
+        val requestBody = jsonBody.toString()
+
+        val sendFeedBackSubject = object : JsonObjectRequest(Method.POST, BASE_URL + "soup", null, Response.Listener {
+            val success = gson.fromJson(it.toString(), Empty :: class.java)
+            responseSubject.onNext(success)
+        }, Response.ErrorListener {
+            responseSubject.onError(it)
+        }) {
+            override fun getBody(): ByteArray {
+                return requestBody.toByteArray()
+            }
+        }
+
+        App.prefs.requestQueue.add(sendFeedBackSubject)
+
+        return responseSubject
+    }
+
 }

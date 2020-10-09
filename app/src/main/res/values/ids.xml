@@ -50,4 +50,7 @@
     <item name="detail_debate_name" type="id" />
     <item name="pick_category_text" type="id" />
     <item name="list_info_view" type="id" />
+    <item name="contact_feedback_title" type="id" />
+    <item name="contact_feedback_description" type="id" />
+    <item name="contact_feedback_agree" type="id" />
 </resources>

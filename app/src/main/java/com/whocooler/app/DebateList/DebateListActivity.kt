@@ -1,9 +1,11 @@
 package com.whocooler.app.DebateList
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.messaging.FirebaseMessaging
+import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
@@ -192,7 +195,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     }
 
     override fun setupDebateAdapter(rows: ArrayList<DebateListAdapter.IDebateListRow>, debates: ArrayList<Debate>) {
-        DebateService.debates = debates
+        DebateService.setDebates(debates)
         mainDataProgressBar.visibility = View.GONE
 
         val voteClickHandler: (Debate, DebateSide, Int) -> PublishSubject<Debate> = { debate, debateSide, position ->
@@ -201,7 +204,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
 
         val debateClickHandler: (Debate, Int) -> Unit = { debate, adapterPosition ->
             reloadPosition = adapterPosition
-            router.navigateToDebate(DebateService.debates[adapterPosition], adapterPosition)
+            router.navigateToDebate(debate, adapterPosition)
         }
 
         val authRequiredHandler: () -> Unit = {
@@ -216,6 +219,14 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             showMoreAlert()
         }
 
+        val didClickAgreeToContactFeedback: () -> Unit = {
+            showFeedbackAlert("contact")
+        }
+
+        val didAgreeToSendInputFeedback: () -> Unit = {
+            showFeedbackAlert("input")
+        }
+
         debateAdapter =
             DebateListAdapter(
                 rows,
@@ -224,7 +235,9 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
                 authRequiredHandler,
                 toggleFavoritesHandler,
                 true,
-                didClickMoreHandler
+                didClickMoreHandler,
+                didClickAgreeToContactFeedback,
+                didAgreeToSendInputFeedback
             )
 
         debateAdapter.notifyDataSetChanged()
@@ -298,4 +311,41 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
             mainDataProgressBar.visibility = View.GONE
         }
     }
+
+    private fun showFeedbackAlert(type: String) {
+        val builder = AlertDialog.Builder(this)
+
+        if (type == "contact") {
+            builder.setMessage(R.string.feedback_contact_alert)
+        } else if (type == "input") {
+            builder.setMessage(R.string.contact_feedback_input_description)
+        }
+
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(input)
+
+        builder.setPositiveButton(R.string.ok, DialogInterface.OnClickListener { dialog, which ->
+            // TODO - Send feedback and remove cell
+            interactor.sendFeedback(type, input.text.toString())
+            showSuccessFeedbackPopup(type)
+        })
+
+        builder.setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, which ->
+            dialog.cancel()
+        })
+
+        val dialog = builder.create()
+
+        dialog.show()
+    }
+
+    private fun showSuccessFeedbackPopup(type: String) {
+        if (type == "contact") {
+            Toast.makeText(this, getString(R.string.feedback_contact_thankyou), Toast.LENGTH_SHORT).show()
+        } else if (type == "input") {
+            Toast.makeText(this, getString(R.string.feedback_input_thankyou), Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

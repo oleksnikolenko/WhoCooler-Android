@@ -15,6 +15,7 @@ class DebateListContracts {
         fun toggleFavorites(debate: Debate)
         fun hasDebatesListNextPage(): Boolean
         fun getNextPage()
+        fun sendFeedback(type: String, feedback: String)
     }
 
     interface InteractorPresenterContract {
@@ -24,6 +25,7 @@ class DebateListContracts {
         fun addNewDebates(response: DebatesResponse)
         fun presentNoInternet()
         fun presentAuthScreen()
+        fun didSendFeedback()
     }
 
     // Presenter -> View

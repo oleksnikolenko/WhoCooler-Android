@@ -22,6 +22,7 @@ class App: Application() {
         setLocale(Locale.getDefault().language)
 
         appContext = applicationContext
+        prefs.sessionNumber = prefs.sessionNumber + 1
     }
 
     private fun setLocale(language: String) {

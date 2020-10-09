@@ -181,14 +181,14 @@ class DebateDetailActivity: AppCompatActivity(), DebateDetailContracts.Presenter
 
         debate.messageCount += value
         if (debatePosition != -1) {
-            DebateService.debates.set(debatePosition, debate)
+            DebateService.updateDebate(debate)
         }
     }
 
     override fun updateDebate(debate: Debate) {
         this.debate = debate
         if (debatePosition != -1) {
-            DebateService.debates.set(debatePosition, debate)
+            DebateService.updateDebate(debate)
         }
     }
 

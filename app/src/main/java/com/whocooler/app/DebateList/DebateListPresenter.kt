@@ -4,6 +4,8 @@ import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.Common.Utilities.FEEDBACK_CONTACT_POSITION
+import com.whocooler.app.Common.Utilities.FEEDBACK_INPUT_POSITION
 import com.whocooler.app.DebateDetail.DebateDetailAdapter
 import com.whocooler.app.DebateList.Adapters.DebateListAdapter
 import com.whocooler.app.R
@@ -33,6 +35,12 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
                     rows.add(DebateListAdapter.StatementRow(debate))
                 }
             }
+            if (App.prefs.shouldShowFeedbackInput && rows.count() > FEEDBACK_INPUT_POSITION) {
+                rows.add(FEEDBACK_INPUT_POSITION, DebateListAdapter.FeedbackInputRow())
+            }
+            if (App.prefs.shouldShowContactFeedback && App.prefs.sessionNumber > 1 && rows.count() > FEEDBACK_CONTACT_POSITION) {
+                rows.add(FEEDBACK_CONTACT_POSITION, DebateListAdapter.ContactFeedbackRow())
+            }
             activity?.setupDebateAdapter(rows, response.debates)
         }
 
@@ -53,6 +61,10 @@ class DebateListPresenter : DebateListContracts.InteractorPresenterContract {
 
     override fun presentNoInternet() {
         activity?.showNoInternerError()
+    }
+
+    override fun didSendFeedback() {
+        activity?.updateDebateDataSource()
     }
 
 }

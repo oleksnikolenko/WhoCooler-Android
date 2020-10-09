@@ -1,7 +1,5 @@
 package com.whocooler.app.DebateList
 
-import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.android.volley.NetworkError
 import com.android.volley.NoConnectionError
@@ -59,7 +57,7 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         worker.vote(debateId, sideId).subscribeBy(
             onNext = { response ->
                 responseSubject.onNext(response.debate)
-                DebateService.debates.set(position, response.debate)
+                DebateService.updateDebate(response.debate)
             }, onError = {
                 handleError(it)
             }
@@ -75,6 +73,21 @@ class DebateListInteractor : DebateListContracts.ViewInteractorContract {
         } else {
             deleteFromFavorites(debate)
         }
+    }
+
+    override fun sendFeedback(type: String, feedback: String) {
+        worker.sendFeedback(feedback).subscribeBy(
+            onNext = {
+                if (type == "contact") {
+                    App.prefs.shouldShowContactFeedback = false
+                } else if (type == "input") {
+                    App.prefs.shouldShowFeedbackInput = false
+                }
+                presenter?.didSendFeedback()
+            }, onError = {
+                handleError(it)
+            }
+        )
     }
 
     private fun addToFavorites(debate: Debate) {
