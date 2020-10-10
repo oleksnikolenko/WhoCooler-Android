@@ -1,5 +1,7 @@
 package com.whocooler.app.CreateDebate
 
+import com.whocooler.app.Common.Services.AnalyticsEvent
+import com.whocooler.app.Common.Services.AnalyticsService
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import java.io.File
 
@@ -18,6 +20,7 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
     ) {
         worker.createDebateSides(leftName, rightName, leftImage, rightImage, categoryId, debateName).subscribeBy(
             onNext = { debate ->
+                AnalyticsService.trackEvent(AnalyticsEvent.NEW_CREATED, "id", debate.id)
                 presenter?.navigateToDebate(debate)
             }, onError = {
                 presenter?.presentError(it.localizedMessage)
@@ -34,6 +37,7 @@ class CreateDebateInteractor : CreateDebateContracts.ViewInteractorContract {
     ) {
         worker.createDebateStatement(leftName, rightName, debateImage, categoryId, debateName).subscribeBy(
             onNext = { debate ->
+                AnalyticsService.trackEvent(AnalyticsEvent.NEW_CREATED, "id", debate.id)
                 presenter?.navigateToDebate(debate)
             }, onError = {
                 presenter?.presentError(it.localizedMessage)

@@ -3,6 +3,8 @@ package com.whocooler.app.DebateDetail
 import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.Message
+import com.whocooler.app.Common.Services.AnalyticsEvent
+import com.whocooler.app.Common.Services.AnalyticsService
 import com.whocooler.app.Common.Services.DebateService
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -35,6 +37,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
     }
 
     override fun handleSend(text: String, threadId: String?, editedMessage: Message?, index: Int?) {
+        AnalyticsService.trackEvent(AnalyticsEvent.COMMENT_SEND_TRY)
         if (App.prefs.isTokenEmpty()) {
             presenter?.presentAuthScreen()
             return
@@ -50,6 +53,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
             onNext = {message->
                 debate.messagesList.messages.add(0, message)
                 presenter?.presentNewMessage(message)
+                AnalyticsService.trackEvent(AnalyticsEvent.COMMENT_SENT_SUCCESS)
             }, onError = {
                 presenter?.presentError(it.localizedMessage)
             }
@@ -59,6 +63,7 @@ class DebateDetailInteractor: DebateDetailContracts.ViewInteractorContract {
     private fun sendReply(text: String, threadId: String, index: Int) {
         worker.sendReply(text, threadId).subscribeBy(
             onNext = {reply->
+                AnalyticsService.trackEvent(AnalyticsEvent.COMMENT_SENT_SUCCESS)
                 val parentIndex = getIndexOfMessage(threadId)
                 if (parentIndex != null) {
                     presenter?.presentNewReply(reply, index)

@@ -1,6 +1,7 @@
 package com.whocooler.app.Authorization
 
 import com.whocooler.app.Common.App.App
+import com.whocooler.app.Common.Services.AnalyticsService
 import com.whocooler.app.R
 
 class AuthorizationPresenter: AuthorizationContracts.InteractorPresenterContract {

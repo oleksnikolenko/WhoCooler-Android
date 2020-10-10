@@ -26,6 +26,8 @@ import com.whocooler.app.Common.Helpers.FileUtils
 import com.whocooler.app.Common.Helpers.PendingDownloadContent
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
+import com.whocooler.app.Common.Services.AnalyticsEvent
+import com.whocooler.app.Common.Services.AnalyticsService
 import com.whocooler.app.Common.Utilities.EXTRA_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.RESULT_PICK_CATEGORY
 import com.whocooler.app.Common.Utilities.dip
@@ -72,6 +74,8 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AnalyticsService.trackEvent(AnalyticsEvent.OPEN_CREATE)
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
@@ -121,16 +125,19 @@ class CreateDebateActivity : AppCompatActivity(), CreateDebateContracts.Presente
 
     private fun setupOnClickListeners() {
         leftImage.setOnClickListener {
+            AnalyticsService.trackEvent(AnalyticsEvent.CLICK_PHOTO)
             isLeftImageSelected = true
             tryToGetImageFromUser()
         }
 
         rightImage.setOnClickListener {
+            AnalyticsService.trackEvent(AnalyticsEvent.CLICK_PHOTO)
             isLeftImageSelected = false
             tryToGetImageFromUser()
         }
 
         categoryTextView.setOnClickListener {
+            AnalyticsService.trackEvent(AnalyticsEvent.CLICK_CATEGORY)
             router?.navigateToPickCategory()
         }
 

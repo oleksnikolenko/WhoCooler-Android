@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -14,14 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.messaging.FirebaseMessaging
-import com.whocooler.app.Common.App.App
 import com.whocooler.app.Common.Models.Category
 import com.whocooler.app.Common.Models.Debate
 import com.whocooler.app.Common.Models.DebateSide
 import com.whocooler.app.Common.Models.DebatesResponse
+import com.whocooler.app.Common.Services.AnalyticsEvent
+import com.whocooler.app.Common.Services.AnalyticsService
 import com.whocooler.app.Common.Services.DebateService
 import com.whocooler.app.Common.Utilities.LAUNCH_AUTH_WITH_RESULT
 import com.whocooler.app.Common.ui.error.ErrorInternetWidget
@@ -171,6 +169,7 @@ class DebateListActivity : AppCompatActivity(), DebateListContracts.PresenterVie
     private fun setupCreateDebateListener() {
         val createDebateButton = findViewById<FloatingActionButton>(R.id.list_floating_button)
         createDebateButton.setOnClickListener {
+            AnalyticsService.trackEvent(AnalyticsEvent.CLICK_NEW)
             router.navigateToCreateDebate()
         }
     }

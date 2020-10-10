@@ -34,6 +34,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.whocooler.app.Common.Services.AnalyticsEvent
+import com.whocooler.app.Common.Services.AnalyticsService
 import com.whocooler.app.Common.Utilities.EXTRA_SHOULD_RELOAD_DEBATE_LIST
 import kotlinx.android.synthetic.main.activity_auhtorization.*
 
@@ -199,6 +201,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
         fbLoginBtn.setPermissions("email", "public_profile")
         fbLoginBtn.registerCallback(facebookCallbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
+                AnalyticsService.trackEvent(AnalyticsEvent.LOGIN_TRY, "provider", "facebook")
                 val token = result?.accessToken
                 if (token != null) {
                     handleFacebookAccessToken(token)
@@ -206,7 +209,6 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
             }
             override fun onCancel() {
                 Log.d("letsSee", "Facebook onCancel.")
-
             }
             override fun onError(error: FacebookException) {
                 Log.d("letsSee", "Facebook onError.")
@@ -215,6 +217,7 @@ class AuhtorizationActivity : AppCompatActivity(), AuthorizationContracts.Presen
     }
 
     private fun signInGoogle() {
+        AnalyticsService.trackEvent(AnalyticsEvent.LOGIN_TRY, "provider", "google")
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
