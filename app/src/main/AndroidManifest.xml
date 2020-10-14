@@ -72,6 +72,8 @@
                 <data android:scheme="fb622900885102618" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_name" />
     </application>
 
 </manifest>
